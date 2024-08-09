@@ -15,4 +15,7 @@
         </div>
         <livewire:bancos.bancos-table/>
     </div>
+
+    <livewire:bancos.editar-banco  />
+    <livewire:bancos.eliminar-banco  />
 </x-app-layout>

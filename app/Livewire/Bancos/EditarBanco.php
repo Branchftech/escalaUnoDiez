@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Livewire\Bancos;
+namespace App\Livewire\Bancos;
 
 use App\Models\Banco;
 use App\Services\AlertService;
@@ -11,20 +11,21 @@ class EditarBanco extends Component
 {
     use LivewireAlert;
 
-    public Banco $banco;
-    public $nombre;
-    public $bancoId;
+    public $bancoId, $nombre;
     public $showModal = false;
-
-    protected $listeners = ['openEditModal' => 'openModal'];
-
     protected AlertService $alertService;
     protected LoggerService $loggerService;
 
-    public function mount()
+    public function __construct()
     {
         $this->alertService = app(AlertService::class);
         $this->loggerService = app(LoggerService::class);
+    }
+
+    public function mount(Banco $banco)
+    {
+        $this->bancoId = $banco->id;
+        $this->nombre = $banco->nombre;
     }
 
     public function render()
@@ -32,33 +33,33 @@ class EditarBanco extends Component
         return view('livewire.bancos.editar-banco');
     }
 
-    public function openModal($bancoId)
+    public function editarBanco()
     {
-        $this->bancoId = $bancoId;
-        $this->banco = Banco::find($bancoId);
-        $this->nombre = $this->banco->nombre;
+        dd($this->bancoId);
+
+        $banco = Banco::findOrFail($bancoId);
+        $this->bancoId = $banco->id;
+        $this->nombre = $banco->nombre;
+
+        $banco = Banco::find($this->bancoId);
+        $banco->update(['nombre' => $this->nombre]);
+
+        $this->dispatch('refreshTable');
+        $this->alertService->success($this, 'Banco actualizado con éxito');
+    }
+
+    public function openModal()
+    {
         $this->showModal = true;
     }
 
-    public function actualizarBanco()
+    public function closeModal()
     {
-        $this->validate([
-            'nombre' => 'required|string|unique:banco,nombre,' . $this->banco->id,
-        ]);
-
-        try {
-            $this->banco->update(['nombre' => $this->nombre]);
-            $this->limpiar();
-            $this->emitTo('bancos.bancos-table', 'refreshBancosTable');
-            $this->alert('Banco actualizado con éxito', 'success');
-        } catch (\Exception $e) {
-            $this->alert('Error al actualizar el banco', 'error');
-        }
+        $this->showModal = false;
     }
 
     public function limpiar()
     {
-        $this->reset(['nombre', 'showModal']);
-        $this->showModal = false;
+        $this->reset('nombre');
     }
 }

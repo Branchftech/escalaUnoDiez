@@ -10,13 +10,10 @@ use Livewire\Component;
 
 class CrearBanco extends Component
 {
-
     use LivewireAlert;
 
-    public Banco $banco;
     public $nombre;
     public $showModal = false;
-
     protected AlertService $alertService;
     protected LoggerService $loggerService;
 
@@ -37,22 +34,25 @@ class CrearBanco extends Component
             'nombre' => 'required|string|unique:banco,nombre',
         ]);
 
-        try {
-            $banco = Banco::create(['nombre' => $this->nombre]);
+        Banco::create(['nombre' => $this->nombre, 'activo'=>1]);
 
-            $this->limpiar();
-            $this->emitTo(BancosTable::class, 'refreshBancosTable');
-            $this->alertService->success($this, 'Banco creado con éxito');
-
-        } catch (\Exception $th) {
-            $this->alertService->error($this, 'Error al crear el banco');
-            $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());
-        }
+        $this->dispatch('refreshTable');
+        $this->limpiar();
+        $this->alertService->success($this, 'Banco creado con éxito');
     }
 
     public function limpiar()
     {
-        $this->reset(['nombre','showModal']);
+        $this->reset('nombre');
     }
 
+    public function openModal()
+    {
+        $this->showModal = true;
+    }
+
+    public function closeModal()
+    {
+        $this->showModal = false;
+    }
 }

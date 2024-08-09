@@ -13,9 +13,29 @@ class BancosTable extends Component
 
     public $bancos;
 
+    protected $listeners = ['refreshTable' => 'refreshBancos'];
+
+    protected AlertService $alertService;
+    protected LoggerService $loggerService;
+
+    public function __construct()
+    {
+        $this->alertService = app(AlertService::class);
+        $this->loggerService = app(LoggerService::class);
+    }
+
+    public function mount()
+    {
+        $this->refreshBancos();
+    }
+
     public function render()
     {
-        $this->bancos = Banco::all();
         return view('livewire.bancos.bancos-table');
+    }
+
+    public function refreshBancos()
+    {
+        $this->bancos = Banco::all();
     }
 }

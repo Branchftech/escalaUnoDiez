@@ -17,22 +17,18 @@
                     <td>{{ $item->created_by }}</td>
                     <td>{{ $item->created_at->format('d/m/Y') }}</td>
                     <td>
-                        <!-- Botón para abrir modal de editar -->
-                        <button class="btn btn-primary" wire:click="$emit('openEditModal', {{ $item->id }})">
+                         <!-- Botón para abrir modal de editar -->
+                         <x-button class="btn btn-primary" x-data x-on:click="$dispatch('open-modal', {name: 'Editar-Banco'})">
                             Editar
-                        </button>
+                        </x-button>
                         <!-- Botón para abrir modal de eliminar -->
-                        <button class="btn btn-danger" wire:click="$emit('openDeleteModal', {{ $item->id }})">
+                        <x-button class="btn btn-danger" x-data x-on:click="$dispatch('open-modal', {name: 'Eliminar-Banco'})">
                             Eliminar
-                        </button>
+                        </x-button>
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
-
-    <!-- Componentes modales para editar y eliminar -->
-    <livewire:bancos.editar-banco  />
-    <livewire:bancos.eliminar-banco  />
 </div>
 

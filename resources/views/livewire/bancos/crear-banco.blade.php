@@ -5,7 +5,7 @@
         </x-button>
     </div>
 
-    <x-modal-default title="Crear Banco" name="Crear-Banco">
+    <x-modal-default title="Crear Banco" name="Crear-Banco" :modal="'showModal'">
         <x-slot:body>
             <div class="p-4 ">
                 <form wire:submit.prevent="crearBanco" class="gap-3 d-flex flex-column">

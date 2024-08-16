@@ -288,7 +288,7 @@ body {
 
 .cardBox .card {
     position: relative;
-    background: var(--white);
+    background: var(--blue);
     padding: 30px;
     border-radius: 20px;
     display: flex;
@@ -305,19 +305,24 @@ body {
     position: relative;
     font-weight: 500;
     font-size: 1.1rem;
-    color: var(--grey);
+    color: var(--white);
 }
 
-.cardBox .card .cardName {
+.cardBox .card  {
     color: var(--black2);
     font-size: 1.1rem;
     margin-bottom: 5px;
     color: var(--blue);
 }
+.cardName{
+    margin-bottom: 5px;
+    font-size: 1.4rem;
+    color: var(--white);
+}
 
 .cardBox .card .iconBx {
     font-size: 2.5rem;
-    color: var(--blue);
+    color: var(--white);
 }
 
 .cardBox .card:hover {
@@ -329,6 +334,7 @@ body {
 .cardBox .card:hover .iconBx {
     color: var(--white);
 }
+
 
 /* ================== Order Details List ============== */
 .details {
@@ -344,7 +350,7 @@ body {
 .details .recentOrders {
     position: relative;
     display: grid;
-    min-height: 500px;
+    height: auto;
     background: var(--white);
     padding: 20px;
     box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
@@ -618,4 +624,8 @@ body {
 
   .scroll-container::-webkit-scrollbar {
     display: none;  /* Safari y Chrome */
+  }
+
+  .px-4 {
+    padding: 8px 14px !important;
   }

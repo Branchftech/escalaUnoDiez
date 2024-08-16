@@ -1,65 +1,76 @@
 <?php
+
 namespace App\Livewire\Bancos;
 
+use App\Livewire\ServicesComponent;
 use App\Models\Banco;
-use App\Services\AlertService;
-use App\Services\LoggerService;
-use Jantinnerezo\LivewireAlert\LivewireAlert;
-use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
-class EditarBanco extends Component
+class EditarBanco extends ServicesComponent
 {
-    use LivewireAlert;
-
-    public $bancoId, $nombre;
     public $showModal = false;
-    protected AlertService $alertService;
-    protected LoggerService $loggerService;
+    public $model;
+    public $nombre, $activo;
 
-    public function __construct()
-    {
-        $this->alertService = app(AlertService::class);
-        $this->loggerService = app(LoggerService::class);
-    }
+    public $listeners = ['cargarModalEditar'];
 
-    public function mount(Banco $banco)
+    public function mount(Banco $model)
     {
-        $this->bancoId = $banco->id;
-        $this->nombre = $banco->nombre;
+        $this->model = $model;
+        $this->nombre = $model->nombre;
+        $this->activo = $model->activo;
     }
 
     public function render()
     {
-        return view('livewire.bancos.editar-banco');
+        return view('livewire.Bancos.editar-Banco');
     }
 
     public function editarBanco()
     {
-        dd($this->bancoId);
 
-        $banco = Banco::findOrFail($bancoId);
-        $this->bancoId = $banco->id;
-        $this->nombre = $banco->nombre;
+        $this->validate([
+            'nombre' => 'required|string',
+            'activo' => 'required|boolean',
+        ]);
 
-        $banco = Banco::find($this->bancoId);
-        $banco->update(['nombre' => $this->nombre]);
+        try {
+            $user = Auth::user();
+            $Banco = Banco::where('nombre', $this->nombre)->first();
 
-        $this->dispatch('refreshTable');
-        $this->alertService->success($this, 'Banco actualizado con éxito');
+            if ($Banco && $Banco->id != $this->model->id) {
+                $this->addError('nombre', 'El nombre del Banco ya está en uso.');
+                return;
+            }
+            $Banco = Banco::editarBanco($this->model->id, $this->nombre, $this->activo, $user->id);
+
+            $this->reset('showModal');
+            $this->dispatch('refreshBancosTable')->to(BancosTable::class);
+            $this->render();
+            $this->limpiar();
+            $this->alertService->success($this, 'Banco actualizado con éxito');
+        } catch (\Exception $th) {
+            $this->alertService->error($this, 'Error al actualizar el Banco');
+            $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());
+        }
     }
 
-    public function openModal()
+    public function cargarModalEditar($model)
     {
+        $this->model = (object) $model;
+        $this->nombre = $model['nombre'];
+        $this->activo = $model['activo'];
         $this->showModal = true;
+    }
+    public function limpiar()
+    {
+        $this->reset('nombre');
+        $this->reset('activo');
+        $this->closeModal();
     }
 
     public function closeModal()
     {
         $this->showModal = false;
-    }
-
-    public function limpiar()
-    {
-        $this->reset('nombre');
     }
 }

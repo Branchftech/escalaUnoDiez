@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('password_client');
             $table->boolean('revoked');
             $table->timestamps();
+            
         });
     }
 

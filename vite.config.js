@@ -12,4 +12,18 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    server: {
+        hmr: {
+            overlay: false, // Desactivar overlays de error para evitar interrupciones visuales
+        }
+    },
+    build: {
+        rollupOptions: {
+            output: {
+                chunkFileNames: 'static/js/[name]-[hash].js',
+                entryFileNames: 'static/js/[name]-[hash].js',
+                assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
+            }
+        }
+    }
 });

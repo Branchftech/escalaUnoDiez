@@ -2,26 +2,14 @@
 
 namespace App\Livewire\Bancos;
 
+use App\Livewire\ServicesComponent;
 use App\Models\Banco;
-use App\Services\AlertService;
-use App\Services\LoggerService;
-use Jantinnerezo\LivewireAlert\LivewireAlert;
-use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
-class CrearBanco extends Component
+class CrearBanco extends ServicesComponent
 {
-    use LivewireAlert;
-
-    public $nombre;
+    public $nombre, $activo;
     public $showModal = false;
-    protected AlertService $alertService;
-    protected LoggerService $loggerService;
-
-    public function __construct()
-    {
-        $this->alertService = app(AlertService::class);
-        $this->loggerService = app(LoggerService::class);
-    }
 
     public function render()
     {
@@ -30,13 +18,16 @@ class CrearBanco extends Component
 
     public function crearBanco()
     {
+        $user = Auth::user();
+
         $this->validate([
-            'nombre' => 'required|string|unique:banco,nombre',
+            'nombre' => 'required|string|unique:banco,nombre,NULL,id,deleted_at,NULL',
+            'activo' => 'required|boolean',
+
         ]);
-
-        Banco::create(['nombre' => $this->nombre, 'activo'=>1]);
-
-        $this->dispatch('refreshTable');
+        Banco::crearBanco($this->nombre, $this->activo, $user->id);
+        $this->dispatch('refreshBancosTable')->to(BancosTable::class);
+        $this->render();
         $this->limpiar();
         $this->alertService->success($this, 'Banco creado con éxito');
     }
@@ -44,6 +35,8 @@ class CrearBanco extends Component
     public function limpiar()
     {
         $this->reset('nombre');
+        $this->reset('activo');
+        $this->closeModal();
     }
 
     public function openModal()

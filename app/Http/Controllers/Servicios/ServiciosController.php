@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 
 class ServiciosController extends Controller
 {
-    public function render()
+    public function index()
     {
-        return view('app.servicios.servicios');
+        return view('main-page.proveedores.ProveedoresMain');
     }
 }

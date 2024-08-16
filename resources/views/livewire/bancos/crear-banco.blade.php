@@ -14,10 +14,18 @@
                         <x-input type="text" wire:model="nombre" class="form-control" />
                         @error('nombre') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
+                    <div class="form-group">
+                        <label for="activo">Estado</label>
+                        <select id="activo" wire:model="activo" class="form-control">
+                            <option value="">Seleccione un estado</option>
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
                     <div class="gap-2 d-flex justify-content-end">
-                        <x-button class="btn btn-secondary" wire:click="limpiar">
+                        <button type="button" class="btn btn-secondary" wire:click="limpiar">
                             Limpiar
-                        </x-button>
+                        </button>
 
                         <x-button type="submit" class="btn btn-primary">
                             Guardar

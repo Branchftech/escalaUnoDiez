@@ -13,10 +13,14 @@ class CreateProveedoresTable extends Migration
             $table->string('direccion');
             $table->string('email');
             $table->string('telefono');
-            $table->unsignedBigInteger('idServicio');
-            $table->foreign('idServicio')->references('id')->on('servicio');
             $table->timestamps();
             $table->softDeletes();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->unsignedBigInteger('deleted_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('deleted_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

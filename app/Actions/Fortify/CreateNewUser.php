@@ -14,22 +14,22 @@ class CreateNewUser
 
     public function login(Request $request)
     {
-
         $credentials = [
             'email' => $request['email'],
             'password' => $request['password'],
         ];
-
+    
         if (auth()->attempt($credentials)) {
             $token = auth()->user()->createToken('Token')->accessToken;
-        }else{
+            return response()->json([
+                'status' => 'success',
+                'user' => auth()->user()->name,
+                'email' => $request['email'],
+                'token' => $token,
+            ], 200);
+        } else {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        return response()->json([
-            'user' => auth()->user()->name,
-            'email' => $request['email'],
-            'token' => $token,
-        ], 200);
     }
 
     public function create(Request $request)

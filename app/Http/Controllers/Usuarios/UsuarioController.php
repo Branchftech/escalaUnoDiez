@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Usuarios;
 
-use App\Http\Controllers\Controller2;
-use Illuminate\Routing\Controllers\Middleware;
+use App\Http\Controllers\Controller;
 
-class UsuarioController extends Controller2 
+class UsuarioController extends Controller
 {
     public function profile()
     {

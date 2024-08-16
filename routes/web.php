@@ -1,26 +1,22 @@
 <?php
 
-use App\Http\Controllers\Comisiones\ComisionesController;
+use App\Http\Controllers\FormasPago\FormasPagoController;
 use App\Http\Controllers\Dashboard\DashboardController;
-use App\Http\Controllers\Servicios\ServiciosController;
-use App\Http\Controllers\Suscripciones\SuscripcionesController;
+use App\Http\Controllers\Proveedores\ProveedoresController;
+use App\Http\Controllers\Clientes\ClientesController;
 use App\Http\Controllers\Usuarios\UsuarioController;
 use App\Http\Controllers\Bancos\BancosController;
+use App\Http\Controllers\Servicios\ServiciosController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 Route::middleware(['auth'])->group(function () {
 
-    // logout
-    Route::get('/logout', function () {
-        auth()->logout();
-        Session::flush();
-        return Redirect::to('/login');
-    })->name('logout');
 
     Route::post('/logout', function () {
-        auth()->logout();
+        Auth::logout();
         Session::flush();
         return Redirect::to('/login');
     })->name('logout');
@@ -33,13 +29,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/profile', [UsuarioController::class, 'profile'])->name('profile');
 
-    Route::get('/comisiones', [ComisionesController::class, 'render'])->name('comisiones');
+    Route::get('/formasPago', [FormasPagoController::class, 'index'])->name('formasPago');
 
-    Route::get('/comisiones', [ComisionesController::class, 'render'])->name('comisiones');
+    Route::get('/clientes', [ClientesController::class, 'index'])->name('clientes');
 
-    Route::get('/suscripciones', [SuscripcionesController::class, 'render'])->name('suscripciones');
+    Route::get('/proveedores', [ProveedoresController::class, 'index'])->name('proveedores');
 
-    Route::get('/servicios', [ServiciosController::class, 'render'])->name('servicios');
+    Route::get('/servicios', [ServiciosController::class, 'index'])->name('servicios');
 
     Route::get('/bancos', [BancosController::class, 'index'])->name('bancos');
 

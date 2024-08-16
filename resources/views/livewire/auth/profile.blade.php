@@ -1,4 +1,4 @@
-<div class="d-flex flex-column gap-4">
+<div class="gap-4 d-flex flex-column">
     <div style="margin: 20px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.5); border-radius: 5px; background-color: #f7f7f7;"">
         <div style="margin: 0 auto;">
             <form method="POST" wire:submit.prevent="updateProfileInformation">

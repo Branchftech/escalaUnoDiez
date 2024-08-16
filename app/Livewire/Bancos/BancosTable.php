@@ -2,40 +2,62 @@
 namespace App\Livewire\Bancos;
 
 use App\Models\Banco;
-use App\Services\AlertService;
-use App\Services\LoggerService;
+use Illuminate\Database\Eloquent\Builder;
+use Rappasoft\LaravelLivewireTables\DataTableComponent;
+use Rappasoft\LaravelLivewireTables\Views\Column;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
-use Livewire\Component;
+use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 
-class BancosTable extends Component
-{
+class BancosTable extends DataTableComponent{
     use LivewireAlert;
 
-    public $bancos;
+    protected $listeners = ['refreshBancosTable' => '$refresh'];
+    protected $model = Banco::class;
 
-    protected $listeners = ['refreshTable' => 'refreshBancos'];
-
-    protected AlertService $alertService;
-    protected LoggerService $loggerService;
-
-    public function __construct()
+    public function configure(): void
     {
-        $this->alertService = app(AlertService::class);
-        $this->loggerService = app(LoggerService::class);
+        $this->setPrimaryKey('id');
+        $this->setDefaultSort('nombre', 'asc');
+        $this->setSingleSortingDisabled();
+        $this->setColumnSelectStatus(true);
+        $this->setQueryStringStatus(true);
+        $this->setOfflineIndicatorStatus(true);
+        $this->setEagerLoadAllRelationsStatus(true);
+        $this->setRememberColumnSelectionEnabled();
+        $this->setDataTableFingerprint(route('bancos') . '-' . $this->dataTableFingerprint());
+        $this->setEmptyMessage('No se encontraron bancos');
     }
 
-    public function mount()
+    public function query(): Builder
     {
-        $this->refreshBancos();
+        return Banco::query();
     }
 
-    public function render()
+    public function dataTableFingerprint()
     {
-        return view('livewire.bancos.bancos-table');
+        return md5('bancos');
     }
 
-    public function refreshBancos()
+    public function columns(): array
     {
-        $this->bancos = Banco::all();
+        return [
+            Column::make('ID', 'id')
+                ->sortable()->searchable()
+                ->setSortingPillDirections('Asc', 'Desc'),
+            Column::make('Nombre', 'nombre')
+                ->sortable()->searchable()
+                ->setSortingPillDirections('Asc', 'Desc'),
+            BooleanColumn::make('Active', 'activo'),
+            Column::make('Creado por', 'createdBy.name'),
+            Column::make('Fecha Creación', 'created_at'),
+            Column::make('Actualizado por', 'updatedBy.name'),
+            Column::make('Fecha Actualización', 'updated_at'),
+            Column::make('Action')
+                ->label(
+                    fn ($row, Column $column) => view('livewire.bancos.actions-table')->with([
+                        'model' => json_encode($row),
+                    ])
+                )->html(),
+        ];
     }
 }

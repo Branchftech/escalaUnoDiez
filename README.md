@@ -33,4 +33,4 @@ Para Crear las credenciales de Passport
 php artisan passport:client --personal
 
 
-hp artisan make:livewire Bancos.CrearBanco 
+php artisan make:livewire Bancos.CrearBanco 

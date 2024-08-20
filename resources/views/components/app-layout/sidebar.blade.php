@@ -45,8 +45,9 @@
                 <span class="title">Formas Pago</span>
             </a>
         </li>
-        <li data-title="" class="{{ request()->routeIs('item2') ? 'activar' : '' }}">
-            <a onclick="return false;" class="d-flex align-items-center">
+        <li data-title="" class=" {{ request()->routeIs('insumos') ? 'activar' : '' }}">
+            <a href="{{ route('insumos') }}" wire:navigate
+                class="d-flex align-items-center ">
                 <span class="icon d-flex justify-content-center align-items-center me-2"><i class="fa-solid fa-person-digging"></i></span>
                 <span class="title">Insumos</span>
             </a>

@@ -25,10 +25,10 @@ class CrearProveedor extends ServicesComponent
     {
         $user = Auth::user();
         $validatedData = $this->validate([
-            'nombre' => 'required|string|unique:proveedores,nombre',
-            'direccion' => 'required|string',
-            'telefono' => 'required|numeric',
-            'email' => 'required|email',
+            'nombre' => 'string|unique:proveedores,nombre',
+            'direccion' => 'string',
+            'telefono' => 'numeric',
+            'email' => 'email',
         ]);
 
 

@@ -7,6 +7,8 @@ use App\Http\Controllers\Clientes\ClientesController;
 use App\Http\Controllers\Usuarios\UsuarioController;
 use App\Http\Controllers\Bancos\BancosController;
 use App\Http\Controllers\Servicios\ServiciosController;
+use App\Http\Controllers\Materiales\MaterialesController;
+use App\Http\Controllers\Insumos\InsumosController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -39,6 +41,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/bancos', [BancosController::class, 'index'])->name('bancos');
 
+    Route::get('/materiales', [MaterialesController::class, 'index'])->name('materiales');
+
+    Route::get('/insumos', [InsumosController::class, 'index'])->name('insumos');
 });
 
 require __DIR__ . '/auth.php';

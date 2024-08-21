@@ -57,7 +57,7 @@ class EditarMaterial extends ServicesComponent
 
     public function cargarModalEditarMaterial($model)
     {
-        $this->model = (object) $model;
+        $this->model = Material::find($model['id']);
         $this->nombre = $model['nombre'];
         $this->precioNormal = $model['precioNormal'];
         $this->showModal = true;

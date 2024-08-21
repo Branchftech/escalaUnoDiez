@@ -46,7 +46,9 @@ class MaterialesTable extends DataTableComponent{
             Column::make('Nombre', 'nombre')
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),
-
+            Column::make('Precio', 'precioNormal')
+                ->sortable()->searchable()
+                ->setSortingPillDirections('Asc', 'Desc'),
             Column::make('Creado por', 'createdBy.name'),
             Column::make('Fecha Creación', 'created_at'),
             Column::make('Actualizado por', 'updatedBy.name'),

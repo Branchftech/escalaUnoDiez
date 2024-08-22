@@ -51,22 +51,29 @@ class Insumo extends Model
         return $insumo;
     }
 
-
-    static function editarInsumo($id, $costo, $cantidad, $userId)
+    static function editarInsumo($id, $costo, $cantidad, $fecha, $idObra, $materiales = [], $userId)
     {
         $insumo =  Insumo::findOrfail($id);
         $insumo->costo = $costo;
         $insumo->cantidad =$cantidad;
+        $insumo->fecha =$fecha;
+        $insumo->idObra = $idObra;
         $insumo->updated_at = now();
         $insumo->updated_by = $userId;
         $insumo->save();
+        if (!empty($materiales)) {
+            $materialesCollection = collect($materiales);
+            // Usamos sync para asociar los materiales al insumo
+            $insumo->materiales()->sync($materialesCollection->all());
+        }else{
+            $insumo->materiales()->sync([]);
+        }
         return $insumo;
     }
 
     static function eliminarInsumo($id, $userId)
     {
         $insumo = Insumo::findOrfail($id);
-        $insumo->precioNormal = 0;
         $insumo->deleted_at = now();
         $insumo->deleted_by =  $userId;
         $insumo->save();

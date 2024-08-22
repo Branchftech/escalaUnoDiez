@@ -3,14 +3,13 @@ namespace App\Livewire\Insumos;
 
 use App\Livewire\ServicesComponent;
 use App\Models\Insumo;
-use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Illuminate\Support\Facades\Auth;
 
 class EliminarInsumo extends ServicesComponent
 {
     public $model;
     public $showModal = false;
-    public $listeners = ['cargarModalEliminar'];
+    public $listeners = ['cargarModalEliminarInsumo'];
 
     public function mount(Insumo $model)
     {
@@ -44,7 +43,7 @@ class EliminarInsumo extends ServicesComponent
         }
     }
 
-    public function cargarModalEliminar($model)
+    public function cargarModalEliminarInsumo($model)
     {
         $this->model = (object) $model;
         $this->showModal = true;

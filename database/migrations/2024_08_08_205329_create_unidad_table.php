@@ -9,11 +9,11 @@ class CreateUnidadTable extends Migration
     {
         Schema::create('unidad', function (Blueprint $table) {
             $table->id();
-            $table->string('unidad', 100);
+            $table->string('nombre', 100);
             $table->timestamps();
             $table->softDeletes();
-            $table->unsignedBigInteger('created_by')->nullable(); 
-            $table->unsignedBigInteger('updated_by')->nullable(); 
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->unsignedBigInteger('deleted_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');

@@ -20,6 +20,7 @@ class Material extends Model
     protected $fillable = [
         'nombre',
         'precioNormal',
+        'idUnidad',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -28,11 +29,12 @@ class Material extends Model
         'deleted_by',
     ];
 
-    static function crearMaterial($nombre, $precioNormal, $userId)
+    static function crearMaterial($nombre, $precioNormal, $idUnidad, $userId)
     {
         $Material = new Material();
         $Material->nombre = $nombre;
         $Material->precioNormal =$precioNormal;
+        $Material->idUnidad = $idUnidad;
         $Material->created_at = now();
         $Material->created_by =  $userId;
         $Material->save();
@@ -40,11 +42,12 @@ class Material extends Model
     }
 
 
-    static function editarMaterial($id, $nombre, $precioNormal, $userId)
+    static function editarMaterial($id, $nombre, $precioNormal, $idUnidad, $userId)
     {
         $Material = Material::findOrfail($id);
         $Material->nombre = $nombre;
         $Material->precioNormal =$precioNormal;
+        $Material->idUnidad = $idUnidad;
         $Material->updated_at = now();
         $Material->updated_by =  $userId;
         $Material->save();
@@ -83,4 +86,9 @@ class Material extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
+     // relación con el modelo unidad
+     public function unidad()
+     {
+         return $this->belongsTo(Unidad::class, 'idUnidad');
+     }
 }

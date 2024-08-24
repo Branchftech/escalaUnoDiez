@@ -18,7 +18,7 @@ class EditarInsumo extends ServicesComponent
     public $obraSeleccionada;
     #select materiales
     public $materiales;
-    public $materialesSeleccionados;
+    public $materialesSeleccionados = [];
     public $selectedMateriales = [];
     public $listeners = ['cargarModalEditarInsumo'];
 
@@ -30,6 +30,8 @@ class EditarInsumo extends ServicesComponent
         $this->fecha = $model->fecha;
         $this->obras = Obra::all();
         $this->materiales = Material::orderBy('nombre', 'asc')->get();
+        $this->materialesSeleccionados = $model->materiales->pluck('id')->toArray(); // Cargar los IDs de los materiales seleccionados
+
     }
 
     public function render()
@@ -39,6 +41,8 @@ class EditarInsumo extends ServicesComponent
         $this->fecha = $this->model->fecha;
         $this->obras = Obra::all();
         $this->materiales = Material::orderBy('nombre', 'asc')->get();
+        $this->materialesSeleccionados = $this->model->materiales->pluck('id')->toArray(); // Cargar los IDs de los materiales seleccionados
+
         return view('livewire.insumos.editar-insumo');
     }
 
@@ -55,7 +59,6 @@ class EditarInsumo extends ServicesComponent
                 'materialesSeleccionados.*' => 'exists:material,id', // Validación de que cada ID existe en la tabla materiales
 
             ]);
-
             Insumo::editarInsumo($this->model->id, $this->costo, $this->cantidad, $this->fecha, $this->obraSeleccionada, $this->materialesSeleccionados, $user->id);
             $this->dispatch('refreshInsumosTable')->to(InsumosTable::class);
             $this->render();
@@ -82,6 +85,8 @@ class EditarInsumo extends ServicesComponent
         $this->reset('costo');
         $this->reset('cantidad');
         $this->reset('fecha');
+        $this->reset('materialesSeleccionados');
+        $this->reset('obraSeleccionada');
         $this->closeModal();
     }
 

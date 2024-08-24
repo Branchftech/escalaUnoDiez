@@ -22,6 +22,7 @@ class Obra extends Model
         'idDetalleObra',
         'idProveedor',
         'idCliente',
+        'idEstadoObra',
         'licenciaConstruccion',
         'created_at',
         'updated_at',
@@ -99,4 +100,15 @@ class Obra extends Model
     {
         return $this->belongsTo(Proveedor::class, 'idProveedor');
     }
+    // relación con el modelo estado
+    public function estado()
+    {
+        return $this->belongsTo(EstadoObra::class, 'idEstadoObra');
+    }
+
+      // Este método define la relación con el modelo bitacoraObra
+      public function bitacoras()
+      {
+          return $this->hasMany(BitacoraObra::class);
+      }
 }

@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Unidad extends Model
+class EstadoObra extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
     protected $connection = 'mysql';
-    public $table = 'unidad';
+    public $table = 'estadoobra';
     public $incrementing = true;
     public $timestamps = true;
     protected $primaryKey = 'id';
@@ -27,29 +27,33 @@ class Unidad extends Model
         'deleted_by',
     ];
 
-    static function crearEditarUnidad($id, $nombre, $userId)
+    static function crearEstadoObra($nombre, $userId)
     {
-        if($id){
-            $unidad = Unidad::findOrfail($id);
-            $unidad->updated_at = now();
-            $unidad->updated_by =  $userId;
-        }else{
-            $unidad = new Unidad();
-            $unidad->created_at = now();
-            $unidad->created_by =  $userId;
-        }
-        $unidad->nombre = $nombre;
-        $unidad->save();
-        return $unidad;
+        $estadoObra = new EstadoObra();
+        $estadoObra->nombre = $nombre;
+        $estadoObra->created_at = now();
+        $estadoObra->created_by =  $userId;
+        $estadoObra->save();
+        return $estadoObra;
     }
 
-    static function eliminarUnidad($id, $userId)
+
+    static function editarEstadoObra($id, $nombre, $userId)
     {
-        $unidad = Unidad::findOrfail($id);
-        $unidad->activo = 0;
-        $unidad->deleted_at = now();
-        $unidad->deleted_by =  $userId;
-        $unidad->save();
+        $estadoObra = EstadoObra::findOrfail($id);
+        $estadoObra->nombre = $nombre;
+        $estadoObra->updated_at = now();
+        $estadoObra->updated_by =  $userId;
+        $estadoObra->save();
+        return $estadoObra;
+    }
+
+    static function eliminarEstadoObra($id, $userId)
+    {
+        $estadoObra = EstadoObra::findOrfail($id);
+        $estadoObra->deleted_at = now();
+        $estadoObra->deleted_by =  $userId;
+        $estadoObra->save();
     }
 
     public function getCreatedAtCustomAttribute()
@@ -75,4 +79,9 @@ class Unidad extends Model
         return $this->belongsTo(User::class, 'deleted_by');
     }
 
+    // Este método define la relación con el modelo Obra
+    public function obras()
+    {
+        return $this->hasMany(Obra::class);
+    }
 }

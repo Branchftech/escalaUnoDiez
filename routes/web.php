@@ -6,9 +6,11 @@ use App\Http\Controllers\Proveedores\ProveedoresController;
 use App\Http\Controllers\Clientes\ClientesController;
 use App\Http\Controllers\Usuarios\UsuarioController;
 use App\Http\Controllers\Bancos\BancosController;
+use App\Http\Controllers\BitacorasObras\BitacorasObrasController;
 use App\Http\Controllers\Servicios\ServiciosController;
 use App\Http\Controllers\Materiales\MaterialesController;
 use App\Http\Controllers\Insumos\InsumosController;
+use App\Http\Controllers\DetallesObras\DetallesObrasController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -44,6 +46,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/materiales', [MaterialesController::class, 'index'])->name('materiales');
 
     Route::get('/insumos', [InsumosController::class, 'index'])->name('insumos');
+
+    Route::get('/detallesObras', [DetallesObrasController::class, 'index'])->name('detallesObras');
+
+    Route::get('/bitacorasObras', [BitacorasObrasController::class, 'index'])->name('bitacorasObras');
+
 });
 
 require __DIR__ . '/auth.php';

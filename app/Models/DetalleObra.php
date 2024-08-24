@@ -21,13 +21,13 @@ class DetalleObra extends Model
         'nombreObra',
         'total',
         'moneda',
-        'fecha_inicio',
-        'fecha_fin',
+        'fechaInicio',
+        'fechaFin',
         'croquis',
         'calle',
         'manzana',
         'lote',
-        'metros_cuadrados',
+        'metrosCuadrados',
         'fraccionamiento',
         'dictamenUsoSuelo',
         'incrementoDensidad',
@@ -40,10 +40,26 @@ class DetalleObra extends Model
         'deleted_by',
     ];
 
-    static function crearDetalleObra($nombreObra, $userId)
+    static function crearDetalleObra($nombreObra, $total,$moneda,$fechaInicio,
+    $fechaFin,$croquis,$calle,$manzana,$lote,$metrosCuadrados,
+    $fraccionamiento,$dictamenUsoSuelo,$incrementoDensidad,
+    $informeDensidad, $userId)
     {
         $obra = new DetalleObra();
         $obra->nombreObra = $nombreObra;
+        $obra->total = $total;
+        $obra->moneda = $moneda;
+        $obra->fechaInicio = $fechaInicio;
+        $obra->fechaFin = $fechaFin;
+        $obra->croquis = $croquis;
+        $obra->calle = $calle;
+        $obra->manzana = $manzana;
+        $obra->lote = $lote;
+        $obra->metrosCuadrados = $metrosCuadrados;
+        $obra->fraccionamiento = $fraccionamiento;
+        $obra->dictamenUsoSuelo = $dictamenUsoSuelo;
+        $obra->incrementoDensidad = $incrementoDensidad;
+        $obra->informeDensidad = $informeDensidad;
         $obra->created_at = now();
         $obra->created_by =  $userId;
         $obra->save();
@@ -51,10 +67,26 @@ class DetalleObra extends Model
     }
 
 
-    static function editarDetalleObra($id, $nombreObra, $userId)
+    static function editarDetalleObra($id, $nombreObra, $total,$moneda,$fechaInicio,
+    $fechaFin,$croquis,$calle,$manzana,$lote,$metrosCuadrados,
+    $fraccionamiento,$dictamenUsoSuelo,$incrementoDensidad,
+    $informeDensidad, $userId)
     {
         $obra = DetalleObra::findOrfail($id);
         $obra->nombreObra = $nombreObra;
+        $obra->total = $total;
+        $obra->moneda = $moneda;
+        $obra->fechaInicio = $fechaInicio;
+        $obra->fechaFin = $fechaFin;
+        $obra->croquis = $croquis;
+        $obra->calle = $calle;
+        $obra->manzana = $manzana;
+        $obra->lote = $lote;
+        $obra->metrosCuadrados = $metrosCuadrados;
+        $obra->fraccionamiento = $fraccionamiento;
+        $obra->dictamenUsoSuelo = $dictamenUsoSuelo;
+        $obra->incrementoDensidad = $incrementoDensidad;
+        $obra->informeDensidad = $informeDensidad;
         $obra->updated_at = now();
         $obra->updated_by =  $userId;
         $obra->save();

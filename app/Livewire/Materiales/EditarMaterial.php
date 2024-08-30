@@ -37,8 +37,8 @@ class EditarMaterial extends ServicesComponent
 
         $this->validate([
             'nombre' => 'required|string',
-            'precioNormal' => 'required|boolean',
-            'unidadSelected' =>'exists:unidad,id',
+            'precioNormal' => 'required|numeric',
+            'unidadSelected' =>'required|min:1|exists:unidad,id',
         ]);
 
         try {

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 
 class DetalleObra extends Model
 {
@@ -16,19 +17,13 @@ class DetalleObra extends Model
     public $incrementing = true;
     public $timestamps = true;
     protected $primaryKey = 'id';
-
     protected $fillable = [
         'nombreObra',
         'total',
         'moneda',
         'fechaInicio',
         'fechaFin',
-        'croquis',
-        'calle',
-        'manzana',
-        'lote',
-        'metrosCuadrados',
-        'fraccionamiento',
+        'idDireccionObra',
         'dictamenUsoSuelo',
         'incrementoDensidad',
         'informeDensidad',
@@ -39,6 +34,7 @@ class DetalleObra extends Model
         'created_by',
         'deleted_by',
     ];
+
 
     static function crearDetalleObra($nombreObra, $total,$moneda,$fechaInicio,
     $fechaFin,$croquis,$calle,$manzana,$lote,$metrosCuadrados,
@@ -67,36 +63,60 @@ class DetalleObra extends Model
     }
 
 
-    static function editarDetalleObra($id, $nombreObra, $total,$moneda,$fechaInicio,
-    $fechaFin,$croquis,$calle,$manzana,$lote,$metrosCuadrados,
-    $fraccionamiento,$dictamenUsoSuelo,$incrementoDensidad,
-    $informeDensidad, $userId)
+    static function editarDetalleObra(
+    $id, $nombreObra, $total,$moneda,$fechaInicio, $fechaFin,$dictamenUsoSuelo,$incrementoDensidad, $informeDensidad,
+    $estadoObra,
+    $calle,$manzana,$lote,$metrosCuadrados, $fraccionamiento,$estado, $pais,
+    $userId)
     {
-        $obra = DetalleObra::findOrfail($id);
-        $obra->nombreObra = $nombreObra;
-        $obra->total = $total;
-        $obra->moneda = $moneda;
-        $obra->fechaInicio = $fechaInicio;
-        $obra->fechaFin = $fechaFin;
-        $obra->croquis = $croquis;
-        $obra->calle = $calle;
-        $obra->manzana = $manzana;
-        $obra->lote = $lote;
-        $obra->metrosCuadrados = $metrosCuadrados;
-        $obra->fraccionamiento = $fraccionamiento;
-        $obra->dictamenUsoSuelo = $dictamenUsoSuelo;
-        $obra->incrementoDensidad = $incrementoDensidad;
-        $obra->informeDensidad = $informeDensidad;
-        $obra->updated_at = now();
-        $obra->updated_by =  $userId;
-        $obra->save();
-        return $obra;
+        try {
+            $detalleObra = DetalleObra::findOrFail($id);
+
+            $detalleObra->nombreObra = $nombreObra;
+            $detalleObra->total = $total;
+            $detalleObra->moneda = $moneda;
+            $detalleObra->fechaInicio = $fechaInicio;
+            $detalleObra->fechaFin = $fechaFin;
+            $detalleObra->dictamenUsoSuelo = $dictamenUsoSuelo;
+            $detalleObra->incrementoDensidad = $incrementoDensidad;
+            $detalleObra->informeDensidad = $informeDensidad;
+            $detalleObra->updated_at = now();
+            $detalleObra->updated_by = $userId;
+
+            // Asegúrate de que los cambios en `obra` y `direccion` se guarden
+            $detalleObra->obra->idEstadoObra = $estadoObra;
+            $detalleObra->obra->save();
+
+            $detalleObra->direccion->calle = $calle;
+            $detalleObra->direccion->manzana = $manzana;
+            $detalleObra->direccion->lote = $lote;
+            $detalleObra->direccion->metrosCuadrados = $metrosCuadrados;
+            $detalleObra->direccion->fraccionamiento = $fraccionamiento;
+            $detalleObra->direccion->idPais = $pais;
+            $detalleObra->direccion->idEstado = $estado;
+            $detalleObra->direccion->save();
+
+            // Finalmente guarda el `detalleObra`
+            $detalleObra->save();
+
+            return $detalleObra;
+        } catch (\Throwable $th) {
+            Log::error('Error al actualizar DetalleObra: ' . $th->getMessage(), [
+                'id' => $id,
+                'nombreObra' => $nombreObra,
+                'userId' => $userId,
+                // Aquí puedes agregar más información relevante para depuración
+            ]);
+
+            // Relanzar la excepción para depuración adicional
+            throw $th;
+        }
+
     }
 
     static function eliminarDetalleObra($id, $userId)
     {
         $obra = DetalleObra::findOrfail($id);
-        $obra->activo = 0;
         $obra->deleted_at = now();
         $obra->deleted_by =  $userId;
         $obra->save();
@@ -124,6 +144,16 @@ class DetalleObra extends Model
     {
         return $this->belongsTo(User::class, 'deleted_by');
     }
+    // Relación que indica la direccion de la obra
+    public function direccion()
+    {
+        return $this->belongsTo(DireccionObra::class, 'idDireccionObra');
+    }
 
+     // Definir la relación uno a uno con el modelo obra
+     public function obra()
+     {
+         return $this->hasOne(Obra::class, 'idDetalleObra');
+     }
 
 }

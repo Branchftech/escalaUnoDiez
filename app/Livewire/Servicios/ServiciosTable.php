@@ -50,7 +50,7 @@ class ServiciosTable extends DataTableComponent{
             Column::make('Fecha Creación', 'created_at'),
             Column::make('Actualizado por', 'updatedBy.name'),
             Column::make('Fecha Actualización', 'updated_at'),
-            Column::make('Action')
+            Column::make('Acciones')
                 ->label(
                     fn ($row, Column $column) => view('livewire.servicios.actions-table')->with([
                         'model' => json_encode($row),

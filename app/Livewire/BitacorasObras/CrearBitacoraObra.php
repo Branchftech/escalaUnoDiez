@@ -4,47 +4,48 @@ namespace App\Livewire\BitacorasObras;
 
 use App\Livewire\ServicesComponent;
 use App\Models\BitacoraObra;
-use App\Models\Obra;
 use Illuminate\Support\Facades\Auth;
 
 class CrearBitacoraObra extends ServicesComponent
 {
     public $descripcion;
-    #select obras
-    public $obras;
-    public $obraSeleccionada;
+    public $idObra;
     public $showModal = false;
 
-    public function mount()
+    public function mount($id)
     {
-        $this->obras = Obra::all();
+        $this->idObra=$id;
     }
 
     public function render()
     {
-        $this->obras = Obra::all();
         return view('livewire.bitacoras-obras.crear-bitacora-obra');
     }
 
     public function crearBitacoraObra()
     {
-        $user = Auth::user();
-
         $this->validate([
             'descripcion' => 'required|string|unique:bitacoraobra,descripcion,NULL,id,deleted_at,NULL',
-            'obraSeleccionada' => 'required|exists:obra,id',
+            'idObra' => 'required|exists:obra,id',
         ]);
-        BitacoraObra::crearBitacoraObra($this->descripcion, $this->obraSeleccionada,$user->id);
-        $this->dispatch('refreshBitacorasObrasTable')->to(BitacorasObrasTable::class);
-        $this->render();
-        $this->limpiar();
-        $this->alertService->success($this, 'Bitacora creada con éxito');
+        try{
+            $user = Auth::user();
+
+            BitacoraObra::crearBitacoraObra($this->descripcion, $this->idObra,$user->id);
+            $this->dispatch('refreshBitacorasObrasTable')->to(BitacorasObrasTable::class);
+            $this->render();
+            $this->limpiar();
+            $this->alertService->success($this, 'Bitacora creada con éxito');
+        } catch (\Exception $th) {
+            $this->alertService->error($this, 'Error al crear la bitacora');
+            $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());
+        }
     }
 
     public function limpiar()
     {
         $this->reset('descripcion');
-        $this->reset('obraSeleccionada');
+        $this->reset('idObra');
         $this->closeModal();
     }
 

@@ -12,36 +12,31 @@ class EditarBitacoraObra extends ServicesComponent
     public $showModal = false;
     public $model;
     public $descripcion;
-    #select obras
-    public $obras;
-    public $obraSeleccionada;
+    //public $idObra;
     public $listeners = ['cargarModalEditarBitacora'];
 
     public function mount(BitacoraObra $model)
     {
         $this->model = $model;
         $this->descripcion = $model->descripcion;
-        $this->obras = Obra::all();
+        // $this->idObra=$model->obra->id;
     }
 
     public function render()
     {
-        $this->obras = Obra::all();
         return view('livewire.bitacoras-obras.editar-bitacora-obra');
     }
 
     public function editarBitacoraObra()
     {
-
         $this->validate([
             'descripcion' => 'required|string',
-            'obraSeleccionada' => 'required|exists:obra,id',
         ]);
 
         try {
             $user = Auth::user();
 
-            $bitacoraObra = BitacoraObra::editarBitacoraObra($this->model->id, $this->descripcion, $this->obraSeleccionada, $user->id);
+            $bitacoraObra = BitacoraObra::editarBitacoraObra($this->model->id, $this->descripcion, $user->id);
 
             $this->reset('showModal');
             $this->dispatch('refreshBitacorasObrasTable')->to(BitacorasObrasTable::class);
@@ -58,13 +53,12 @@ class EditarBitacoraObra extends ServicesComponent
     {
         $this->model = (object) $model;
         $this->descripcion = $model['descripcion'];
-        $this->obras = Obra::all();
+//        $this->idObra=$this->model['obra']->id;
         $this->showModal = true;
     }
     public function limpiar()
     {
         $this->reset('descripcion');
-        $this->reset('obraSeleccionada');
         $this->closeModal();
     }
 

@@ -30,22 +30,25 @@ class CrearUnidad extends ServicesComponent
 
     public function crearEditarUnidad()
     {
-        $user = Auth::user();
-
         $this->validate([
             'nombre' => 'required|string'
         ]);
-        $unidad = Unidad::where('nombre', $this->nombre)->first();
-        if ($unidad && $unidad->id != $this->model->id) {
-            $this->addError('nombre', 'El nombre de la unidad ya está en uso.');
-            return;
+        try{
+            $user = Auth::user();
+            $unidad = Unidad::where('nombre', $this->nombre)->first();
+            if ($unidad && $unidad->id != $this->model->id) {
+                $this->addError('nombre', 'El nombre de la unidad ya está en uso.');
+                return;
+            }
+            Unidad::crearEditarUnidad($this->editarUnidadSelected, $this->nombre, $user->id);
+            $this->render();
+            $this->limpiar();
+            $this->alertService->success($this, 'Unidad creado con éxito');
+        } catch (\Exception $th) {
+            $this->alertService->error($this, 'Error al crear la unidad');
+            $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());
         }
-        Unidad::crearEditarUnidad($this->editarUnidadSelected, $this->nombre, $user->id);
-        $this->render();
-        $this->limpiar();
-        $this->alertService->success($this, 'Unidad creado con éxito');
     }
-
     public function limpiar()
     {
         $this->reset('nombre');

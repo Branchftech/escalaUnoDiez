@@ -13,6 +13,12 @@ class BitacorasObrasTable extends DataTableComponent{
 
     protected $listeners = ['refreshBitacorasObrasTable' => '$refresh'];
     protected $model = BitacoraObra::class;
+    public $id;
+
+    public function mount($id)
+    {
+        $this->id = $id;
+    }
 
     public function configure(): void
     {
@@ -22,7 +28,7 @@ class BitacorasObrasTable extends DataTableComponent{
         $this->setColumnSelectStatus(true);
         $this->setQueryStringStatus(true);
         $this->setOfflineIndicatorStatus(true);
-        $this->setEagerLoadAllRelationsStatus(true);
+        $this->setEagerLoadAllRelationsStatus(false);
         $this->setRememberColumnSelectionEnabled();
         $this->setDataTableFingerprint(route('bitacorasObras') . '-' . $this->dataTableFingerprint());
         $this->setEmptyMessage('No se encontraron bitacoras de la obra');
@@ -32,6 +38,11 @@ class BitacorasObrasTable extends DataTableComponent{
     {
         return BitacoraObra::query();
     }
+    public function builder(): Builder
+    {
+        return BitacoraObra::query()->with('obra')->where('idObra', $this->id);
+    }
+
 
     public function dataTableFingerprint()
     {
@@ -48,11 +59,12 @@ class BitacorasObrasTable extends DataTableComponent{
         Column::make('Descripcion', 'descripcion')
             ->sortable()->searchable()
             ->setSortingPillDirections('Asc', 'Desc'),
+            Column::make('idObra', 'idObra'),
         Column::make('Creado por', 'createdBy.name'),
         Column::make('Fecha Creación', 'created_at'),
         Column::make('Actualizado por', 'updatedBy.name'),
         Column::make('Fecha Actualización', 'updated_at'),
-        Column::make('Action')
+        Column::make('Acciones')
             ->label(
                 fn ($row, Column $column) => view('livewire.bitacoras-obras.actions-table')->with([
                     'model' => json_encode($row),

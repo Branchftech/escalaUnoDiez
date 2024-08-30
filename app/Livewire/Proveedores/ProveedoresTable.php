@@ -60,6 +60,12 @@ class ProveedoresTable extends DataTableComponent{
             // Column::make('Fecha Creación', 'created_at'),
             // Column::make('Actualizado por', 'updatedBy.name'),
             // Column::make('Fecha Actualización', 'updated_at'),
+            // Nueva columna para mostrar los materiales asociados
+            Column::make('Servicios')
+            ->label(
+                fn ($row, Column $column) => $row->servicios->pluck('nombre')->implode(', ')
+            )
+            ->html(),
             Column::make('Acciones')
                 ->label(
                     fn ($row, Column $column) => view('livewire.Proveedores.actions-table')->with([

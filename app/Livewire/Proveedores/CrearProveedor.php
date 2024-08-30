@@ -23,27 +23,30 @@ class CrearProveedor extends ServicesComponent
 
     public function crearProveedor()
     {
-        $user = Auth::user();
-        $validatedData = $this->validate([
-            'nombre' => 'string|unique:proveedores,nombre',
-            'direccion' => 'string',
-            'telefono' => 'numeric',
-            'email' => 'email',
+
+        $this->validate([
+            'nombre' => 'required|string|unique:proveedores,nombre',
+            'direccion' => 'required|string',
+            'telefono' => 'required|numeric',
+            'email' => 'required|email',
         ]);
+        try{
+            $user = Auth::user();
+            Proveedor::crearProveedor(
+                $this->nombre,
+                $this->direccion,
+                $this->email,
+                $this->telefono,
+                $user->id
+            );
 
-
-
-        Proveedor::crearProveedor(
-            $this->nombre,
-            $this->direccion,
-            $this->email,
-            $this->telefono,
-            $user->id
-        );
-
-        $this->dispatch('refreshProveedoresTable')->to(ProveedoresTable::class);
-        $this->limpiar();
-        $this->alertService->success($this, 'Proveedor creado con éxito');
+            $this->dispatch('refreshProveedoresTable')->to(ProveedoresTable::class);
+            $this->limpiar();
+            $this->alertService->success($this, 'Proveedor creado con éxito');
+        } catch (\Exception $th) {
+            $this->alertService->error($this, 'Error al crear el proveedor');
+            $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());
+        }
     }
 
     public function limpiar()

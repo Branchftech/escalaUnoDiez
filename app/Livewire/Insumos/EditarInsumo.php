@@ -16,9 +16,9 @@ class EditarInsumo extends ServicesComponent
     #select obras
     public $obras;
     public $obraSeleccionada;
-    #select materiales
+    #Select materiales
     public $materiales;
-    public $materialesSeleccionados = [];
+    public $materialSeleccionado;
     public $selectedMateriales = [];
     public $listeners = ['cargarModalEditarInsumo'];
 
@@ -30,8 +30,6 @@ class EditarInsumo extends ServicesComponent
         $this->fecha = $model->fecha;
         $this->obras = Obra::all();
         $this->materiales = Material::orderBy('nombre', 'asc')->get();
-        $this->materialesSeleccionados = $model->materiales->pluck('id')->toArray(); // Cargar los IDs de los materiales seleccionados
-
     }
 
     public function render()
@@ -41,25 +39,23 @@ class EditarInsumo extends ServicesComponent
         $this->fecha = $this->model->fecha;
         $this->obras = Obra::all();
         $this->materiales = Material::orderBy('nombre', 'asc')->get();
-        $this->materialesSeleccionados = $this->model->materiales->pluck('id')->toArray(); // Cargar los IDs de los materiales seleccionados
 
         return view('livewire.insumos.editar-insumo');
     }
 
     public function editarInsumo()
     {
+        $this->validate([
+            'costo' => 'required|numeric',
+            'cantidad' => 'required|integer',
+            'fecha' => 'required|date',
+            'obraSeleccionada' => 'required|exists:obra,id', // Validar que el ID de obra exista en la tabla 'obras'
+            'selectedMateriales.*' => 'exists:material,id', // Validación de que cada ID existe en la tabla materiales
+
+        ]);
         try {
             $user = Auth::user();
-
-            $this->validate([
-                'costo' => 'numeric',
-                'cantidad' => 'integer',
-                'fecha' => 'date',
-                'obraSeleccionada' => 'required|exists:obra,id', // Validar que el ID de obra exista en la tabla 'obras'
-                'materialesSeleccionados.*' => 'exists:material,id', // Validación de que cada ID existe en la tabla materiales
-
-            ]);
-            Insumo::editarInsumo($this->model->id, $this->costo, $this->cantidad, $this->fecha, $this->obraSeleccionada, $this->materialesSeleccionados, $user->id);
+            Insumo::editarInsumo($this->model->id, $this->costo, $this->cantidad, $this->fecha, $this->obraSeleccionada, $this->selectedMateriales, $user->id);
             $this->dispatch('refreshInsumosTable')->to(InsumosTable::class);
             $this->render();
             $this->limpiar();
@@ -73,11 +69,13 @@ class EditarInsumo extends ServicesComponent
     public function cargarModalEditarInsumo($model)
     {
         $this->model = Insumo::find($model['id']);
-        $this->costo = $model['costo'];
-        $this->cantidad = $model['cantidad'];
-        $this->fecha = $model['fecha'];
+        $this->costo = $this->model->costo;
+        $this->cantidad = $this->model->cantidad;
+        $this->fecha = $this->model->fecha;
         $this->obras = Obra::all();
+        $this->obraSeleccionada = $this->model->idObra;
         $this->materiales = Material::orderBy('nombre', 'asc')->get();
+        $this->selectedMateriales = $this->model->materiales->all();
         $this->showModal = true;
     }
     public function limpiar()
@@ -85,7 +83,6 @@ class EditarInsumo extends ServicesComponent
         $this->reset('costo');
         $this->reset('cantidad');
         $this->reset('fecha');
-        $this->reset('materialesSeleccionados');
         $this->reset('obraSeleccionada');
         $this->closeModal();
     }
@@ -97,7 +94,7 @@ class EditarInsumo extends ServicesComponent
     public function updatedMaterialSeleccionado($material)
     {
         $this->validate([
-            'materialesSeleccionados.*' => 'exists:material,id', // Validación de que cada ID existe en la tabla materiales
+            'materialSeleccionado' => 'required|exists:material,id',
         ]);
 
         $material = Material::find($material);

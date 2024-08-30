@@ -18,20 +18,24 @@ class CrearCliente extends ServicesComponent
 
     public function crearCliente()
     {
-        $user = Auth::user();
-
         $this->validate([
             'cedula' => 'required|string|unique:cliente,cedula,NULL,id,deleted_at,NULL',
-            'nombre' => 'string',
-            'apellido' => 'string',
-            'telefono' => 'numeric',
-            'email' => 'email',
+            'nombre' => 'required|string',
+            'apellido' => 'required|string',
+            'telefono' => 'required|numeric',
+            'email' => 'required|email',
         ]);
-        Cliente::crearCliente($this->nombre, $this->apellido, $this->telefono, $this->cedula, $this->email, $user->id);
-        $this->dispatch('refreshClientesTable')->to(ClientesTable::class);
-        $this->render();
-        $this->limpiar();
-        $this->alertService->success($this, 'Cliente creado con éxito');
+        try{
+            $user = Auth::user();
+            Cliente::crearCliente($this->nombre, $this->apellido, $this->telefono, $this->cedula, $this->email, $user->id);
+            $this->dispatch('refreshClientesTable')->to(ClientesTable::class);
+            $this->render();
+            $this->limpiar();
+            $this->alertService->success($this, 'Cliente creado con éxito');
+        } catch (\Exception $th) {
+            $this->alertService->error($this, 'Error al crear el cliente');
+            $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());
+        }
     }
 
     public function limpiar()

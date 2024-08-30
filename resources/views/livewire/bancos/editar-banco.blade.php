@@ -6,7 +6,6 @@
                     <div class="gap-2 d-flex flex-column form-group">
                         <label for="nombre">Nombre</label>
                         <x-input type="text" wire:model="nombre" id="nombre" class="form-control" />
-
                         @error('nombre')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -18,6 +17,7 @@
                             <option value="1">Activo</option>
                             <option value="0">Inactivo</option>
                         </select>
+                        @error('activo') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                     <div class="gap-3 d-flex justify-content-end">
                         <x-button type="submit" class="btn btn-primary">

@@ -36,18 +36,16 @@ class CrearInsumo extends ServicesComponent
 
     public function crearInsumo()
     {
+        $this->validate([
+            'costo' => 'required|numeric',
+            'cantidad' => 'required|integer',
+            'fecha' => 'required|date',
+            'obraSelected' =>'required|exists:obra,id',
+            'materialesSeleccionados' => 'required|array',
+            'materialesSeleccionados.*' => 'min:1|exists:material,id', // Validación de que cada ID existe en la tabla materiales
+        ]);
         try {
             $user = Auth::user();
-
-            $this->validate([
-                'costo' => 'numeric',
-                'cantidad' => 'integer',
-                'fecha' => 'date',
-                'obraSelected' =>'exists:obra,id',
-                'materialesSeleccionados.*' => 'exists:material,id', // Validación de que cada ID existe en la tabla materiales
-
-            ]);
-
             Insumo::crearInsumo($this->costo, $this->cantidad, $this->fecha,$this->obraSelected, $this->materialesSeleccionados, $user->id);
             $this->dispatch('refreshInsumosTable')->to(InsumosTable::class);
             $this->render();
@@ -66,6 +64,7 @@ class CrearInsumo extends ServicesComponent
         $this->reset('fecha');
         $this->reset('obraSelected');
         $this->reset('materialesSeleccionados');
+        $this->dispatch('clearSelect2');
         $this->closeModal();
     }
 

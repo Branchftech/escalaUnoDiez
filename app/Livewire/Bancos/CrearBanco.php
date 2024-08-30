@@ -18,18 +18,22 @@ class CrearBanco extends ServicesComponent
 
     public function crearBanco()
     {
-        $user = Auth::user();
-
         $this->validate([
             'nombre' => 'required|string|unique:banco,nombre,NULL,id,deleted_at,NULL',
             'activo' => 'required|boolean',
 
         ]);
-        Banco::crearBanco($this->nombre, $this->activo, $user->id);
-        $this->dispatch('refreshBancosTable')->to(BancosTable::class);
-        $this->render();
-        $this->limpiar();
-        $this->alertService->success($this, 'Banco creado con éxito');
+        try{
+            $user = Auth::user();
+            Banco::crearBanco($this->nombre, $this->activo, $user->id);
+            $this->dispatch('refreshBancosTable')->to(BancosTable::class);
+            $this->render();
+            $this->limpiar();
+            $this->alertService->success($this, 'Banco creado con éxito');
+        } catch (\Exception $th) {
+            $this->alertService->error($this, 'Error al crear el Banco');
+            $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());
+        }
     }
 
     public function limpiar()

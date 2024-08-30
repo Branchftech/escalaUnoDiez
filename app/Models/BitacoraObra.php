@@ -39,11 +39,10 @@ class BitacoraObra extends Model
         return $bitacoraObra;
     }
 
-    static function editarBitacoraObra($id, $descripcion,$idObra, $userId)
+    static function editarBitacoraObra($id, $descripcion, $userId)
     {
         $bitacoraObra = BitacoraObra::findOrfail($id);
         $bitacoraObra->descripcion = $descripcion;
-        $bitacoraObra->idObra = $idObra;
         $bitacoraObra->updated_at = now();
         $bitacoraObra->updated_by =  $userId;
         $bitacoraObra->save();

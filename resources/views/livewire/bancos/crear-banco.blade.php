@@ -1,6 +1,6 @@
 <div>
     <div>
-        <x-button class="btn btn-warning" x-data x-on:click="$dispatch('open-modal', {name: 'Crear-Banco'})">
+        <x-button class="btn btn-warning"  style="background-color: #50a803; border-color: #50a803; color:white" x-data x-on:click="$dispatch('open-modal', {name: 'Crear-Banco'})">
             Agregar
         </x-button>
     </div>
@@ -21,6 +21,7 @@
                             <option value="1">Activo</option>
                             <option value="0">Inactivo</option>
                         </select>
+                        @error('activo') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                     <div class="gap-2 d-flex justify-content-end">
                         <button type="button" class="btn btn-secondary" wire:click="limpiar">

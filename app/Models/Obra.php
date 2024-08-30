@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 
 class Obra extends Model
 {
@@ -20,7 +21,6 @@ class Obra extends Model
     protected $fillable = [
         'contrato',
         'idDetalleObra',
-        'idProveedor',
         'idCliente',
         'idEstadoObra',
         'licenciaConstruccion',
@@ -32,16 +32,107 @@ class Obra extends Model
         'deleted_by',
     ];
 
-    static function crearObra($contrato, $userId)
+    static function crearObra( $nombreObra, $total,$moneda,$fechaInicio, $fechaFin,$dictamenUsoSuelo,$incrementoDensidad, $informeDensidad,
+    $estadoObra, $contrato, $licenciaConstruccion,
+    $calle,$manzana,$lote,$metrosCuadrados, $fraccionamiento,$estado, $pais,$proveedores = [], $cliente,
+    $userId)
     {
-        $obra = new Obra();
-        $obra->contrato = $contrato;
-        $obra->created_at = now();
-        $obra->created_by =  $userId;
-        $obra->save();
-        return $obra;
-    }
+        // try {
+        //     $Obra = new Obra();
 
+        //     $Obra->detalle->nombreObra = $nombreObra;
+        //     $Obra->detalle->total = $total;
+        //     $Obra->detalle->moneda = $moneda;
+        //     $Obra->detalle->fechaInicio = $fechaInicio;
+        //     $Obra->detalle->fechaFin = $fechaFin;
+        //     $Obra->detalle->dictamenUsoSuelo = $dictamenUsoSuelo;
+        //     $Obra->detalle->incrementoDensidad = $incrementoDensidad;
+        //     $Obra->detalle->informeDensidad = $informeDensidad;
+        //     $Obra->detalle->created_at = now();
+        //     $Obra->detalle->created_by = $userId;
+
+        //     // Asegúrate de que los cambios en `obra` y `direccion` se guarden
+        //     $Obra->idEstadoObra = $estadoObra;
+        //     $Obra->contrato = $contrato;
+        //     $Obra->licenciaConstruccion = $licenciaConstruccion;
+        //     $Obra->created_at = now();
+        //     $Obra->created_by = $userId;
+
+        //     $Obra->detalle->direccion->calle = $calle;
+        //     $Obra->detalle->direccion->manzana = $manzana;
+        //     $Obra->detalle->direccion->lote = $lote;
+        //     $Obra->detalle->direccion->metrosCuadrados = $metrosCuadrados;
+        //     $Obra->detalle->direccion->fraccionamiento = $fraccionamiento;
+        //     $Obra->detalle->direccion->idPais = $pais;
+        //     $Obra->detalle->direccion->idEstado = $estado;
+        //     $Obra->detalle->direccion->created_at = now();
+        //     $Obra->detalle->direccion->created_by = $userId;
+        //     $Obra->detalle->direccion->save();
+        //     $Obra->detalle->save();
+
+        //     // Finalmente guarda el `detalleObra`
+        //     $Obra->save();
+
+        //     return $Obra;
+        // } catch (\Throwable $th) {
+        //     Log::error('Error al crear obra: ' . $th->getMessage());
+        //     throw $th;
+        // }
+            // Crear el detalle de la obra
+            $detalle = new DetalleObra([
+                'nombreObra' => $nombreObra,
+                'total' => $total,
+                'moneda' => $moneda,
+                'fechaInicio' => $fechaInicio,
+                'fechaFin' => $fechaFin,
+                'dictamenUsoSuelo' => $dictamenUsoSuelo,
+                'incrementoDensidad' => $incrementoDensidad,
+                'informeDensidad' => $informeDensidad,
+                'created_at' => now(),
+                'created_by' => $userId,
+            ]);
+            $detalle->save();
+
+            // Crear la dirección asociada al detalle
+            $direccion = new DireccionObra([
+                'calle' => $calle,
+                'manzana' => $manzana,
+                'lote' => $lote,
+                'metrosCuadrados' => $metrosCuadrados,
+                'fraccionamiento' => $fraccionamiento,
+                'idPais' => $pais,
+                'idEstado' => $estado,
+                'created_at' => now(),
+                'created_by' => $userId,
+            ]);
+            $direccion->save();
+
+            // Asignar la dirección al detalle
+            $detalle->direccion()->associate($direccion);
+            $detalle->save();
+
+            // Crear la obra
+            $obra = new Obra([
+                'idDetalleObra' => $detalle->id,
+                'idCliente' => $cliente, // Asigna el ID del cliente si lo tienes
+                'idEstadoObra' => $estadoObra,
+                'contrato' => $contrato,
+                'licenciaConstruccion' => $licenciaConstruccion,
+                'created_at' => now(),
+                'created_by' => $userId,
+            ]);
+
+            $obra->save();
+            if (!empty($proveedores)) {
+                $proveedoresCollection = collect($proveedores);
+                // Usamos sync para asociar los materiales al insumo
+                $obra->proveedores()->sync($proveedoresCollection->all());
+            }else{
+                $obra->proveedores()->sync([]);
+            }
+            return $obra;
+
+    }
 
     static function editarObra($id, $contrato, $userId)
     {
@@ -95,20 +186,26 @@ class Obra extends Model
     {
         return $this->belongsTo(Cliente::class, 'idCliente');
     }
-    // relación con el modelo proveedor
-    public function proveedor()
+    // relación con el modelo proveedores
+    public function proveedores()
     {
-        return $this->belongsTo(Proveedor::class, 'idProveedor');
+        return $this->belongsToMany(Proveedor::class, 'proveedor_obra', 'idObra', 'idProveedor');
     }
     // relación con el modelo estado
     public function estado()
     {
         return $this->belongsTo(EstadoObra::class, 'idEstadoObra');
     }
+    // Este método define la relación con el modelo bitacoraObra
+    public function bitacoras()
+    {
+        return $this->hasMany(BitacoraObra::class, 'idObra');
+    }
 
-      // Este método define la relación con el modelo bitacoraObra
-      public function bitacoras()
-      {
-          return $this->hasMany(BitacoraObra::class);
-      }
+    // Este método define la relación con el modelo bitacoraObra
+    public function documentos()
+    {
+        return $this->hasMany(DocumentoObra::class, 'idObra');
+    }
+
 }

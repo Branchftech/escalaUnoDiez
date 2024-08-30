@@ -9,7 +9,7 @@
 }
 
 :root {
-    --blue: #2a2185;
+    --blue: #0a8ebe;/*#2a2185;*/
     --white: #fff;
     --gray: #f5f5f5;
     --black1: #222;
@@ -629,3 +629,53 @@ body {
   .px-4 {
     padding: 8px 14px !important;
   }
+
+  /*estilos para el select 2*/
+    .select2-container--default .select2-selection--single {
+        border: 1px solid #ced4da; /* Color de borde similar a los inputs */
+        border-radius: .25rem; /* Radio de borde similar a los inputs */
+        height: calc(2.25rem + 2px); /* Altura similar a los inputs */
+        padding: .375rem .75rem; /* Padding similar a los inputs */
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: calc(2.25rem + 2px); /* Altura de línea centrada */
+        display: flex;
+        align-items: center;
+        height: 100%; /* Asegura que ocupe la altura completa del contenedor */
+        padding: 0; /* Remueve el padding interno adicional */
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: calc(2.25rem + 2px); /* Altura similar a los inputs */
+    }
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid #ced4da; /* Color de borde similar a los inputs */
+        border-radius: .25rem; /* Radio de borde similar a los inputs */
+        height: auto; /* Ajusta la altura automáticamente */
+        padding: .375rem .75rem; /* Padding similar a los inputs */
+        display: flex;
+        flex-wrap: wrap; /* Asegura que las opciones se envuelvan en múltiples líneas */
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+        display: flex;
+        flex-wrap: wrap; /* Asegura que las etiquetas seleccionadas se envuelvan en múltiples líneas */
+        align-items: center;
+        line-height: 1.5; /* Alinea verticalmente el texto */
+        padding: 0; /* Remueve el padding interno adicional */
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #007bff; /* Color de fondo de las opciones seleccionadas */
+        border: 1px solid #007bff; /* Borde de las opciones seleccionadas */
+        color: #fff; /* Color del texto de las opciones seleccionadas */
+        margin: 2px; /* Margen entre las opciones seleccionadas */
+        border-radius: .25rem; /* Radio de borde similar a los inputs */
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: #fff; /* Color del botón de eliminar */
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+        background-color: #ff6600; /* Color de fondo al pasar el cursor sobre el botón de eliminar */
+    }

@@ -44,7 +44,7 @@ class EditarFormasPago extends ServicesComponent
             $this->limpiar();
             $this->alertService->success($this, 'Forma de Pago actualizada con éxito');
         } catch (\Exception $th) {
-            $this->alertService->error($this, 'Error al actualizar la Forma de Pago');
+            $this->alertService->error($this, 'Error al actualizar la forma de pago');
             $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());
         }
     }

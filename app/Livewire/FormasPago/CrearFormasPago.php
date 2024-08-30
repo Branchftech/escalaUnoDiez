@@ -18,16 +18,20 @@ class CrearFormasPago extends ServicesComponent
 
     public function crearFormasPago()
     {
-        $user = Auth::user();
-
         $this->validate([
             'nombre' => 'required|string|unique:FormaPago,nombre,NULL,id,deleted_at,NULL'
         ]);
-        FormaPago::crearFormaPago($this->nombre, $user->id);
-        $this->dispatch('refreshFormasPagoTable')->to(FormasPagoTable::class);
-        $this->render();
-        $this->limpiar();
-        $this->alertService->success($this, 'FormaPago creado con éxito');
+        try{
+            $user = Auth::user();
+            FormaPago::crearFormaPago($this->nombre, $user->id);
+            $this->dispatch('refreshFormasPagoTable')->to(FormasPagoTable::class);
+            $this->render();
+            $this->limpiar();
+            $this->alertService->success($this, 'FormaPago creado con éxito');
+        } catch (\Exception $th) {
+            $this->alertService->error($this, 'Error al crear la forma de pago');
+            $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());
+        }
     }
 
     public function limpiar()

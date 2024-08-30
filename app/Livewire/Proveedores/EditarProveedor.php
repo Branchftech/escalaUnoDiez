@@ -43,14 +43,12 @@ class EditarProveedor extends ServicesComponent
 
     public function editarProveedor()
     {
-
         $this->validate([
-            'nombre' => 'string',
-            'direccion' => 'string',
-            'telefono' => 'numeric',
-            'email' => 'email',
+            'nombre' => 'required|string',
+            'direccion' => 'required|string',
+            'telefono' => 'required|numeric',
+            'email' => 'required|email',
         ]);
-
         try {
             $user = Auth::user();
 

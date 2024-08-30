@@ -29,30 +29,37 @@ class Material extends Model
         'deleted_by',
     ];
 
-    static function crearMaterial($nombre, $precioNormal, $idUnidad, $userId)
+    static function crearEditarMaterial($id, $nombre, $precioNormal, $idUnidad, $userId)
     {
-        $Material = new Material();
-        $Material->nombre = $nombre;
-        $Material->precioNormal =$precioNormal;
-        $Material->idUnidad = $idUnidad;
-        $Material->created_at = now();
-        $Material->created_by =  $userId;
-        $Material->save();
-        return $Material;
+        if($id){
+            $material = Material::findOrfail($id);
+            $material->updated_at = now();
+            $material->updated_by =  $userId;
+        }else{
+            $material = new Material();
+            $material->created_at = now();
+            $material->created_by =  $userId;
+
+        }
+        $material->nombre = $nombre;
+        $material->precioNormal =$precioNormal;
+        $material->idUnidad = $idUnidad;
+        $material->save();
+        return $material;
     }
 
 
-    static function editarMaterial($id, $nombre, $precioNormal, $idUnidad, $userId)
-    {
-        $Material = Material::findOrfail($id);
-        $Material->nombre = $nombre;
-        $Material->precioNormal =$precioNormal;
-        $Material->idUnidad = $idUnidad;
-        $Material->updated_at = now();
-        $Material->updated_by =  $userId;
-        $Material->save();
-        return $Material;
-    }
+    // static function editarMaterial($id, $nombre, $precioNormal, $idUnidad, $userId)
+    // {
+    //     $Material = Material::findOrfail($id);
+    //     $Material->nombre = $nombre;
+    //     $Material->precioNormal =$precioNormal;
+    //     $Material->idUnidad = $idUnidad;
+    //     $Material->updated_at = now();
+    //     $Material->updated_by =  $userId;
+    //     $Material->save();
+    //     return $Material;
+    // }
 
     static function eliminarMaterial($id, $userId)
     {

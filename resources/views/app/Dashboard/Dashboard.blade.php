@@ -21,7 +21,7 @@
                     </div>
                 </div>
 
-                <div class="card" style="background: #00ccff">
+                <div class="card" style="background: #0a8ebe">
                     <div class="flex-row">
                         <div>
                             <div class="cardName">Total Ingresos del Mes</div>
@@ -139,7 +139,7 @@
                     <div class="card" style="background: white; border:none; align-items: center;">
                         <div class="flex-row" style="text-align: center;">
                             <div>
-                                <div class="cardName" style="color: black; font-size: 30px">Total Nuevos Contratos Anual</div>
+                                <div class="cardHeader" ><h2>Total Nuevos Contratos Anual</h2></div>
                                 <div class="numbers" style="color: green; font-size: 70px; padding-top:10px">3</div>
                             </div>
                         </div>

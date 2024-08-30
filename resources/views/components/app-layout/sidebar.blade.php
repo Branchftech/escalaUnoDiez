@@ -52,8 +52,8 @@
                 <span class="title">Insumos</span>
             </a>
         </li>
-        <li data-title="" class=" {{ request()->routeIs('detallesObras') ? 'activar' : '' }}">
-            <a href="{{ route('detallesObras') }}" wire:navigate
+        <li data-title="" class=" {{ request()->routeIs('obras') ? 'activar' : '' }}">
+            <a href="{{ route('obras') }}" wire:navigate
                 class="d-flex align-items-center ">
                 <span class="icon d-flex justify-content-center align-items-center me-2"><i class="fa-solid fa-building-user"></i></span>
                 <span class="title">Obras</span>

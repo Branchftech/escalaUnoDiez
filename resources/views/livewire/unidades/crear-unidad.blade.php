@@ -12,7 +12,7 @@
                     <div class=" form-group d-flex flex-column" wire:ignore>
                         <label for="unidades">Seleccione la unidad a editar</label>
                         <select wire:model="editarUnidadSelected" class="form-control" id="select2EditarUnidad">
-                            <option value=""  >Seleccione una unidad</option>
+                            <option  value="" selected hidden>Seleccione una unidad</option>
                             @foreach ($unidades as $unidad)
                                 <option value="{{ $unidad->id }}">{{ $unidad->nombre }}</option>
                             @endforeach
@@ -44,6 +44,22 @@
             $('#select2EditarUnidad').on('change', function(e) {
                 var data = $('#select2EditarUnidad').select2("val");
                 @this.set('editarUnidadSelected', data);
+            });
+
+            window.addEventListener('livewire:init', () => {
+                Livewire.on("actualizarUnidades", (data) => {
+                    let select2 = $('#select2EditarUnidad');
+                    // Limpia las opciones actuales, sin eliminar el placeholder
+                    select2.find('option').not(':first').remove();
+                    // Recargar las opciones desde las unidades obtenidos en el backend
+                    data[0]['unidades'].forEach(function(unidad) {
+                        let newOption = new Option(unidad.nombre, unidad.id, false, false);
+                        select2.append(newOption);
+                    });
+
+                    // Refresca el select2 para que muestre las nuevas opciones
+                    select2.trigger('change');
+                });
             });
 
     </script>

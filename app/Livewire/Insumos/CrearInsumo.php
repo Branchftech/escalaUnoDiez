@@ -19,7 +19,7 @@ class CrearInsumo extends ServicesComponent
     public $materiales;
     public $materialesSeleccionados;
     public $selectedMateriales = [];
-    protected $listeners = ['refreshCrearInsumo' => '$refresh'];
+    protected $listeners = ['refreshCrearInsumo' => '$refresh', 'actualizarMateriales' => 'actualizarMaterialesInsumos'];
 
     public function mount()
     {
@@ -96,5 +96,11 @@ class CrearInsumo extends ServicesComponent
         $this->selectedMateriales = array_filter($this->selectedMateriales, function($material) use ($index) {
             return $material->id !== $index;
         });
+    }
+
+    public function actualizarMaterialesInsumos()
+    {
+        $materiales =Material::orderBy('nombre', 'asc')->get();
+        $this->dispatch('actualizarMaterialesInsumos', compact('materiales'));
     }
 }

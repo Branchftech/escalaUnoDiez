@@ -26,7 +26,7 @@
                     <div class=" form-group d-flex flex-column" wire:ignore>
                         <label for="servicios">Servicios</label>
                         <select wire:model="servicios" class="form-control" id="select2Edit">
-                            <option value="">Seleccione un servicio</option>
+                            <option value="" selected hidden>Seleccione un servicio</option>
                             @foreach ($servicios as $servicio)
                                 <option value="{{ $servicio->id }}">{{ $servicio->nombre }}</option>
                             @endforeach

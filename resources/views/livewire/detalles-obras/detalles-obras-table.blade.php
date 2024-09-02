@@ -36,7 +36,7 @@
             </div>
             <div class="tab-pane fade" id="ex-with-icons-tabs-3" role="tabpanel" aria-labelledby="ex-with-icons-tab-3">
                 <div style="margin:2rem">
-                    <div id="map" style="height: 600px; width: 100%;"></div>
+                    <div id="map" style="height: 400px; width: 100%;"></div>
                 </div>
             </div>
         </div>
@@ -50,32 +50,44 @@
 @push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const lat = @json($lat);
-            const lng = @json($lng);
+       document.addEventListener('DOMContentLoaded', function() {
+           let mapInitialized = false;
 
-            if (lat === null || lng === null) {
-                console.error('Las coordenadas son nulas. No se puede inicializar el mapa.');
-                return;
-            }
+           // Escucha el evento de cambio de pestaña
+           document.querySelector('a[href="#ex-with-icons-tabs-3"]').addEventListener('shown.bs.tab', function () {
+               if (!mapInitialized) { // Inicializa el mapa solo si no ha sido inicializado
+                   const lat = @json($lat);
+                   const lng = @json($lng);
 
-            // Convertir a números en caso de que los valores lleguen como cadenas
-            const latitude = parseFloat(lat);
-            const longitude = parseFloat(lng);
+                   if (lat === null || lng === null) {
+                       console.error('Las coordenadas son nulas. No se puede inicializar el mapa.');
+                       return;
+                   }
 
-            if (isNaN(latitude) || isNaN(longitude)) {
-                console.error('Las coordenadas no son válidas:', lat, lng);
-                return;
-            }
+                   const latitude = parseFloat(lat);
+                   const longitude = parseFloat(lng);
 
-            var map = L.map('map').setView([latitude, longitude], 13);
+                   if (isNaN(latitude) || isNaN(longitude)) {
+                       console.error('Las coordenadas no son válidas:', lat, lng);
+                       return;
+                   }
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
+                   var map = L.map('map').setView([latitude, longitude], 13);
 
-            var marker = L.marker([latitude, longitude]).addTo(map);
-        });
+                   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                       maxZoom: 19,
+                       attribution: '© OpenStreetMap'
+                   }).addTo(map);
+
+                   var marker = L.marker([latitude, longitude]).addTo(map);
+
+                   // Forzar redimensionamiento
+                   map.invalidateSize();
+
+                   mapInitialized = true; // Marca el mapa como inicializado
+               }
+           });
+       });
     </script>
 @endpush
+

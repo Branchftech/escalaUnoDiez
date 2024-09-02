@@ -3,9 +3,11 @@
 namespace App\Livewire\Materiales;
 
 use App\Livewire\ServicesComponent;
+use App\Livewire\Insumos\CrearInsumo;
 use App\Models\Material;
 use App\Models\Unidad;
 use Illuminate\Support\Facades\Auth;
+use phpseclib3\File\ASN1\Maps\Certificate;
 
 class CrearMaterial extends ServicesComponent
 {
@@ -17,8 +19,7 @@ class CrearMaterial extends ServicesComponent
     #select materiales
     public $materiales;
     public $editarMaterialSelected;
-
-
+    protected $listeners = ['actualizarUnidades' => 'actualizarUnidadesMaterial'];
     public function mount()
     {
         $this->unidades = Unidad::orderBy('nombre', 'asc')->get();
@@ -77,8 +78,12 @@ class CrearMaterial extends ServicesComponent
 
     public function limpiar()
     {
+
         $this->reset(['nombre', 'precioNormal', 'unidadSelected', 'editarMaterialSelected']);
-        $this->dispatch('clearSelect2');
+        $this->unidades = Unidad::orderBy('nombre', 'asc')->get();
+        $materiales = Material::orderBy('nombre', 'asc')->get();
+        $this->dispatch('actualizarMateriales', compact('materiales'));
+        $this->dispatch('actualizarMateriales')->to(CrearInsumo::class);
 
     }
 
@@ -91,4 +96,11 @@ class CrearMaterial extends ServicesComponent
     {
         $this->showModal = false;
     }
+
+    public function actualizarUnidadesMaterial()
+    {
+        $unidades =Unidad::orderBy('nombre', 'asc')->get();
+        $this->dispatch('actualizarUnidadesMaterial', compact('unidades'));
+    }
+
 }

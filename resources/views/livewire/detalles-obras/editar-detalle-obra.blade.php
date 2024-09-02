@@ -37,7 +37,7 @@
                 <div class="col-md-3">
                     <label for="estadosObra">Estado Obra</label>
                     <select wire:model="estadoObraSeleccionado" class="form-control" id="select2EstadosObras">
-                        <option value="" disabled>Seleccione el Estado de la Obra</option>
+                        <option value="" selected hidden >Seleccione el estado</option>
                         @foreach ($estadosObra as $estadoObra)
                             <option value="{{ $estadoObra->id }}">{{ $estadoObra->nombre }}</option>
                         @endforeach
@@ -55,7 +55,7 @@
                     <div class="form-group">
                         <label for="moneda">Moneda</label>
                         <select wire:model="moneda" class="form-control" style="width: 100%;">
-                            <option value="" disabled>Seleccione una moneda</option>
+                            <option value="" selected hidden >Seleccione una Moneda</option>
                             <option value="mnx">MNX</option>
                             <option value="dls">DLS</option>
                         </select>
@@ -126,7 +126,7 @@
                 <div class="col-md-3">
                     <label for="paises">País</label>
                     <select wire:model="paisSeleccionado" wire:change="cambiar" class="form-control" id="select2Paises">
-                        <option value="" disabled>Seleccione un país</option>
+                        <option value="" selected hidden >Seleccione un Pais</option>
                         @foreach ($paises as $pais)
                             <option value="{{ $pais->id }}">{{ $pais->nombre }}</option>
                         @endforeach
@@ -137,6 +137,7 @@
                 <div class="col-md-3">
                     <label for="estados">Estado</label>
                     <select wire:model="estadoSeleccionado" class="form-control" id="select2Estados">
+                        <option value="" selected hidden >Seleccione un Estado</option>
                         @foreach ($estados as $estado)
                             <option value="{{ $estado->id }}">{{ $estado->nombre }}</option>
                         @endforeach

@@ -3,6 +3,7 @@
 namespace App\Livewire\Unidades;
 
 use App\Livewire\ServicesComponent;
+use App\Livewire\Materiales\CrearMaterial;
 use App\Models\Unidad;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,9 +31,15 @@ class CrearUnidad extends ServicesComponent
 
     public function crearEditarUnidad()
     {
-        $this->validate([
-            'nombre' => 'required|string'
-        ]);
+        if (is_null($this->editarUnidadSelected)) {
+            $this->validate([
+                'nombre' => 'required|string|unique:unidad,nombre,NULL,id,deleted_at,NULL',
+            ]);
+        } else {
+            $this->validate([
+                'nombre' => 'required|string',
+            ]);
+        }
         try{
             $user = Auth::user();
             $unidad = Unidad::where('nombre', $this->nombre)->first();
@@ -49,9 +56,25 @@ class CrearUnidad extends ServicesComponent
             $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());
         }
     }
+
+    public function updatedEditarUnidadSelected($unidadId)
+    {
+        if ($unidadId) {
+            $unidad = Unidad::find($unidadId);
+            if ($unidad) {
+                $this->nombre = $unidad->nombre;
+            }
+        } else {
+            $this->reset(['nombre']);
+        }
+    }
+
     public function limpiar()
     {
         $this->reset('nombre');
+        $unidades = Unidad::orderBy('nombre', 'asc')->get();
+        $this->dispatch('actualizarUnidades', compact('unidades'));
+        $this->dispatch('actualizarUnidades')->to(CrearMaterial::class);
         $this->closeModal();
     }
 

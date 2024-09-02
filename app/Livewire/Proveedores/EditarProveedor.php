@@ -53,8 +53,6 @@ class EditarProveedor extends ServicesComponent
             $user = Auth::user();
 
             Proveedor::editarProveedor($this->model['id'], $this->nombre, $this->direccion,$this->email, $this->telefono,  $user->id, $this->selectedServicios);
-
-            $this->reset('showModal');
             $this->dispatch('refreshProveedoresTable')->to(ProveedoresTable::class);
             $this->render();
             $this->limpiar();
@@ -77,7 +75,7 @@ class EditarProveedor extends ServicesComponent
     }
     public function limpiar()
     {
-        $this->reset('nombre');
+        $this->reset('nombre','direccion','telefono','email');
         $this->closeModal();
     }
 

@@ -17,7 +17,7 @@
                     <div class="form-group">
                         <label for="activo">Estado</label>
                         <select id="activo" wire:model="activo" class="form-control">
-                            <option value="">Seleccione un estado</option>
+                            <option value="" selected hidden >Seleccione una Estado</option>
                             <option value="1">Activo</option>
                             <option value="0">Inactivo</option>
                         </select>

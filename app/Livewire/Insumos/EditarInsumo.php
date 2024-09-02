@@ -28,15 +28,13 @@ class EditarInsumo extends ServicesComponent
         $this->costo = $model->costo;
         $this->cantidad = $model->cantidad;
         $this->fecha = $model->fecha;
+        $this->obraSeleccionada=$model->idObra;
         $this->obras = Obra::all();
         $this->materiales = Material::orderBy('nombre', 'asc')->get();
     }
 
     public function render()
     {
-        $this->costo = $this->model->costo;
-        $this->cantidad = $this->model->cantidad;
-        $this->fecha = $this->model->fecha;
         $this->obras = Obra::all();
         $this->materiales = Material::orderBy('nombre', 'asc')->get();
 
@@ -50,12 +48,12 @@ class EditarInsumo extends ServicesComponent
             'cantidad' => 'required|integer',
             'fecha' => 'required|date',
             'obraSeleccionada' => 'required|exists:obra,id', // Validar que el ID de obra exista en la tabla 'obras'
-            'selectedMateriales.*' => 'exists:material,id', // Validación de que cada ID existe en la tabla materiales
-
+            //'selectedMateriales' => 'required|array',
+            //'selectedMateriales.*' => 'exists:material,id', // Validación de que cada ID existe en la tabla materiales
         ]);
         try {
             $user = Auth::user();
-            Insumo::editarInsumo($this->model->id, $this->costo, $this->cantidad, $this->fecha, $this->obraSeleccionada, $this->selectedMateriales, $user->id);
+            Insumo::editarInsumo($this->model['id'], $this->costo, $this->cantidad, $this->fecha, $this->obraSeleccionada, $this->selectedMateriales, $user->id);
             $this->dispatch('refreshInsumosTable')->to(InsumosTable::class);
             $this->render();
             $this->limpiar();
@@ -69,13 +67,13 @@ class EditarInsumo extends ServicesComponent
     public function cargarModalEditarInsumo($model)
     {
         $this->model = Insumo::find($model['id']);
-        $this->costo = $this->model->costo;
-        $this->cantidad = $this->model->cantidad;
-        $this->fecha = $this->model->fecha;
+        $this->costo = $this->model['costo'];
+        $this->cantidad = $this->model['cantidad'];
+        $this->fecha = $this->model['fecha'];
         $this->obras = Obra::all();
-        $this->obraSeleccionada = $this->model->idObra;
+        $this->obraSeleccionada = $this->model['idObra'];
         $this->materiales = Material::orderBy('nombre', 'asc')->get();
-        $this->selectedMateriales = $this->model->materiales->all();
+        $this->selectedMateriales =$this->model->materiales->all();
         $this->showModal = true;
     }
     public function limpiar()
@@ -104,7 +102,7 @@ class EditarInsumo extends ServicesComponent
         }
     }
 
-    public function eliminarMateriales($index)
+    public function eliminarMaterial($index)
     {
         $this->selectedMateriales = array_filter($this->selectedMateriales, function($material) use ($index) {
             return $material->id !== $index;

@@ -42,7 +42,7 @@
                     <div class="form-group" wire:ignore>
                         <label for="obras">Obras</label>
                         <select wire:model="obraSelected" class="form-control" id="select2Obras" style="width: 100%;">
-                            <option value="" selected>Seleccione una obra</option>
+                            <option value="" selected hidden >Seleccione una Obra</option>
                             @foreach ($obras as $obra)
                                 <option value="{{ $obra->id }}">{{ $obra->detalle->nombreObra }}</option>
                             @endforeach
@@ -54,7 +54,7 @@
                     <div class="form-group" wire:ignore>
                         <label for="materiales">Materiales</label>
                         <select wire:model="materialesSeleccionados" multiple class="form-control" id="select2Material" style="width: 100%;">
-                            <option value="" disabled>Seleccione un material</option>
+                            <option value="" selected disabled hidden >Seleccione los Materiales</option>
                             @foreach ($materiales as $material)
                                 <option value="{{ $material->id }}">{{ $material->nombre }}</option>
                             @endforeach
@@ -91,7 +91,7 @@
     $('#select2Material').select2({
         width: '100%',
         placeholder: "Seleccione un Material",
-                allowClear: true
+        allowClear: true
     });
     $('#select2Material').on('change', function(e) {
         var data = $('#select2Material').select2("val");
@@ -103,5 +103,25 @@
             $('#select2Material').val(null).trigger('change');
         });
     })
+
+        Livewire.on("actualizarMaterialesInsumos", (data) => {
+            let select2 = $('#select2Material');
+
+            // Obtén los valores actualmente seleccionados
+            let selectedValues = select2.val();
+
+            // Limpia las opciones actuales
+            select2.find('option').remove();
+            // Recargar las opciones desde los materiales obtenidos en el backend
+            data[0]['materiales'].forEach(function(material) {
+                let isSelected = selectedValues.includes(material.id.toString());
+                let newOption = new Option(material.nombre, material.id, isSelected, isSelected);
+                select2.append(newOption);
+            });
+
+            // Refresca el select2 para que muestre las nuevas opciones y mantenga las selecciones anteriores
+            $('#select2Material').val(null).trigger('change');
+            select2.trigger('change');
+        });
 </script>
 @endpush

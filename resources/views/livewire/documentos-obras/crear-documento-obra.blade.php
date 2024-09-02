@@ -23,7 +23,7 @@
                     <div class=" form-group d-flex flex-column" wire:ignore>
                         <label for="tiposDocumento">Tipo Documento</label>
                         <select wire:model="tipoDocumentoSeleccionado" class="form-control" id="select2tiposDocumento">
-                            <option value="">Seleccione un Tipo de Documento</option>
+                            <option value="" selected hidden >Seleccione un Tipo de Documento</option>
                             @foreach ($tiposDocumento as $tipoDocumento)
                                 <option value="{{ $tipoDocumento->id }}">{{ $tipoDocumento->nombre }}</option>
                             @endforeach

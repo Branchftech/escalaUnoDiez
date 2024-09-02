@@ -52,7 +52,7 @@
                     <div class="col-md-3">
                         <label for="estadosObra">Estado Obra</label>
                         <select wire:model="estadoObraSeleccionado" class="form-control" id="select2EstadosObras">
-                            <option value="" disabled>Seleccione el Estado de la Obra</option>
+                            <option value="" selected hidden>Seleccione el Estado de la Obra</option>
                             @foreach ($estadosObra as $estadoObra)
                                 <option value="{{ $estadoObra->id }}">{{ $estadoObra->nombre }}</option>
                             @endforeach
@@ -62,7 +62,7 @@
                     <div class="col-md-3">
                         <label for="clientes">Cliente</label>
                         <select wire:model="clienteSeleccionado" class="form-control" id="select2EstadosObras">
-                            <option value="" disabled>Seleccione el Cliente</option>
+                            <option value="" selected hidden>Seleccione el Cliente</option>
                             @foreach ($clientes as $cliente)
                                 <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
                             @endforeach
@@ -73,7 +73,7 @@
                         <div  wire:ignore>
                             <label for="proveedores">Proveedores</label>
                             <select wire:model="proveedoresSeleccionados" multiple class="form-control" id="select2proveedores">
-                                <option value="" disabled>Seleccione los proveedores</option>
+                                <option value="" selected hidden>Seleccione los proveedores</option>
                                 @foreach ($proveedores as $proveedor)
                                     <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option>
                                 @endforeach
@@ -92,7 +92,7 @@
                         <div class="form-group">
                             <label for="moneda">Moneda</label>
                             <select wire:model="moneda" class="form-control" style="width: 100%;">
-                                <option value="" disabled>Seleccione una moneda</option>
+                                <option value="" selected hidden>Seleccione una moneda</option>
                                 <option value="mnx">MNX</option>
                                 <option value="dls">DLS</option>
                             </select>
@@ -163,7 +163,7 @@
                     <div class="col-md-3">
                         <label for="paises">País</label>
                         <select wire:model="paisSeleccionado" wire:change="cambiar" class="form-control" id="select2Paises">
-                            <option value="" disabled>Seleccione un país</option>
+                            <option value="" selected hidden>Seleccione un país</option>
                             @foreach ($paises as $pais)
                                 <option value="{{ $pais->id }}">{{ $pais->nombre }}</option>
                             @endforeach
@@ -174,6 +174,7 @@
                     <div class="col-md-3">
                         <label for="estados">Estado</label>
                         <select wire:model="estadoSeleccionado" class="form-control" id="select2Estados">
+                            <option value="" selected hidden>Seleccione un estado</option>
                             @foreach ($estados as $estado)
                                 <option value="{{ $estado->id }}">{{ $estado->nombre }}</option>
                             @endforeach

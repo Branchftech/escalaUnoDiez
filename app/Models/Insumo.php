@@ -43,8 +43,9 @@ class Insumo extends Model
         $insumo->save();
         if (!empty($materiales)) {
             $materialesCollection = collect($materiales);
-            // Usamos sync para asociar los materiales al insumo
-            $insumo->materiales()->sync($materialesCollection->all());
+            $materialIds = $materialesCollection->pluck('id')->toArray();
+            $insumo->materiales()->sync($materialIds);
+
         }else{
             $insumo->materiales()->sync([]);
         }
@@ -63,8 +64,9 @@ class Insumo extends Model
         $insumo->save();
         if (!empty($materiales)) {
             $materialesCollection = collect($materiales);
-            // Usamos sync para asociar los materiales al insumo
-            $insumo->materiales()->sync($materialesCollection->all());
+            $materialIds = $materialesCollection->pluck('id')->toArray();
+            $insumo->materiales()->sync($materialIds);
+
         }else{
             $insumo->materiales()->sync([]);
         }

@@ -30,7 +30,7 @@
                         <x-input type="float" wire:model="precioNormal" class="form-control" />
                         @error('precioNormal') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
-                    <div class="form-group d-flex flex-column" wire:ignore>
+                    <div class="form-group d-flex flex-column">
                         <label for="unidades">Unidades</label>
                         <select wire:model="unidadSelected" class="form-control"  aria-placeholder="Seleccione una Unidad" id="select2EditarUnidadMaterial">
                             <option value="" selected hidden >Seleccione una Unidad</option>
@@ -65,17 +65,19 @@
                 var data = $(this).val();
                 @this.set('editarMaterialSelected', data);
             });
-            $('#select2EditarUnidadMaterial').select2({
-                placeholder: "Seleccione una Unidad",
-                allowClear: true
-            }).on('change', function(e) {
-                var data = $(this).val();
-                @this.set('unidadSelected', data);
-            });
+            // $('#select2EditarUnidadMaterial').select2({
+            //     placeholder: "Seleccione una Unidad",
+            //     allowClear: true
+            // }).on('change', function(e) {
+            //     var data = $(this).val();
+            //     @this.set('unidadSelected', data);
+            // });
 
 
             window.addEventListener('livewire:init', () => {
                 Livewire.on("actualizarMateriales", (data) => {
+                    //se limpia unidades
+                    $('#select2EditarUnidadMaterial').val(null).trigger('change');
                     let select2 = $('#select2EditarMaterial');
                     // Limpia las opciones actuales, sin eliminar el placeholder
                     select2.find('option').not(':first').remove();

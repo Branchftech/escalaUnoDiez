@@ -15,8 +15,6 @@ class CreateDetalleObraTable extends Migration
             $table->date('fechaInicio');
             $table->date('fechaFin');
             $table->string('dictamenUsoSuelo')->nullable();
-            $table->string('incrementoDensidad')->nullable();
-            $table->integer('informeDensidad')->nullable();
             $table->unsignedBigInteger('idDireccionObra')->nullable();
             $table->timestamps();
             $table->softDeletes();

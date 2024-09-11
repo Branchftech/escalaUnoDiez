@@ -32,7 +32,7 @@ class Obra extends Model
         'deleted_by',
     ];
 
-    static function crearObra( $nombreObra, $total,$moneda,$fechaInicio, $fechaFin,$dictamenUsoSuelo,$incrementoDensidad, $informeDensidad,
+    static function crearObra( $nombreObra, $total,$moneda,$fechaInicio, $fechaFin,$dictamenUsoSuelo,
     $estadoObra, $contrato, $licenciaConstruccion,
     $calle,$manzana,$lote,$metrosCuadrados, $fraccionamiento,$estado, $pais,$proveedores = [], $cliente,
     $userId)
@@ -46,8 +46,6 @@ class Obra extends Model
         //     $Obra->detalle->fechaInicio = $fechaInicio;
         //     $Obra->detalle->fechaFin = $fechaFin;
         //     $Obra->detalle->dictamenUsoSuelo = $dictamenUsoSuelo;
-        //     $Obra->detalle->incrementoDensidad = $incrementoDensidad;
-        //     $Obra->detalle->informeDensidad = $informeDensidad;
         //     $Obra->detalle->created_at = now();
         //     $Obra->detalle->created_by = $userId;
 
@@ -86,8 +84,6 @@ class Obra extends Model
                 'fechaInicio' => $fechaInicio,
                 'fechaFin' => $fechaFin,
                 'dictamenUsoSuelo' => $dictamenUsoSuelo,
-                'incrementoDensidad' => $incrementoDensidad,
-                'informeDensidad' => $informeDensidad,
                 'created_at' => now(),
                 'created_by' => $userId,
             ]);

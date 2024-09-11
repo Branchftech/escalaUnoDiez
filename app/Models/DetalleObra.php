@@ -25,8 +25,6 @@ class DetalleObra extends Model
         'fechaFin',
         'idDireccionObra',
         'dictamenUsoSuelo',
-        'incrementoDensidad',
-        'informeDensidad',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -38,8 +36,8 @@ class DetalleObra extends Model
 
     static function crearDetalleObra($nombreObra, $total,$moneda,$fechaInicio,
     $fechaFin,$croquis,$calle,$manzana,$lote,$metrosCuadrados,
-    $fraccionamiento,$dictamenUsoSuelo,$incrementoDensidad,
-    $informeDensidad, $userId)
+    $fraccionamiento,$dictamenUsoSuelo,
+    $userId)
     {
         $obra = new DetalleObra();
         $obra->nombreObra = $nombreObra;
@@ -54,8 +52,6 @@ class DetalleObra extends Model
         $obra->metrosCuadrados = $metrosCuadrados;
         $obra->fraccionamiento = $fraccionamiento;
         $obra->dictamenUsoSuelo = $dictamenUsoSuelo;
-        $obra->incrementoDensidad = $incrementoDensidad;
-        $obra->informeDensidad = $informeDensidad;
         $obra->created_at = now();
         $obra->created_by =  $userId;
         $obra->save();
@@ -64,7 +60,7 @@ class DetalleObra extends Model
 
 
     static function editarDetalleObra(
-    $id, $nombreObra, $total,$moneda,$fechaInicio, $fechaFin,$dictamenUsoSuelo,$incrementoDensidad, $informeDensidad,
+    $id, $nombreObra, $total,$moneda,$fechaInicio, $fechaFin,$dictamenUsoSuelo,
     $estadoObra,
     $calle,$manzana,$lote,$metrosCuadrados, $fraccionamiento,$estado, $pais,
     $userId)
@@ -78,9 +74,7 @@ class DetalleObra extends Model
             $detalleObra->fechaInicio = $fechaInicio;
             $detalleObra->fechaFin = $fechaFin;
             $detalleObra->dictamenUsoSuelo = $dictamenUsoSuelo;
-            $detalleObra->incrementoDensidad = $incrementoDensidad;
-            $detalleObra->informeDensidad = $informeDensidad;
-            $detalleObra->updated_at = now();
+			$detalleObra->updated_at = now();
             $detalleObra->updated_by = $userId;
 
             // Asegúrate de que los cambios en `obra` y `direccion` se guarden

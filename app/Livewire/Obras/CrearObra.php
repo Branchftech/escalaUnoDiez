@@ -15,8 +15,7 @@ class CrearObra extends ServicesComponent
 {
     public $nombreObra, $total,$moneda,$fechaInicio,
     $fechaFin,$calle,$manzana,$lote,$metrosCuadrados,
-    $fraccionamiento,$dictamenUsoSuelo,$incrementoDensidad,
-    $informeDensidad, $estados, $paises, $proveedores, $clientes, $paisSeleccionado, $estadoSeleccionado,$clienteSeleccionado,
+    $fraccionamiento,$dictamenUsoSuelo, $estados, $paises, $proveedores, $clientes, $paisSeleccionado, $estadoSeleccionado,$clienteSeleccionado,
     $estadosObra, $estadoObraSeleccionado, $licenciaConstruccion, $contrato;
     #select proveedores
     public $proveedoresSeleccionados = [];
@@ -41,8 +40,6 @@ class CrearObra extends ServicesComponent
         // $this->fechaInicio = $this->model->detalle->fechaInicio;
         // $this->fechaFin = $this->model->detalle->fechaFin;
         // $this->dictamenUsoSuelo = $this->model->detalle->dictamenUsoSuelo;
-        // $this->incrementoDensidad = $this->model->detalle->incrementoDensidad;
-        // $this->informeDensidad = $this->model->detalle->informeDensidad;
         $this->paises = Pais::all();
         $this->estados = [];
         $this->estadosObra = EstadoObra::all();
@@ -83,8 +80,6 @@ class CrearObra extends ServicesComponent
             'metrosCuadrados'=> 'required|numeric',
             'fraccionamiento'=> 'required|string',
             'dictamenUsoSuelo'=> 'required|string',
-            'incrementoDensidad'=> 'required|string',
-            'informeDensidad'=> 'required|numeric',
             'contrato'=> 'required|string',
             'licenciaConstruccion'=> 'required|string',
             'paisSeleccionado' => 'required|min:1|exists:paises,id',
@@ -96,12 +91,12 @@ class CrearObra extends ServicesComponent
         ]);
         try{
             $user = Auth::user();
-            Obra::crearObra( $this->nombreObra, $this->total,$this->moneda,$this->fechaInicio, $this->fechaFin,$this->dictamenUsoSuelo,$this->incrementoDensidad, $this->informeDensidad,
+            Obra::crearObra( $this->nombreObra, $this->total,$this->moneda,$this->fechaInicio, $this->fechaFin,$this->dictamenUsoSuelo,
             $this->estadoObraSeleccionado,$this->contrato, $this->licenciaConstruccion,
             $this->calle,$this->manzana,$this->lote,$this->metrosCuadrados, $this->fraccionamiento,$this->estadoSeleccionado, $this->paisSeleccionado,$this->proveedoresSeleccionados, $this->clienteSeleccionado,
             $user->id);
 
-            //$this->dispatch('refreshClientesTable')->to(ClientesTable::class);
+            $this->dispatch('refreshObrasTable')->to(ObrasTable::class);
             $this->render();
             $this->alertService->success($this, 'Obra creada con éxito');
         } catch (\Exception $th) {
@@ -129,5 +124,15 @@ class CrearObra extends ServicesComponent
             return $proveedor->id !== $index;
         });
     }
+
+    public function limpiar()
+    {
+        $this->reset('nombreObra','total','moneda','fechaInicio',
+            'fechaFin','calle','manzana','lote','metrosCuadrados',
+            'fraccionamiento','dictamenUsoSuelo','paisSeleccionado', 'estadoSeleccionado','clienteSeleccionado',
+            'estadoObraSeleccionado', 'licenciaConstruccion', 'contrato');
+
+    }
+
 
 }

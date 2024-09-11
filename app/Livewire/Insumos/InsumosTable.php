@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InsumosTable extends DataTableComponent{
     use LivewireAlert;
@@ -69,5 +70,72 @@ class InsumosTable extends DataTableComponent{
                     ])
                 )->html(),
         ];
+    }
+
+    public function bulkActions(): array
+    {
+        return [
+            'export' => 'Export',
+        ];
+    }
+
+    public function export()
+    {
+        // Obtén los IDs seleccionados
+        $selectedIds = $this->getSelected();
+
+        // Si no hay bancos seleccionados, evita realizar la exportación
+        if (empty($selectedIds)) {
+            $this->alert('warning', 'No se han seleccionado insumos para exportar.');
+            return;
+        }
+
+        // Limpia la selección actual
+        $this->clearSelected();
+
+        // Obtén los registros completos de los bancos seleccionados y formatear los datos
+        $insumos = Insumo::whereIn('id', $selectedIds)->get()->map(function($insumo) {
+            return [
+                'ID' => $insumo->id,
+                'Costo' => $insumo->costo,
+                'Cantidad' => $insumo->cantidad,
+                'Fecha' => $insumo->fecha,
+                'Obra' => $insumo->obra->detalle->nombreObra,
+                'Creado por' => $insumo->createdBy->name ?? 'N/A',
+                'Fecha Creación' => $insumo->created_at->format('Y-m-d H:i:s'),
+                'Actualizado por' => $insumo->updatedBy->name ?? 'N/A',
+                'Fecha Actualización' => $insumo->updated_at->format('Y-m-d H:i:s'),
+            ];
+        });
+
+        // Exporta los datos a un archivo Excel con encabezados
+        return Excel::download(new class($insumos) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
+            protected $insumos;
+
+            public function __construct($insumos)
+            {
+                $this->insumos = $insumos;
+            }
+
+            public function collection()
+            {
+                return $this->insumos;
+            }
+
+            public function headings(): array
+            {
+                return [
+                    'ID',
+                    'Costo',
+                    'Cantidad',
+                    'Fecha',
+                    'Obra',
+                    'Creado por',
+                    'Fecha Creación',
+                    'Actualizado por',
+                    'Fecha Actualización',
+                ];
+            }
+        }, 'insumos.xlsx');
     }
 }

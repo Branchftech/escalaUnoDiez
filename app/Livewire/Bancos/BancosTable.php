@@ -72,10 +72,57 @@ class BancosTable extends DataTableComponent{
 
     public function export()
     {
-        $bancos = $this->getSelected();
+        // Obtén los IDs seleccionados
+        $selectedIds = $this->getSelected();
 
+        // Si no hay bancos seleccionados, evita realizar la exportación
+        if (empty($selectedIds)) {
+            $this->alert('warning', 'No se han seleccionado bancos para exportar.');
+            return;
+        }
+
+        // Limpia la selección actual
         $this->clearSelected();
 
-        return Excel::download(new Banco($bancos), 'bancos.xlsx');
+        // Obtén los registros completos de los bancos seleccionados y formatear los datos
+        $bancos = Banco::whereIn('id', $selectedIds)->get()->map(function($banco) {
+            return [
+                'ID' => $banco->id,
+                'Nombre' => $banco->nombre,
+                'Estado' => $banco->activo ? 'Activo' : 'Inactivo',
+                'Creado por' => $banco->createdBy->name ?? 'N/A',
+                'Fecha Creación' => $banco->created_at->format('Y-m-d H:i:s'),
+                'Actualizado por' => $banco->updatedBy->name ?? 'N/A',
+                'Fecha Actualización' => $banco->updated_at->format('Y-m-d H:i:s'),
+            ];
+        });
+
+        // Exporta los datos a un archivo Excel con encabezados
+        return Excel::download(new class($bancos) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
+            protected $bancos;
+
+            public function __construct($bancos)
+            {
+                $this->bancos = $bancos;
+            }
+
+            public function collection()
+            {
+                return $this->bancos;
+            }
+
+            public function headings(): array
+            {
+                return [
+                    'ID',
+                    'Nombre',
+                    'Estado',
+                    'Creado por',
+                    'Fecha Creación',
+                    'Actualizado por',
+                    'Fecha Actualización',
+                ];
+            }
+        }, 'bancos.xlsx');
     }
 }

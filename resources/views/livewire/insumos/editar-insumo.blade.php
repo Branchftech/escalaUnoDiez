@@ -42,7 +42,7 @@
                     <div class="mb-3 form-group col-md-6">
                         <label for="materiales">Lista</label>
                         <ul class="overflow-auto list-group scroll-container" style="max-height: 200px;">
-                            @foreach ($selectedMateriales as $material)
+                            @foreach ($selectedMaterialesEditar as $material)
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>{{ $material->nombre }}</div>
                                     <i class="cursor-pointer text-danger fa-solid fa-trash" wire:click='eliminarMaterial({{ $material->id }})'></i>
@@ -63,27 +63,28 @@
 
 @push('scripts')
     <script type="module">
-  document.addEventListener('livewire:load', function () {
-        function initSelect2() {
-            // Inicializa select2 para el select de materiales
-            $('#select2materiales').select2({
+         $('#select2materiales').select2({
                 width: '100%',
                 placeholder: "Seleccione materiales",
                 allowClear: true
             }).on('change', function(e) {
                 var data = $(this).val();
-                @this.set('selectedMateriales', data); // Corregido para enviar los IDs seleccionados
+                @this.set('materialSeleccionado', data); // Corregido para enviar los IDs seleccionados
             });
+    document.addEventListener('livewire:init', function () {
+        function initSelect2() {
+            // Inicializa select2 para el select de materiales
 
-            // Inicializa select2 para el select de obras
-            $('#select2ObrasEditar').select2({
-                width: '100%',
-                placeholder: "Seleccione una obra",
-                allowClear: true
-            }).on('change', function(e) {
-                var data = $(this).val();
-                @this.set('obraSeleccionada', data);
-            });
+
+            // // Inicializa select2 para el select de obras
+            // $('#select2ObrasEditar').select2({
+            //     width: '100%',
+            //     placeholder: "Seleccione una obra",
+            //     allowClear: true
+            // }).on('change', function(e) {
+            //     var data = $(this).val();
+            //     @this.set('obraSeleccionada', data);
+            // });
         }
 
         // Inicializa select2 al cargar la página
@@ -91,7 +92,7 @@
 
         // Re-inicializa select2 cuando se muestra el modal
         Livewire.on('refreshSelect2', () => {
-            $('#select2materiales').val(@json($selectedMateriales)).trigger('change'); // Carga IDs seleccionados
+            $('#select2materiales').val(@json($selectedMaterialesEditar)).trigger('change'); // Carga IDs seleccionados
             $('#select2ObrasEditar').val(@json($obraSeleccionada)).trigger('change'); // Carga la obra seleccionada
         });
 

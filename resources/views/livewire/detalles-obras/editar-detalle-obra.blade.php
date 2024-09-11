@@ -109,21 +109,6 @@
 
                 <!-- Cuarta fila -->
                 <div class="col-md-3">
-                    <div class="form-group">
-                        <label for="incrementoDensidad">Incremento Densidad</label>
-                        <x-input type="text" wire:model="incrementoDensidad" class="form-control" />
-                        @error('incrementoDensidad') <span class="text-danger">{{ $message }}</span> @enderror
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label for="informeDensidad">Informe Densidad</label>
-                        <x-input type="number" wire:model="informeDensidad"  class="form-control" />
-                        @error('informeDensidad') <span class="text-danger">{{ $message }}</span> @enderror
-                    </div>
-                </div>
-
-                <div class="col-md-3">
                     <label for="paises">País</label>
                     <select wire:model="paisSeleccionado" wire:change="cambiar" class="form-control" id="select2Paises">
                         <option value="" selected hidden >Seleccione un Pais</option>
@@ -147,9 +132,6 @@
                 <!-- Botones -->
                 <div class="col-md-12">
                     <div class="gap-2 mt-3 d-flex justify-content-center">
-                        <button type="button" class="btn btn-secondary" wire:click="limpiar">
-                            Limpiar
-                        </button>
                         <x-button type="submit" class="btn btn-primary">
                             Editar
                         </x-button>

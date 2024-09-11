@@ -104,24 +104,24 @@
         });
     })
 
-        Livewire.on("actualizarMaterialesInsumos", (data) => {
-            let select2 = $('#select2Material');
+    Livewire.on("actualizarMaterialesInsumos", (data) => {
+        let select2 = $('#select2Material');
 
-            // Obtén los valores actualmente seleccionados
-            let selectedValues = select2.val();
+        // Obtén los valores actualmente seleccionados
+        let selectedValues = select2.val();
 
-            // Limpia las opciones actuales
-            select2.find('option').remove();
-            // Recargar las opciones desde los materiales obtenidos en el backend
-            data[0]['materiales'].forEach(function(material) {
-                let isSelected = selectedValues.includes(material.id.toString());
-                let newOption = new Option(material.nombre, material.id, isSelected, isSelected);
-                select2.append(newOption);
-            });
-
-            // Refresca el select2 para que muestre las nuevas opciones y mantenga las selecciones anteriores
-            $('#select2Material').val(null).trigger('change');
-            select2.trigger('change');
+        // Limpia las opciones actuales
+        select2.find('option').remove();
+        // Recargar las opciones desde los materiales obtenidos en el backend
+        data[0]['materiales'].forEach(function(material) {
+            let isSelected = selectedValues.includes(material.id.toString());
+            let newOption = new Option(material.nombre, material.id, isSelected, isSelected);
+            select2.append(newOption);
         });
+
+        // Refresca el select2 para que muestre las nuevas opciones y mantenga las selecciones anteriores
+        $('#select2Material').val(null).trigger('change');
+        select2.trigger('change');
+    });
 </script>
 @endpush

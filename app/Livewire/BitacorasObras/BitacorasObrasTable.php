@@ -59,7 +59,7 @@ class BitacorasObrasTable extends DataTableComponent{
         Column::make('Descripcion', 'descripcion')
             ->sortable()->searchable()
             ->setSortingPillDirections('Asc', 'Desc'),
-            Column::make('idObra', 'idObra'),
+            Column::make('Obra', 'idObra'),
         Column::make('Creado por', 'createdBy.name'),
         Column::make('Fecha Creación', 'created_at'),
         Column::make('Actualizado por', 'updatedBy.name'),
@@ -86,6 +86,42 @@ class BitacorasObrasTable extends DataTableComponent{
 
         $this->clearSelected();
 
-        return Excel::download(new BitacoraObra($bitacoras), 'bitacoras.xlsx');
+        return Excel::download(new class($bitacoras) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
+            private $bitacoras;
+
+            public function __construct($bitacoras)
+            {
+                $this->bitacoras = BitacoraObra::whereIn('id', $bitacoras)->get();
+            }
+
+            public function collection()
+            {
+                return $this->bitacoras->map(function ($bitacora) {
+                    return [
+                        'ID' => $bitacora->id,
+                        'Descripción' => $bitacora->descripcion,
+                        'ID Obra' => $bitacora->idObra,
+                        'Creado por' => $bitacora->created_by,
+                        'Fecha Creación' => $bitacora->created_at,
+                        'Actualizado por' => $bitacora->updated_by,
+                        'Fecha Actualización' => $bitacora->updated_at,
+                    ];
+                });
+            }
+
+            public function headings(): array
+            {
+                return [
+                    'ID',
+                    'Descripción',
+                    'ID Obra',
+                    'Creado por',
+                    'Fecha Creación',
+                    'Actualizado por',
+                    'Fecha Actualización',
+                ];
+            }
+        }, 'bitacoras.xlsx');
+
     }
 }

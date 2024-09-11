@@ -19,7 +19,7 @@ class EditarInsumo extends ServicesComponent
     #Select materiales
     public $materiales;
     public $materialSeleccionado;
-    public $selectedMateriales = [];
+    public $selectedMaterialesEditar = [];
     public $listeners = ['cargarModalEditarInsumo'];
 
     public function mount(Insumo $model)
@@ -53,7 +53,7 @@ class EditarInsumo extends ServicesComponent
         ]);
         try {
             $user = Auth::user();
-            Insumo::editarInsumo($this->model['id'], $this->costo, $this->cantidad, $this->fecha, $this->obraSeleccionada, $this->selectedMateriales, $user->id);
+            Insumo::editarInsumo($this->model['id'], $this->costo, $this->cantidad, $this->fecha, $this->obraSeleccionada, $this->selectedMaterialesEditar, $user->id);
             $this->dispatch('refreshInsumosTable')->to(InsumosTable::class);
             $this->render();
             $this->limpiar();
@@ -73,7 +73,8 @@ class EditarInsumo extends ServicesComponent
         $this->obras = Obra::all();
         $this->obraSeleccionada = $this->model['idObra'];
         $this->materiales = Material::orderBy('nombre', 'asc')->get();
-        $this->selectedMateriales =$this->model->materiales->all();
+        $this->selectedMaterialesEditar = Material::whereIn('id', $this->model->materiales->pluck('id'))->get();
+
         $this->showModal = true;
     }
     public function limpiar()
@@ -89,23 +90,25 @@ class EditarInsumo extends ServicesComponent
     {
         $this->showModal = false;
     }
-    public function updatedMaterialSeleccionado($material)
+    public function updatedMaterialSeleccionado($materialId)
     {
         $this->validate([
             'materialSeleccionado' => 'required|exists:material,id',
         ]);
 
-        $material = Material::find($material);
+        $material = Material::find($materialId);
 
-        if ($material && !in_array($material, $this->selectedMateriales)) {
-            $this->selectedMateriales[] = $material;
+        if ($material && !$this->selectedMaterialesEditar->contains($material)) {
+            $this->selectedMaterialesEditar->push($material);
         }
     }
 
-    public function eliminarMaterial($index)
+
+
+    public function eliminarMaterial($materialId)
     {
-        $this->selectedMateriales = array_filter($this->selectedMateriales, function($material) use ($index) {
-            return $material->id !== $index;
+        $this->selectedMaterialesEditar = $this->selectedMaterialesEditar->filter(function($material) use ($materialId) {
+            return $material->id !== $materialId;
         });
     }
 }

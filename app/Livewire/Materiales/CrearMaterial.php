@@ -80,7 +80,7 @@ class CrearMaterial extends ServicesComponent
     {
 
         $this->reset(['nombre', 'precioNormal', 'unidadSelected', 'editarMaterialSelected']);
-        $this->unidades = Unidad::orderBy('nombre', 'asc')->get();
+
         $materiales = Material::orderBy('nombre', 'asc')->get();
         $this->dispatch('actualizarMateriales', compact('materiales'));
         $this->dispatch('actualizarMateriales')->to(CrearInsumo::class);

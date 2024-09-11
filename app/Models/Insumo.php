@@ -32,7 +32,6 @@ class Insumo extends Model
 
     static function crearInsumo($costo, $cantidad, $fecha, $idObra, $materiales = [], $userId )
     {
-
         $insumo = new Insumo();
         $insumo->costo = $costo;
         $insumo->cantidad =$cantidad;
@@ -70,6 +69,9 @@ class Insumo extends Model
         }else{
             $insumo->materiales()->sync([]);
         }
+
+
+
         return $insumo;
     }
 

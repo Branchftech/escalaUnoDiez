@@ -12,7 +12,6 @@ class DetallesObrasTable extends Component
     public $model;
     public $calle,$id, $manzana, $lote, $estado,$pais, $fraccionamiento, $lat, $lng;
 
-    public $listeners = ['cargarCroquis'];
 
     public function mount($id)
     {
@@ -68,5 +67,7 @@ class DetallesObrasTable extends Component
             'lng' => $this->lng
         ]);
     }
+
+
 }
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FormasPagoTable extends DataTableComponent{
     use LivewireAlert;
@@ -58,5 +59,66 @@ class FormasPagoTable extends DataTableComponent{
                     ])
                 )->html(),
         ];
+    }
+
+    public function bulkActions(): array
+    {
+        return [
+            'export' => 'Export',
+        ];
+    }
+
+    public function export()
+    {
+        // Obtén los IDs seleccionados
+        $selectedIds = $this->getSelected();
+
+        // Si no hay bancos seleccionados, evita realizar la exportación
+        if (empty($selectedIds)) {
+            $this->alert('warning', 'No se han seleccionado formas de pago para exportar.');
+            return;
+        }
+
+        // Limpia la selección actual
+        $this->clearSelected();
+
+        // Obtén los registros completos de los bancos seleccionados y formatear los datos
+        $formaPagos = FormaPago::whereIn('id', $selectedIds)->get()->map(function($formaPago) {
+            return [
+                'ID' => $formaPago->id,
+                'Nombre' => $formaPago->nombre,
+                'Creado por' => $formaPago->createdBy->name ?? 'N/A',
+                'Fecha Creación' => $formaPago->created_at->format('Y-m-d H:i:s'),
+                'Actualizado por' => $formaPago->updatedBy->name ?? 'N/A',
+                'Fecha Actualización' => $formaPago->updated_at->format('Y-m-d H:i:s'),
+            ];
+        });
+
+        // Exporta los datos a un archivo Excel con encabezados
+        return Excel::download(new class($formaPagos) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
+            protected $formaPagos;
+
+            public function __construct($formaPagos)
+            {
+                $this->formaPagos = $formaPagos;
+            }
+
+            public function collection()
+            {
+                return $this->formaPagos;
+            }
+
+            public function headings(): array
+            {
+                return [
+                    'ID',
+                    'Nombre',
+                    'Creado por',
+                    'Fecha Creación',
+                    'Actualizado por',
+                    'Fecha Actualización',
+                ];
+            }
+        }, 'formaPagos.xlsx');
     }
 }

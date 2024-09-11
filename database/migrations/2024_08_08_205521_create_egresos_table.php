@@ -10,11 +10,10 @@ class CreateEgresosTable extends Migration
         Schema::create('egresos', function (Blueprint $table) {
             $table->id();
             $table->decimal('cantidad', 10, 2);
-            $table->string('cheque');
             $table->unsignedBigInteger('idObra');
             $table->foreign('idObra')->references('id')->on('obra');
-            $table->unsignedBigInteger('idCliente');
-            $table->foreign('idCliente')->references('id')->on('cliente');
+            $table->unsignedBigInteger('idProveedor');
+            $table->foreign('idProveedor')->references('id')->on('proveedores');
             $table->unsignedBigInteger('idFormaPago');
             $table->foreign('idFormaPago')->references('id')->on('formaPago');
             $table->unsignedBigInteger('idBanco');
@@ -26,8 +25,8 @@ class CreateEgresosTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unsignedBigInteger('created_by')->nullable(); 
-            $table->unsignedBigInteger('updated_by')->nullable(); 
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->unsignedBigInteger('deleted_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');

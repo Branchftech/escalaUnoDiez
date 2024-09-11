@@ -59,10 +59,11 @@
                 <span class="title">Obras</span>
             </a>
         </li>
-         <li data-title="" class="{{ request()->routeIs('item4') ? 'activar' : '' }}">
-            <a onclick="return false;" class="d-flex align-items-center">
+        <li data-title="" class=" {{ request()->routeIs('egresos') ? 'activar' : '' }}">
+            <a href="{{ route('egresos') }}" wire:navigate
+                class="d-flex align-items-center ">
                 <span class="icon d-flex justify-content-center align-items-center me-2"><i class="fa-solid fa-money-bill-transfer"></i></span>
-                <span class="title">Movimientos</span>
+                <span class="title">Egresos</span>
             </a>
         </li>
         <li data-title="" class="{{ request()->routeIs('item5') ? 'activar' : '' }}">

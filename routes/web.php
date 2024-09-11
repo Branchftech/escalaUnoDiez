@@ -12,6 +12,7 @@ use App\Http\Controllers\Materiales\MaterialesController;
 use App\Http\Controllers\Insumos\InsumosController;
 use App\Http\Controllers\DetallesObras\DetallesObrasController;
 use App\Http\Controllers\DocumentosObras\DocumentosObrasController;
+use App\Http\Controllers\Egresos\EgresosController;
 use App\Http\Controllers\Obras\ObrasController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/bitacorasObras', [BitacorasObrasController::class, 'index'])->name('bitacorasObras');
 
     Route::get('/documentosObras', [DocumentosObrasController::class, 'index'])->name('documentosObras');
+
+    Route::get('/egresos', [EgresosController::class, 'index'])->name('egresos');
 
 
 });

@@ -75,7 +75,12 @@
         </div>
 
         <div class="signature">
-            <div class="signature-line">Firma de recibido</div>
+            @if($firmaUrl)
+                <img src="{{ $firmaUrl }}" alt="Firma" style="width: 200px; height: 100px; margin-left: auto;">
+            @endif
+            <div class="signature-line" style="text-align: center">
+                Firma de recibido
+            </div>
         </div>
     </div>
 </body>

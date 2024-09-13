@@ -7,6 +7,7 @@ use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Maatwebsite\Excel\Facades\Excel;
+use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
 
 class EgresosTable extends DataTableComponent{
     use LivewireAlert;
@@ -59,6 +60,7 @@ class EgresosTable extends DataTableComponent{
         Column::make('Concepto', 'concepto'),
         Column::make('Cantidad', 'cantidad'),
         Column::make('Fecha', 'fecha'),
+        BooleanColumn::make('Firmado', 'firmado')->deselected(),
         Column::make('Obra', 'obra.detalle.nombreObra')
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),

@@ -72,22 +72,24 @@ class EditarEgreso extends ServicesComponent
 
     public function editarEgreso()
     {
-        $this->validate([
-            'cantidad' => 'required|numeric',
-            'fecha' => 'required|date',
-            'concepto' => 'required|string',
-            'obraSeleccionada' => 'required|exists:obra,id',
-            'proveedorSeleccionado' => 'required|exists:proveedores,id',
-            'formaPagoSeleccionada' => 'required|exists:formaPago,id',
-            'bancoSeleccionado' => 'required|exists:banco,id',
-            'selectedServiciosEditar' => 'required|array',
-            'selectedServiciosEditar.*' => 'exists:servicio,id',
 
-        ]);
+
 
         try {
+            $this->validate([
+                'cantidad' => 'required|numeric',
+                'fecha' => 'required|date',
+                'concepto' => 'required|string',
+                'obraSeleccionada' => 'required|exists:obra,id',
+                'proveedorSeleccionado' => 'required|exists:proveedores,id',
+                'formaPagoSeleccionada' => 'required|exists:formaPago,id',
+                'bancoSeleccionado' => 'required|exists:banco,id',
+                // 'selectedServiciosEditar' => 'required|array',
+                // 'selectedServiciosEditar. *' => 'exists:servicio,id',
+            ]);
             $user = Auth::user();
-            Egreso::editarEgreso($this->model['id'], $this->cantidad, $this->fecha, $this->concepto, $this->obraSeleccionada, $this->proveedorSeleccionado, $this->formaPagoSeleccionada, $this->bancoSeleccionado, $this->selectedServiciosEditar, $user->id);
+            $egreso= Egreso::editarEgreso($this->model['id'], $this->cantidad, $this->obraSeleccionada, $this->proveedorSeleccionado, $this->formaPagoSeleccionada, $this->bancoSeleccionado, $this->selectedServiciosEditar, $this->concepto, $this->fecha, $user->id);
+
             $this->dispatch('refreshEgresosTable')->to(EgresosTable::class);
             $this->render();
             $this->limpiar();

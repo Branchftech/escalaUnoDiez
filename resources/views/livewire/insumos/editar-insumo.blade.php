@@ -71,36 +71,19 @@
                 var data = $(this).val();
                 @this.set('materialSeleccionado', data); // Corregido para enviar los IDs seleccionados
             });
-    document.addEventListener('livewire:init', function () {
-        function initSelect2() {
-            // Inicializa select2 para el select de materiales
+        document.addEventListener('livewire:init', function () {
 
+            // Re-inicializa select2 cuando se muestra el modal
+            Livewire.on('refreshSelect2', () => {
+                $('#select2materiales').val(@json($selectedMaterialesEditar)).trigger('change'); // Carga IDs seleccionados
+                $('#select2ObrasEditar').val(@json($obraSeleccionada)).trigger('change'); // Carga la obra seleccionada
+            });
 
-            // // Inicializa select2 para el select de obras
-            // $('#select2ObrasEditar').select2({
-            //     width: '100%',
-            //     placeholder: "Seleccione una obra",
-            //     allowClear: true
-            // }).on('change', function(e) {
-            //     var data = $(this).val();
-            //     @this.set('obraSeleccionada', data);
-            // });
-        }
-
-        // Inicializa select2 al cargar la página
-        initSelect2();
-
-        // Re-inicializa select2 cuando se muestra el modal
-        Livewire.on('refreshSelect2', () => {
-            $('#select2materiales').val(@json($selectedMaterialesEditar)).trigger('change'); // Carga IDs seleccionados
-            $('#select2ObrasEditar').val(@json($obraSeleccionada)).trigger('change'); // Carga la obra seleccionada
+            // Evento para mostrar el modal y reinicializar select2
+            $('#modalEditarInsumo').on('shown.bs.modal', function () {
+                initSelect2();
+                Livewire.emit('refreshSelect2');
+            });
         });
-
-        // Evento para mostrar el modal y reinicializar select2
-        $('#modalEditarInsumo').on('shown.bs.modal', function () {
-            initSelect2();
-            Livewire.emit('refreshSelect2');
-        });
-    });
     </script>
 @endpush

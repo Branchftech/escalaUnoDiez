@@ -77,9 +77,17 @@ Route::middleware(['auth'])->group(function () {
         // Devuelve el PDF en el navegador
         return $pdf->stream('archivo.pdf');
     });
-    Route::get('/pdf/recibo/{id}', [EgresosController::class, 'pdfRecibo'])->name('pdfRecibo');
 
-   // Route::get('/pdf/recibo', [EgresosController::class, 'pdfRecibo'])->name('pdf/recibo');
+    // Route::get('/pdf/recibo/{id}', [EgresosController::class, 'pdfRecibo'])->name('pdf.recibo');
+    // Route::get('/firmar-recibo/{id}', [EgresosController::class, 'mostrarFormularioFirma']);
+    // Route::post('/guardar-firma', [EgresosController::class, 'guardarFirma']);
+
+
+    Route::get('/firmar-recibo/{id}', [EgresosController::class, 'mostrarFormularioFirma'])->name('egresos.firmar');
+    Route::post('/guardar-firma', [EgresosController::class, 'guardarFirma'])->name('egresos.guardarFirma');
+    Route::post('/generar-reporte', [EgresosController::class, 'generarReporte'])->name('generarReporte');
+
+    // Route::get('/pdf/recibo', [EgresosController::class, 'pdfRecibo'])->name('pdf/recibo');
 });
-
+Route::get('/pdf/recibo/{id}', [EgresosController::class, 'pdfRecibo'])->name('egresos.pdf');
 require __DIR__ . '/auth.php';

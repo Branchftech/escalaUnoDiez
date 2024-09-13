@@ -25,6 +25,7 @@ class Egreso extends Model
         'idBanco',
         'concepto',
         'fecha',
+        'firmado',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -44,6 +45,7 @@ class Egreso extends Model
         $egreso->idBanco = $idBanco;
         $egreso->concepto = $concepto;
         $egreso->fecha = $fecha;
+        $egreso->firmado = 0;
         $egreso->created_by = $userId;
         $egreso->created_at = now();
         $egreso->save();
@@ -70,14 +72,13 @@ class Egreso extends Model
             $egreso->idBanco = $idBanco;
             $egreso->concepto = $concepto;
             $egreso->fecha = $fecha;
-            if (!empty($servicios)) {
-                $serviciosCollection = collect($servicios);
-                $servicioIds = $serviciosCollection->pluck('id')->toArray();
-                $egreso->servicios()->sync($servicioIds);
-
-            }else{
-                $egreso->servicios()->sync([]);
-            }
+           // $egreso->firmado = 1;
+            // Aquí simplemente sincronizas los IDs de servicios seleccionados
+        if (!empty($servicios)) {
+            $egreso->servicios()->sync($servicios);
+        } else {
+            $egreso->servicios()->sync([]); // Si no hay servicios seleccionados
+        }
             $egreso->updated_by = $userId;
             $egreso->updated_at = now();
             $egreso->save();

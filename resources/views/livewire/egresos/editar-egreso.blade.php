@@ -19,7 +19,7 @@
                         @error('concepto') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                     <div>
-                        <div class="form-group d-flex flex-column" wire:ignore>
+                        <div class="form-group d-flex flex-column" >
                             <label for="obras">Obras</label>
                             <select wire:model="obraSeleccionada" class="form-control" id="select2ObrasEditar">
                                 <option value=""  hidden>Seleccione una Obra</option>
@@ -31,7 +31,7 @@
                         @error('obraSeleccionada') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                     <div>
-                        <div class="form-group d-flex flex-column" wire:ignore>
+                        <div class="form-group d-flex flex-column">
                             <label for="proveedores">Proveedores</label>
                             <select wire:model="proveedorSeleccionado" class="form-control" id="select2ProveedoresEditar">
                                 <option value=""  hidden>Seleccione un Proveedor</option>
@@ -43,7 +43,7 @@
                         @error('proveedorSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                     <div>
-                        <div class="form-group d-flex flex-column" wire:ignore>
+                        <div class="form-group d-flex flex-column" >
                             <label for="formasPago">Formas de Pago</label>
                             <select wire:model="formaPagoSeleccionada" class="form-control" id="select2FormasPagoEditar">
                                 <option value=""  hidden>Seleccione una Forma de Pago</option>
@@ -55,7 +55,7 @@
                         @error('formaPagoSeleccionada') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                     <div>
-                        <div class="form-group d-flex flex-column" wire:ignore>
+                        <div class="form-group d-flex flex-column" >
                             <label for="bancos">Bancos</label>
                             <select wire:model="bancoSeleccionado" class="form-control" id="select2BancosEditar">
                                 <option value=""  hidden>Seleccione un Banco</option>

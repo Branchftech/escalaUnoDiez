@@ -44,7 +44,7 @@ class CrearInsumo extends ServicesComponent
             'materialesSeleccionados' => 'required|array',
             'materialesSeleccionados.*' => 'min:1|exists:material,id', // Validación de que cada ID existe en la tabla materiales
         ]);
-
+        try {
             $user = Auth::user();
             $materiales = Material::whereIn('id', $this->materialesSeleccionados)->get();
             Insumo::crearInsumo($this->costo, $this->cantidad, $this->fecha,$this->obraSelected, $materiales, $user->id);
@@ -52,7 +52,7 @@ class CrearInsumo extends ServicesComponent
             $this->render();
             $this->limpiar();
             $this->alertService->success($this, 'Insumo creado con éxito');
-            try {
+
         } catch (\Exception $th) {
             $this->alertService->error($this, 'Error al crear el Insumo');
             $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());

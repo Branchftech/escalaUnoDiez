@@ -45,6 +45,13 @@
 </div>
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    #map {
+        height: 400px; /* Ajusta la altura y el ancho según sea necesario */
+        width: 100%;
+    }
+
+</style>
 @endpush
 
 {{-- @push('scripts')
@@ -92,12 +99,259 @@
     </script>
 @endpush --}}
 
+{{-- @push('scripts')
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module">
+        window.addEventListener('livewire:init', () => {
+            let mapInitialized = false;
+            let marker;
+
+            // Escuchar el evento de cambiar la pestaña y asegurarse de que el mapa se inicializa solo una vez
+            document.querySelector('a[href="#ex-with-icons-tabs-3"]').addEventListener('shown.bs.tab', function () {
+                if (!mapInitialized) {
+                    const lat = @json($lat);
+                    const lng = @json($lng);
+
+                    if (lat === null || lng === null) {
+                        console.error('Las coordenadas son nulas. No se puede inicializar el mapa.');
+                        return;
+                    }
+
+                    const latitude = parseFloat(lat);
+                    const longitude = parseFloat(lng);
+
+                    if (isNaN(latitude) || isNaN(longitude)) {
+                        console.error('Las coordenadas no son válidas:', lat, lng);
+                        return;
+                    }
+
+                    // Inicializa el mapa centrado en las coordenadas obtenidas por la dirección
+                    var map = L.map('map').setView([latitude, longitude], 13);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '© OpenStreetMap'
+                    }).addTo(map);
+
+                    // Coloca un marcador en las coordenadas iniciales
+                    marker = L.marker([latitude, longitude], {
+                        draggable: true // Permitir que el marcador sea arrastrable
+                    }).addTo(map);
+
+                    // Evento de arrastrar el marcador
+                    marker.on('dragend', function(e) {
+                        const newLatLng = marker.getLatLng();
+                        const newLat = newLatLng.lat;
+                        const newLng = newLatLng.lng;
+                        console.log('Dispatching to Livewire', newLat, newLng);
+                        //Dispatch a Livewire con las nuevas coordenadas
+                        Livewire.dispatch( 'reverseGeocode', {
+                            lat: newLat,
+                            lng: newLng
+                        });
+                        // Livewire.emit('reverseGeocode', {
+                        //     lat: newLat,
+                        //     lng: newLng
+                        // });
+                        console.log('Dispatching to Livewire redy');
+                    });
+
+                    // Forzar redimensionamiento del mapa cuando se muestra
+                    map.invalidateSize();
+                    mapInitialized = true;
+                }
+            });
+
+            // Escuchar eventos de actualización desde Livewire si es necesario
+            // Livewire.on('updateMap', (data) => {
+            //     console.log(data[0]['coordenadas'].latitud);
+            //     if (mapInitialized && marker) {
+            //         const latitude = data[0]['coordenadas'].latitud;
+            //         const longitude = data[0]['coordenadas'].longitud;
+            //         marker.setLatLng([latitude, longitude]).update();
+            //         map.setView([latitude, longitude], 13);
+            //     }
+            // });
+             // Escuchar eventos de actualización desde Livewire si es necesario
+            Livewire.on('updateMap', (data) => {
+            console.log(data[0]['coordenadas'].latitud);
+            console.log(leafletMap);
+            if (mapInitialized && marker && leafletMap) {
+                const latitude = data[0]['coordenadas'].latitud;
+                const longitude = data[0]['coordenadas'].longitud;
+                marker.setLatLng([latitude, longitude]).update();
+                leafletMap.setView([latitude, longitude], 13);
+                leafletMap.invalidateSize();
+            }
+        });
+        });
+    </script>
+
+@endpush --}}
+
+
 @push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module">
+
+    function mostrarTab1() {
+        // Remover la clase 'active' de todas las pestañas
+        document.querySelectorAll('.nav-link').forEach(function (tab) {
+            tab.classList.remove('active');
+        });
+
+        // Añadir la clase 'active' a la pestaña 1
+        document.querySelector('a[href="#ex-with-icons-tabs-1"]').classList.add('active');
+
+        // Remover la clase 'show active' de todos los contenidos de las pestañas
+        document.querySelectorAll('.tab-pane').forEach(function (pane) {
+            pane.classList.remove('show', 'active');
+        });
+
+        // Añadir la clase 'show active' al contenido de la pestaña 1
+        document.querySelector('#ex-with-icons-tabs-1').classList.add('show', 'active');
+    }
+    window.addEventListener('livewire:init', () => {
+        let mapInitialized = false;
+        let marker;
+        let leafletMap;
+
+        // Escuchar el evento de cambiar la pestaña y asegurarse de que el mapa se inicializa solo una vez
+        // document.querySelector('a[href="#ex-with-icons-tabs-3"]').addEventListener('shown.bs.tab', function () {
+
+        // });
+        function manejarCambioDePestana() {
+            if (!mapInitialized) {
+                const lat = @json($lat);
+                const lng = @json($lng);
+
+                if (lat === null || lng === null) {
+                    console.error('Las coordenadas son nulas. No se puede inicializar el mapa.');
+                    return;
+                }
+
+                const latitude = parseFloat(lat);
+                const longitude = parseFloat(lng);
+
+                if (isNaN(latitude) || isNaN(longitude)) {
+                    console.error('Las coordenadas no son válidas:', lat, lng);
+                    return;
+                }
+
+                // Inicializa el mapa centrado en las coordenadas obtenidas por la dirección
+                leafletMap = L.map('map').setView([latitude, longitude], 13);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(leafletMap);
+
+                // Coloca un marcador en las coordenadas iniciales
+                marker = L.marker([latitude, longitude], {
+                    draggable: true // Permitir que el marcador sea arrastrable
+                }).addTo(leafletMap);
+
+                // Evento de arrastrar el marcador
+                marker.on('dragend', function(e) {
+                    const newLatLng = marker.getLatLng();
+                    const newLat = newLatLng.lat;
+                    const newLng = newLatLng.lng;
+
+                    // Dispatch a Livewire con las nuevas coordenadas
+                    Livewire.dispatch('reverseGeocode', {
+                        lat: newLat,
+                        lng: newLng
+                    });
+                });
+
+                // Forzar redimensionamiento del mapa cuando se muestra
+                leafletMap.invalidateSize();
+                mapInitialized = true;
+            }else{
+                console.log("en la caca");
+            }
+        }
+
+        document.querySelector('a[href="#ex-with-icons-tabs-3"]').addEventListener('shown.bs.tab', function () {
+            // Invoca la función manejarCambioDePestana cuando se muestra la pestaña
+            manejarCambioDePestana();
+        });
+
+        // Escuchar eventos de actualización desde Livewire si es necesario
+        Livewire.on('updateMap', (data) => {
+             // Seleccionar y mostrar el Tab 1 antes de crear el mapa
+            mostrarTab1();
+            console.log(data[0]['coordenadas'].latitud);
+            console.log(leafletMap); // Verificar que sea la instancia correcta de Leaflet
+            if (mapInitialized && marker && leafletMap) {
+                const latitude = data[0]['coordenadas'].latitud;
+                const longitude = data[0]['coordenadas'].longitud;
+                leafletMap.remove();
+                mapInitialized = false;
+                const mapContainer = document.getElementById('map');
+                console.log(mapContainer);
+                //manejarCambioDePestana();
+
+                // // Inicializa el mapa centrado en las coordenadas obtenidas por la dirección
+                // leafletMap = L.map('map').setView([latitude, longitude], 13);
+                //  // Coloca un marcador en las coordenadas iniciales
+                //  marker = L.marker([latitude, longitude], {
+                //     draggable: true // Permitir que el marcador sea arrastrable
+                // }).addTo(leafletMap);
+
+                // leafletMap.invalidateSize();
+                // mapInitialized = true;
+            }
+        });
+    });
+
+</script>
+@endpush
+
+{{-- @push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module">
     window.addEventListener('livewire:init', () => {
         let mapInitialized = false;
         let marker;
+        let leafletMap;
+
+        // Función para inicializar el mapa
+        function initMap(latitude, longitude) {
+            // Si el mapa ya está inicializado, removerlo antes de crear uno nuevo
+            if (leafletMap) {
+                leafletMap.remove();
+            }
+
+            // Inicializa el mapa centrado en las coordenadas obtenidas por la dirección
+            leafletMap = L.map('map').setView([latitude, longitude], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(leafletMap);
+
+            // Coloca un marcador en las coordenadas iniciales
+            marker = L.marker([latitude, longitude], {
+                draggable: true // Permitir que el marcador sea arrastrable
+            }).addTo(leafletMap);
+
+            // Evento de arrastrar el marcador
+            marker.on('dragend', function(e) {
+                const newLatLng = marker.getLatLng();
+                const newLat = newLatLng.lat;
+                const newLng = newLatLng.lng;
+
+                // Dispatch a Livewire con las nuevas coordenadas
+                Livewire.dispatch('reverseGeocode', {
+                    lat: newLat,
+                    lng: newLng
+                });
+            });
+
+            leafletMap.invalidateSize();
+            mapInitialized = true;
+        }
 
         // Escuchar el evento de cambiar la pestaña y asegurarse de que el mapa se inicializa solo una vez
         document.querySelector('a[href="#ex-with-icons-tabs-3"]').addEventListener('shown.bs.tab', function () {
@@ -118,55 +372,21 @@
                     return;
                 }
 
-                // Inicializa el mapa centrado en las coordenadas obtenidas por la dirección
-                var map = L.map('map').setView([latitude, longitude], 13);
-
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '© OpenStreetMap'
-                }).addTo(map);
-
-                // Coloca un marcador en las coordenadas iniciales
-                marker = L.marker([latitude, longitude], {
-                    draggable: true // Permitir que el marcador sea arrastrable
-                }).addTo(map);
-
-                // Evento de arrastrar el marcador
-                marker.on('dragend', function(e) {
-                    const newLatLng = marker.getLatLng();
-                    const newLat = newLatLng.lat;
-                    const newLng = newLatLng.lng;
-                    console.log("newLat");
-                        console.log(newLat);
-                        console.log(newLng);
-                    // Verificar si Livewire está disponible y emitir el evento
-                    if (typeof Livewire !== 'undefined') {
-                        console.log("reverseGeocode");
-                        Livewire.on('reverseGeocode', newLat, newLng);
-                    } else {
-                        console.error('Livewire no está disponible.');
-                    }
-                });
-
-                // Forzar redimensionamiento del mapa cuando se muestra
-                map.invalidateSize();
-                mapInitialized = true;
+                // Inicializar el mapa
+                initMap(latitude, longitude);
             }
         });
 
         // Escuchar eventos de actualización desde Livewire si es necesario
         Livewire.on('updateMap', (data) => {
-            if (mapInitialized && marker) {
-                const latitude = parseFloat(data.lat);
-                const longitude = parseFloat(data.lng);
-                console.log("longitude");
-                console.log(longitude);
-                marker.setLatLng([latitude, longitude]).update();
-                map.setView([latitude, longitude], 13);
-            }
+            const latitude = data[0]['coordenadas'].latitud;
+            const longitude = data[0]['coordenadas'].longitud;
+            console.log(`Actualizando mapa con nuevas coordenadas: ${latitude}, ${longitude}`);
+
+            // Reinicializar el mapa con las nuevas coordenadas
+            initMap(latitude, longitude);
         });
     });
 </script>
-@endpush
-
+@endpush --}}
 

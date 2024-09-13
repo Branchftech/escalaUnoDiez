@@ -69,7 +69,7 @@
                         </select>
                         @error('clienteSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
-                    <div class="col-md-3">
+                    {{-- <div class="col-md-3">
                         <div  wire:ignore>
                             <label for="proveedores">Proveedores</label>
                             <select wire:model="proveedoresSeleccionados" multiple class="form-control" id="select2proveedores">
@@ -77,6 +77,18 @@
                                 @foreach ($proveedores as $proveedor)
                                     <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option>
                                 @endforeach
+                            </select>
+                        </div>
+                        @error('proveedoresSeleccionados') <span class="text-danger">{{ $message }}</span> @enderror
+                    </div> --}}
+                    <div class="col-md-3">
+                        <div class="form-group" wire:ignore>
+                            <label for="proveedores">Proveedores</label>
+                            <select wire:model="proveedoresSeleccionados" multiple class="form-control" id="select2proveedores" style="width: 100%;">
+                                <option value=""  hidden>Seleccione los proveedores</option>
+                                @foreach ($proveedores as $proveedor)
+                                <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option>
+                            @endforeach
                             </select>
                         </div>
                         @error('proveedoresSeleccionados') <span class="text-danger">{{ $message }}</span> @enderror
@@ -186,7 +198,9 @@
     <script type="module">
 
             $('#select2proveedores').select2({
-                width: '100%'
+                width: '100%',
+                placeholder: "",
+                allowClear: true
             });
             $('#select2proveedores').on('change', function(e) {
                 var data = $('#select2proveedores').select2("val");

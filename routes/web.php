@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 Route::middleware(['auth'])->group(function () {
 
@@ -60,7 +61,24 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/egresos', [EgresosController::class, 'index'])->name('egresos');
 
+    Route::get('/generar-pdf', function () {
+        // Datos que puedes enviar a la vista (si es necesario)
+        $data = [
+            'nombre' => 'Mario Resendiz',
+            'cantidad' => 5800,
+            'obra' => 'Zirahuen',
+            'concepto' => 'Plomería',
+            'fecha' => '15 Enero 2024'
+        ];
 
+        // Renderiza la vista y pasa los datos
+        $pdf = PDF::loadView('pdf.recibo.recibo', $data);
+
+        // Devuelve el PDF en el navegador
+        return $pdf->stream('archivo.pdf');
+    });
+
+    Route::get('/pdf/recibo', [EgresosController::class, 'pdfRecibo'])->name('pdf/recibo');
 });
 
 require __DIR__ . '/auth.php';

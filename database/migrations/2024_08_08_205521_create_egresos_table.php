@@ -18,8 +18,6 @@ class CreateEgresosTable extends Migration
             $table->foreign('idFormaPago')->references('id')->on('formaPago');
             $table->unsignedBigInteger('idBanco');
             $table->foreign('idBanco')->references('id')->on('banco');
-            $table->unsignedBigInteger('idServicio');
-            $table->foreign('idServicio')->references('id')->on('servicio');
             $table->string('concepto', 100);
             $table->date('fecha');
             $table->timestamps();

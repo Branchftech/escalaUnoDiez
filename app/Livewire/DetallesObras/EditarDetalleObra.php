@@ -18,7 +18,7 @@ class EditarDetalleObra extends ServicesComponent
     $fraccionamiento,$dictamenUsoSuelo, $estados, $paises, $paisSeleccionado, $estadoSeleccionado,
     $estadosObra, $estadoObraSeleccionado;
     public $model, $id;
-
+    protected $listeners = ['refreshDireccion' => 'refreshDireccion'];
 
     public function mount($id)
     {
@@ -83,7 +83,7 @@ class EditarDetalleObra extends ServicesComponent
 
             //$this->dispatch('refreshClientesTable')->to(ClientesTable::class);
             $this->render();
-
+            $this->dispatch( 'recargarMapa', $this->model->id);
             // $this->limpiar();
             $this->alertService->success($this, 'Detalle Obra editado con éxito');
         } catch (\Exception $th) {
@@ -92,24 +92,27 @@ class EditarDetalleObra extends ServicesComponent
         }
     }
 
-    // public function limpiar()
-    // {
-        // $this->reset('nombreObra');
-        // $this->reset('total');
-        // $this->reset('moneda');
-        // $this->reset('fechaInicio');
-        // $this->reset('fechaFin');
-        // $this->reset('calle');
-        // $this->reset('manzana');
-        // $this->reset('lote');
-        // $this->reset('metrosCuadrados');
-        // $this->reset('fraccionamiento');
-        // $this->reset('dictamenUsoSuelo');
-        // $this->reset('estadoObraSeleccionado');
-        // $this->reset('estadoSeleccionado');
-        // $this->reset('paisSeleccionado');
+    public function refreshDireccion($calle, $estado, $pais)
+    {
+        $this->calle = $calle;
+        // Busca el ID del estado sin importar mayúsculas o minúsculas
+        $estadoEncontrado = Estado::whereRaw('LOWER(nombre) = ?', [strtolower($estado)])->first();
+        if ($estadoEncontrado) {
+            $this->estadoSeleccionado = $estadoEncontrado->id;
+        } else {
+            // Manejar el caso donde no se encontró el estado
+            $this->estadoSeleccionado = null;
+        }
 
-        // $this->paises = Pais::all();
-        // $this->estados = [];
-    //}
+        // Busca el ID del país sin importar mayúsculas o minúsculas
+        $paisEncontrado = Pais::whereRaw('LOWER(nombre) = ?', [strtolower($pais)])->first();
+
+        if ($paisEncontrado) {
+            $this->paisSeleccionado = $paisEncontrado->id;
+        } else {
+            // Manejar el caso donde no se encontró el país
+            $this->paisSeleccionado = null;
+        }
+    }
+
 }

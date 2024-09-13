@@ -77,8 +77,9 @@ Route::middleware(['auth'])->group(function () {
         // Devuelve el PDF en el navegador
         return $pdf->stream('archivo.pdf');
     });
+    Route::get('/pdf/recibo/{id}', [EgresosController::class, 'pdfRecibo'])->name('pdfRecibo');
 
-    Route::get('/pdf/recibo', [EgresosController::class, 'pdfRecibo'])->name('pdf/recibo');
+   // Route::get('/pdf/recibo', [EgresosController::class, 'pdfRecibo'])->name('pdf/recibo');
 });
 
 require __DIR__ . '/auth.php';

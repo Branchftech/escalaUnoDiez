@@ -13,6 +13,8 @@ use App\Http\Controllers\Insumos\InsumosController;
 use App\Http\Controllers\DetallesObras\DetallesObrasController;
 use App\Http\Controllers\DocumentosObras\DocumentosObrasController;
 use App\Http\Controllers\Egresos\EgresosController;
+use App\Http\Controllers\Ingresos\IngresosController;
+use App\Http\Controllers\Destajos\DestajosController;
 use App\Http\Controllers\Obras\ObrasController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
@@ -60,6 +62,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/documentosObras', [DocumentosObrasController::class, 'index'])->name('documentosObras');
 
     Route::get('/egresos', [EgresosController::class, 'index'])->name('egresos');
+
+    Route::get('/ingresos', [IngresosController::class, 'index'])->name('ingresos');
+
+    Route::get('/destajos', [DestajosController::class, 'index'])->name('destajos');
+
 
     Route::get('/generar-pdf', function () {
         // Datos que puedes enviar a la vista (si es necesario)

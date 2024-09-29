@@ -69,9 +69,6 @@ class Insumo extends Model
         }else{
             $insumo->materiales()->sync([]);
         }
-
-
-
         return $insumo;
     }
 

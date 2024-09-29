@@ -66,13 +66,20 @@
                 <span class="title">Egresos</span>
             </a>
         </li>
-        <li data-title="" class="{{ request()->routeIs('item5') ? 'activar' : '' }}">
-            <a onclick="return false;" class="d-flex align-items-center">
+        <li data-title="" class=" {{ request()->routeIs('ingresos') ? 'activar' : '' }}">
+            <a href="{{ route('ingresos') }}" wire:navigate
+                class="d-flex align-items-center ">
+                <span class="icon d-flex justify-content-center align-items-center me-2"><i class="fa-solid fa-money-bill-transfer"></i></span>
+                <span class="title">Ingresos</span>
+            </a>
+        </li>
+        <li data-title="" class=" {{ request()->routeIs('destajos') ? 'activar' : '' }}">
+            <a href="{{ route('destajos') }}" wire:navigate
+                class="d-flex align-items-center ">
                 <span class="icon d-flex justify-content-center align-items-center me-2"><i class="fa-solid fa-handshake-simple"></i></span>
                 <span class="title">Destajos</span>
             </a>
         </li>
-
     </ul>
 </div>
 

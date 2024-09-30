@@ -263,12 +263,11 @@
                         lng: newLng
                     });
                 });
-
                 // Forzar redimensionamiento del mapa cuando se muestra
                 leafletMap.invalidateSize();
                 mapInitialized = true;
             }else{
-                console.log("en la caca");
+                console.log("fin");
             }
         }
 
@@ -303,6 +302,9 @@
                 // mapInitialized = true;
             }
         });
+        // Livewire.on('recargar', ()=> {
+        //     mostrarTab1()
+        // });
     });
 
 </script>

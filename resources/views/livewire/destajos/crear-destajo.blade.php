@@ -12,17 +12,17 @@
 
         <div x-show="open" x-cloak>
             <hr>
-            <form wire:submit.prevent="crearDestajo" class="row g-3">
-                <div class="col-md-4">
+            <form wire:submit.prevent="crearDestajo" class="row g-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label for="presupuesto">Presupuesto</label>
                         <x-input type="number" wire:model="presupuesto" class="form-control" />
                         @error('presupuesto') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group" wire:ignore>
-                        <label for="obras">Obras</label>
+                        <label for="obras">Obra</label>
                         <select wire:model="obraSelected" class="form-control" id="select2Obras" style="width: 100%;">
                             <option value="" selected hidden>Seleccione una Obra</option>
                             @foreach ($obras as $obra)
@@ -32,9 +32,9 @@
                     </div>
                     @error('obraSelected') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group" wire:ignore>
-                        <label for="clientes">Clientes</label>
+                        <label for="clientes">Cliente</label>
                         <select wire:model="clienteSelected" class="form-control" id="select2Clientes" style="width: 100%;">
                             <option value="" selected hidden>Seleccione un Cliente</option>
                             @foreach ($clientes as $cliente)
@@ -44,9 +44,9 @@
                     </div>
                     @error('clienteSelected') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group" wire:ignore>
-                        <label for="servicios">Servicios</label>
+                        <label for="servicios">Servicio</label>
                         <select wire:model="servicioSelected" class="form-control" id="select2Servicios" style="width: 100%;">
                             <option value="" selected hidden>Seleccione un Servicio</option>
                             @foreach ($servicios as $servicio)

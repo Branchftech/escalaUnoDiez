@@ -94,6 +94,7 @@ class EditarDetalleObra extends ServicesComponent
 
     public function refreshDireccion($calle, $estado, $pais)
     {
+
         $this->calle = $calle;
         // Busca el ID del estado sin importar mayúsculas o minúsculas
         $estadoEncontrado = Estado::whereRaw('LOWER(nombre) = ?', [strtolower($estado)])->first();
@@ -113,6 +114,7 @@ class EditarDetalleObra extends ServicesComponent
             // Manejar el caso donde no se encontró el país
             $this->paisSeleccionado = null;
         }
+        $this->dispatch( 'recargarMapa', $this->model->id);
     }
 
 }

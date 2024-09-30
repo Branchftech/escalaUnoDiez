@@ -102,6 +102,11 @@ class DetallesObrasTable extends Component
 
     public function geocodeAddress()
     {
+        $this->model = Obra::with('detalle')->find($this->model->id);
+        $this->calle = $this->model->detalle->direccion->calle;
+        $this->pais = $this->model->detalle->direccion->pais->nombre;
+        $this->estado = $this->model->detalle->direccion->estado->nombre;
+
         $direccion = "$this->calle, $this->estado, $this->pais";
 
         $client = new Client();
@@ -141,6 +146,7 @@ class DetallesObrasTable extends Component
 
     public function reverseGeocode($lat, $lng)
     {
+       // $this->dispatch('recargar');
 
         $client = new Client();
 
@@ -167,7 +173,7 @@ class DetallesObrasTable extends Component
 
                // $this->dispatch('refreshDireccion', $this->calle, $this->estado, $this->pais)->to(EditarDetalleObra::class);
                //$this->emitTo('App\\Livewire\\DetallesObras\\EditarDetalleObra', 'refreshDireccion', $this->calle, $this->estado, $this->pais);
-               $this->dispatch( 'refreshDireccion', $this->calle, $this->estado, $this->pais);
+
             } else {
                 $this->calle = null;
                 $this->estado = null;
@@ -178,11 +184,16 @@ class DetallesObrasTable extends Component
             $this->estado = null;
             $this->pais = null;
         }
-
         // Actualiza las coordenadas
         $this->lat = $lat;
         $this->lng = $lng;
-        $this->dispatch('refreshDetallesObrasTable');
+        $coordenadas = [
+            'latitud' => $this->lat,
+            'longitud' => $this->lng,
+        ];
+        $this->dispatch('updateMap', compact('coordenadas'));
+        $this->dispatch( 'refreshDireccion', $this->calle, $this->estado, $this->pais);
+        //$this->dispatch('refreshDetallesObrasTable');
 
     }
 

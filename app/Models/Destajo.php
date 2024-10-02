@@ -20,8 +20,7 @@ class Destajo extends Model
     protected $fillable = [
         'presupuesto',
         'idObra',
-        'idCliente',
-        'idServicio',
+        'idProveedor',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -31,29 +30,45 @@ class Destajo extends Model
     ];
 
     // Método para crear un destajo
-    static function crearDestajo($presupuesto, $idObra, $idCliente, $idServicio, $userId)
+    static function crearDestajo($presupuesto, $idObra, $idProveedor, $servicios = [],$userId)
     {
         $destajo = new Destajo();
         $destajo->presupuesto = $presupuesto;
         $destajo->idObra = $idObra;
-        $destajo->idCliente = $idCliente;
-        $destajo->idServicio = $idServicio;
+        $destajo->idProveedor = $idProveedor;
+
         $destajo->created_by = $userId;
+
         $destajo->created_at = now();
         $destajo->save();
+        if (!empty($servicios)) {
+            $serviciosCollection = collect($servicios);
+            $servicioIds = $serviciosCollection->pluck('id')->toArray();
+            $destajo->servicios()->sync($servicioIds);
 
+        }else{
+            $destajo->servicios()->sync([]);
+        }
+        $destajo->save();
         return $destajo;
     }
 
     // Método para editar un destajo
-    static function editarDestajo($id, $presupuesto, $idObra, $idCliente, $idServicio, $userId)
+    static function editarDestajo($id, $presupuesto, $idObra, $idProveedor, $servicios = [], $userId)
     {
         try {
             $destajo = Destajo::findOrFail($id);
             $destajo->presupuesto = $presupuesto;
             $destajo->idObra = $idObra;
-            $destajo->idCliente = $idCliente;
-            $destajo->idServicio = $idServicio;
+            $destajo->idProveedor = $idProveedor;
+            if (!empty($servicios)) {
+                $serviciosCollection = collect($servicios);
+                $servicioIds = $serviciosCollection->pluck('id')->toArray();
+                $destajo->servicios()->sync($servicioIds);
+
+            }else{
+                $destajo->servicios()->sync([]);
+            }
             $destajo->updated_by = $userId;
             $destajo->updated_at = now();
             $destajo->save();
@@ -83,16 +98,16 @@ class Destajo extends Model
         return $this->belongsTo(Obra::class, 'idObra');
     }
 
-    // Relación con el modelo Cliente
-    public function cliente()
+    // Relación con el modelo proveedor
+    public function proveedor()
     {
-        return $this->belongsTo(Cliente::class, 'idCliente');
+        return $this->belongsTo(Proveedor::class, 'idProveedor');
     }
 
-    // Relación con el modelo Servicio
-    public function servicio()
+    // Relación con el modelo servicios
+    public function servicios()
     {
-        return $this->belongsTo(Servicio::class, 'idServicio');
+        return $this->belongsToMany(Servicio::class, 'destajo_servicio', 'idDestajo', 'idServicio');
     }
 
     // Relación con el usuario que creó el destajo

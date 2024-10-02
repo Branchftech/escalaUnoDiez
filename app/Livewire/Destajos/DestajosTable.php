@@ -57,12 +57,14 @@ class DestajosTable extends DataTableComponent
             Column::make('Obra', 'obra.detalle.nombreObra')
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),
-            Column::make('Cliente', 'cliente.nombre')
+            Column::make('Proveedor', 'proveedor.nombre')
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),
-            Column::make('Servicio', 'servicio.nombre')
-                ->sortable()->searchable()
-                ->setSortingPillDirections('Asc', 'Desc'),
+            Column::make('Servicios')
+                ->label(
+                    fn ($row, Column $column) => $row->servicios->pluck('nombre')->implode(', ')
+                )
+                ->html(),
             Column::make('Creado por', 'createdBy.name')->deselected(),
             Column::make('Fecha Creación', 'created_at')->deselected(),
             Column::make('Actualizado por', 'updatedBy.name')->deselected(),

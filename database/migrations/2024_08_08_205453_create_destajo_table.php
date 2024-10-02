@@ -13,13 +13,13 @@ class CreateDestajoTable extends Migration
             $table->unsignedBigInteger('idObra');
             $table->foreign('idObra')->references('id')->on('obra');
             $table->unsignedBigInteger('idCliente');
-            $table->foreign('idCliente')->references('id')->on('cliente');
+            $table->foreign('idProveedor')->references('id')->on('proveedor');
             $table->unsignedBigInteger('idServicio');
             $table->foreign('idServicio')->references('id')->on('servicio');
             $table->timestamps();
             $table->softDeletes();
-            $table->unsignedBigInteger('created_by')->nullable(); 
-            $table->unsignedBigInteger('updated_by')->nullable(); 
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->unsignedBigInteger('deleted_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');

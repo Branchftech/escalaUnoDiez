@@ -12,7 +12,7 @@
 
         <div x-show="open" x-cloak>
             <hr>
-            <form wire:submit.prevent="crearIngreso" class="row g-3">
+            <form wire:submit.prevent="crearIngreso" x-on:submit="open = false" class="row g-3">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="factura">Factura</label>
@@ -43,7 +43,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group" wire:ignore>
-                        <label for="obras">Obras</label>
+                        <label for="obras">Obra</label>
                         <select wire:model="obraSelected" class="form-control" id="select2Obras" style="width: 100%;">
                             <option value="" selected hidden>Seleccione una Obra</option>
                             @foreach ($obras as $obra)
@@ -55,7 +55,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group" wire:ignore>
-                        <label for="clientes">Clientes</label>
+                        <label for="clientes">Cliente</label>
                         <select wire:model="clienteSelected" class="form-control" id="select2Clientes" style="width: 100%;">
                             <option value="" selected hidden>Seleccione un Cliente</option>
                             @foreach ($clientes as $cliente)
@@ -79,7 +79,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group" wire:ignore>
-                        <label for="bancos">Bancos</label>
+                        <label for="bancos">Banco</label>
                         <select wire:model="bancoSelected" class="form-control" id="select2Bancos" style="width: 100%;">
                             <option value="" selected hidden>Seleccione un Banco</option>
                             @foreach ($bancos as $banco)

@@ -35,7 +35,7 @@
                     @error('servicios') <span class="text-danger">{{ $message }}</span> @enderror
                     <div class="mb-3 form-group col-md-6">
                         <label for="servicios">Lista</label>
-                        <ul class="overflow-auto list-group scroll-container" style="max-height: 200px;">
+                        <ul class="overflow-auto list-group" style="max-height: 200px;">
                             @foreach ($selectedServicios as $servicio)
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>{{ $servicio->nombre }}</div>

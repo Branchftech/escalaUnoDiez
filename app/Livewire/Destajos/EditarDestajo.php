@@ -5,7 +5,7 @@ namespace App\Livewire\Destajos;
 use App\Livewire\ServicesComponent;
 use App\Models\Destajo;
 use App\Models\Obra;
-use App\Models\Cliente;
+use App\Models\Proveedor;
 use App\Models\Servicio;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,40 +13,40 @@ class EditarDestajo extends ServicesComponent
 {
     public $showModal = false;
     public $model;
-    public $presupuesto, $fecha;
+    public $editpresupuesto, $editfecha;
 
     // Select obras
-    public $obras;
-    public $obraSeleccionada;
+    public $editobras;
+    public $editobraSeleccionada;
 
-    // Select clientes
-    public $clientes;
-    public $clienteSeleccionado;
+    // Select proveedores
+    public $editproveedores;
+    public $editproveedorSeleccionado;
 
-    // Select servicios
-    public $servicios;
-    public $servicioSeleccionado;
+    #Select servicios
+    public $editservicios;
+    public $editservicioSeleccionado;
+    public $editselectedServicios = [];
 
     public $listeners = ['cargarModalEditarDestajo'];
 
     public function mount(Destajo $model)
     {
         $this->model = $model;
-        $this->presupuesto = $model->presupuesto;
-        $this->obraSeleccionada = $model->idObra;
-        $this->clienteSeleccionado = $model->idCliente;
-        $this->servicioSeleccionado = $model->idServicio;
+        $this->editpresupuesto = $model->presupuesto;
+        $this->editobraSeleccionada = $model->idObra;
+        $this->editproveedorSeleccionado = $model->idProveedor;
 
-        $this->obras = Obra::all();
-        $this->clientes = Cliente::all();
-        $this->servicios = Servicio::all();
+        $this->editobras = Obra::all();
+        $this->editproveedores = Proveedor::all();
+        $this->editservicios = Servicio::orderBy('nombre', 'asc')->get();
     }
 
     public function render()
     {
-        $this->obras = Obra::all();
-        $this->clientes = Cliente::all();
-        $this->servicios = Servicio::all();
+        $this->editobras = Obra::all();
+        $this->editproveedores = Proveedor::all();
+        $this->editservicios = Servicio::orderBy('nombre', 'asc')->get();
 
         return view('livewire.destajos.editar-destajo');
     }
@@ -54,20 +54,19 @@ class EditarDestajo extends ServicesComponent
     public function editarDestajo()
     {
         $this->validate([
-            'presupuesto' => 'required|numeric',
-            'obraSeleccionada' => 'required|exists:obra,id',
-            'clienteSeleccionado' => 'required|exists:cliente,id',
-            'servicioSeleccionado' => 'required|exists:servicio,id',
+            'editpresupuesto' => 'required|numeric',
+            'editobraSeleccionada' => 'required|exists:obra,id',
+            'editproveedorSeleccionado' => 'required|exists:proveedores,id',
         ]);
 
         try {
             $user = Auth::user();
             Destajo::editarDestajo(
                 $this->model['id'],
-                $this->presupuesto,
-                $this->obraSeleccionada,
-                $this->clienteSeleccionado,
-                $this->servicioSeleccionado,
+                $this->editpresupuesto,
+                $this->editobraSeleccionada,
+                $this->editproveedorSeleccionado,
+                $this->editselectedServicios,
                 $user->id
             );
 
@@ -84,29 +83,48 @@ class EditarDestajo extends ServicesComponent
     public function cargarModalEditarDestajo($model)
     {
         $this->model = Destajo::find($model['id']);
-        $this->presupuesto = $this->model['presupuesto'];
-        $this->obraSeleccionada = $this->model['idObra'];
-        $this->clienteSeleccionado = $this->model['idCliente'];
-        $this->servicioSeleccionado = $this->model['idServicio'];
+        $this->editpresupuesto = $this->model['presupuesto'];
+        $this->editobraSeleccionada = $this->model['idObra'];
+        $this->editproveedorSeleccionado = $this->model['idProveedor'];
+        $this->editselectedServicios = $this->model->servicios->all();
 
-        $this->obras = Obra::all();
-        $this->clientes = Cliente::all();
-        $this->servicios = Servicio::all();
+        $this->editobras = Obra::all();
+        $this->editproveedores = Proveedor::all();
+        $this->editservicios = Servicio::orderBy('nombre', 'asc')->get();
 
         $this->showModal = true;
     }
 
     public function limpiar()
     {
-        $this->reset('presupuesto');
-        $this->reset('obraSeleccionada');
-        $this->reset('clienteSeleccionado');
-        $this->reset('servicioSeleccionado');
+        $this->reset('editpresupuesto');
+        $this->reset('editobraSeleccionada');
+        $this->reset('editproveedorSeleccionado');
+        $this->reset('editservicioSeleccionado');
         $this->closeModal();
     }
 
     public function closeModal()
     {
         $this->showModal = false;
+    }
+    public function updatedEditServicioSeleccionado($servicio)
+    {
+        $this->validate([
+            'editservicioSeleccionado' => 'required|exists:servicio,id',
+        ]);
+
+        $servicio = Servicio::find($servicio);
+
+        if ($servicio && !in_array($servicio, $this->editselectedServicios)) {
+            $this->editselectedServicios[] = $servicio;
+        }
+    }
+
+    public function editeliminarServicio($index)
+    {
+        $this->editselectedServicios = array_filter($this->editselectedServicios, function($servicio) use ($index) {
+            return $servicio->id !== $index;
+        });
     }
 }

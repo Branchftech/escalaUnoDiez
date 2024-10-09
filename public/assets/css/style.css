@@ -9,7 +9,7 @@
 }
 
 :root {
-    --blue: #0a8ebe;/*#2a2185;*/
+    --blue: #2a2185;
     --white: #fff;
     --gray: #f5f5f5;
     --black1: #222;
@@ -52,8 +52,8 @@ body {
     position: relative;
     width: 100%;
     list-style: none;
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
 }
 
 /*,
@@ -72,15 +72,15 @@ body {
 .navigation ul li.activar a {
     background-color: var(--white);
     color: var(--blue);
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
 
 
 }
 
 .navigation ul li:nth-child(1) {
-    margin-bottom: 40px;
-    margin-top: 40px;
+    margin-bottom: 15px;
+    margin-top: 5px;
     pointer-events: none;
 }
 
@@ -104,18 +104,27 @@ body {
     position: relative;
     display: block;
     min-width: 60px;
-    height: 60px;
-    line-height: 60px;
+    height: 50px;
+    line-height: 50px;
     text-align: center;
     font-size: 1.75rem;
 }
 
+.navigation ul li a .icon{
+    position: relative;
+    display: block;
+    min-width: 60px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 1.5rem;
+}
 .navigation ul li a .title {
     position: relative;
     display: block;
     padding: 0 10px;
-    height: 60px;
-    line-height: 60px;
+    height: 50px;
+    line-height: 50px;
     text-align: start;
     white-space: nowrap;
 }
@@ -207,12 +216,12 @@ body {
 
 .toggle {
     position: relative;
-    width: 60px;
+    width: 30px;
     height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2.5rem;
+    font-size: 1.4rem;
     cursor: pointer;
 }
 
@@ -289,7 +298,11 @@ body {
 .cardBox .card {
     position: relative;
     background: var(--blue);
-    padding: 30px;
+    padding-top: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 30px;
+    height: 150px;
     border-radius: 20px;
     display: flex;
     justify-content: space-between;
@@ -316,7 +329,7 @@ body {
 }
 .cardName{
     margin-bottom: 5px;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     color: var(--white);
 }
 
@@ -629,53 +642,7 @@ body {
   .px-4 {
     padding: 8px 14px !important;
   }
-
-  /*estilos para el select 2*/
-    .select2-container--default .select2-selection--single {
-        border: 1px solid #ced4da; /* Color de borde similar a los inputs */
-        border-radius: .25rem; /* Radio de borde similar a los inputs */
-        height: calc(2.25rem + 2px); /* Altura similar a los inputs */
-        padding: .375rem .75rem; /* Padding similar a los inputs */
-    }
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
-        line-height: calc(2.25rem + 2px); /* Altura de línea centrada */
-        display: flex;
-        align-items: center;
-        height: 100%; /* Asegura que ocupe la altura completa del contenedor */
-        padding: 0; /* Remueve el padding interno adicional */
-    }
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: calc(2.25rem + 2px); /* Altura similar a los inputs */
-    }
-    .select2-container--default .select2-selection--multiple {
-        border: 1px solid #ced4da; /* Color de borde similar a los inputs */
-        border-radius: .25rem; /* Radio de borde similar a los inputs */
-        height: auto; /* Ajusta la altura automáticamente */
-        padding: .375rem .75rem; /* Padding similar a los inputs */
-        display: flex;
-        flex-wrap: wrap; /* Asegura que las opciones se envuelvan en múltiples líneas */
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__rendered {
-        display: flex;
-        flex-wrap: wrap; /* Asegura que las etiquetas seleccionadas se envuelvan en múltiples líneas */
-        align-items: center;
-        line-height: 1.5; /* Alinea verticalmente el texto */
-        padding: 0; /* Remueve el padding interno adicional */
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice {
-        background-color: #007bff; /* Color de fondo de las opciones seleccionadas */
-        border: 1px solid #007bff; /* Borde de las opciones seleccionadas */
-        color: #fff; /* Color del texto de las opciones seleccionadas */
-        margin: 2px; /* Margen entre las opciones seleccionadas */
-        border-radius: .25rem; /* Radio de borde similar a los inputs */
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-        color: #fff; /* Color del botón de eliminar */
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
-        background-color: #ff6600; /* Color de fondo al pasar el cursor sobre el botón de eliminar */
-    }
+  .dropdown-item:hover, .dropdown-item:focus {
+    color:#fff;
+    background-color: #2a2185;
+}

@@ -2,14 +2,14 @@
 <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 <div class="topbar">
     <div class="toggle">
-        <i class="fas fa-bars"></i> <!-- Icono de menú (FontAwesome) -->
+        <i class="fas fa-bars font-weight-bold"></i> <!-- Icono de menú (FontAwesome) -->
     </div>
-    <div class="menu-title">
-        <h2>{{ $header }}</h2> <!-- Título de la página -->
+    <div class="mx-2 menu-title font-weight-bold text-dark fs-4 ">
+        {{ $header }} <!-- Título de la página -->
     </div>
 
     <div class="notification">
-        <i class="fas fa-bell"></i> <!-- Icono de campana (FontAwesome) -->
+        <i class="fas fa-bell" style="color: #2a2185;" ></i> <!-- Icono de campana (FontAwesome) -->
         <span class="notification-dot"></span> <!-- Punto de notificación -->
     </div>
 
@@ -33,7 +33,7 @@
                     {{ Auth::user()->name }}
                 </a>
 
-                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <div class="bg-white dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{{ route('profile') }}" wire:navigate="profile">
                         {{ __('Perfil') }}
                     </a>
@@ -106,7 +106,7 @@
         justify-content: left;
         margin: 0 20px;
         color: black;
-        font-size: 20px;
+        font-size: 10px;
     }
 
     .topbar {

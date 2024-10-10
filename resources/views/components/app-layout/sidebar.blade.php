@@ -1,14 +1,20 @@
 
-<div class="navigation ">
+<div class="overflow-y-auto navigation scroll-container">
     <ul class="gap-2 p-0 d-flex flex-column">
-        <li style="padding-top: 1rem;">
-            <a href="#" class="d-flex align-items-center ">
-                <img class="bg-white rounded-circle me-2" width="48" height="48" style="border-radius: 50%;"
-                    src="{{ asset('assets/images/logo.png') }}" alt="" />
-                <span class="title">Escala 1:10</span>
-            </a>
+        <li>
+                <a href="#" class="d-flex align-items-center" style="justify-content: center;">
+                    <div style="width: 60px; height: 45px;">
 
+                        <div class="overflow-hidden " style="width: 60px; height: 45px;border-radius: 0.5rem; border-radius: 50%;">
+                            <img class="object-fit-cover"
+                                style="width: 100%; height: 100%;"
+                                src="{{ asset('assets/images/logo.png') }}" alt="" />
+                        </div>
+                    </div>
+                    <!--<span class="title ms-2">Escala 1:10</span>-->
+                </a>
         </li>
+
         <li data-title="" class=" {{ request()->routeIs('dashboard') ? 'activar' : '' }}">
             <a href="{{ route('dashboard') }}" wire:navigate
                 class="d-flex align-items-center ">
@@ -80,6 +86,7 @@
                 <span class="title">Destajos</span>
             </a>
         </li>
+
     </ul>
 </div>
 

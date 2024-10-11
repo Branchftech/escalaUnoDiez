@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Egresos;
 
 use App\Http\Controllers\Controller;
 use App\Models\Egreso;
+use App\Models\Destajo;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
@@ -130,20 +131,28 @@ class EgresosController extends Controller
                             $query->where('servicio.id', $servicioId);
                         })
                         ->get();
+        // Consulta para obtener el destajo filtrado
+        $destajos = Destajo::where('idObra', $obraId)
+                    ->where('idProveedor', $proveedorId)
+                    ->whereHas('servicios', function($query) use ($servicioId) {
+                        $query->where('servicio.id', $servicioId);
+                    })
+                    ->get();
 
-        // Generar el PDF, pasando los egresos y un mensaje en caso de no haber resultados
-        //$pdf = PDF::loadView('pdf.recibo.reporteEgreso', );
+        // Cálculo del total pagado (suma de las cantidades de los egresos)
+        $totalPagado = $egresos->sum('cantidad');
+        // Cálculo del saldo a pagar
+        $saldoAPagar = $destajos->sum('presupuesto') - $totalPagado;
 
-        // Descargar el PDF
-        // return view('pdf.recibo.reporteEgreso', [
-        //     'egresos' => $egresos,
-        //     'mensaje' => $egresos->isEmpty() ? 'No se encontraron egresos para los criterios seleccionados.' : null,
-            // ]);
         // Generar el PDF con la firma en la parte inferior derecha
-        $pdf = PDF::loadView('pdf.recibo.reporteEgreso',[
-                'egresos' => $egresos,
-                'mensaje' => $egresos->isEmpty() ? 'No se encontraron egresos para los criterios seleccionados.' : null,
-                ]);
+        $pdf = PDF::loadView('pdf.recibo.reporteEgreso', [
+            'egresos' => $egresos,
+            'destajos' => $destajos, // Pasa la información de los destajos a la vista
+            'totalPagado' => $totalPagado,
+            'saldoAPagar' => $saldoAPagar,
+            'mensaje' => $egresos->isEmpty() ? 'No se encontraron egresos para los criterios seleccionados.' : null,
+        ]);
+
         // Mostrar el PDF generado
         return $pdf->stream('reporteEgreso.pdf');
 

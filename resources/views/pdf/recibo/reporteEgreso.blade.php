@@ -46,6 +46,25 @@
                 @endforeach
             </tbody>
         </table>
+        <!-- Tabla de Destajos -->
+        <h3>Destajo del Proveedor y Servicio</h3>
+        <table>
+            <tbody>
+                <tr>
+                    <td style="text-align: right;">Presupuesto</td>
+                    <td style="text-align: right;">${{ $destajos->sum('presupuesto')  }}</td> <!-- Puedes ajustar esta línea según el dato específico -->
+                </tr>
+                <tr>
+                    <td style="text-align: right;">Total Pagado</td>
+                    <td style="text-align: right;">${{ $totalPagado }}</td> <!-- Ajusta el valor según lo que necesites -->
+                </tr>
+                <tr>
+                    <td style="text-align: right;">Saldo a Pagar</td>
+                    <td style="text-align: right;">${{ $saldoAPagar }}</td> <!-- Ajusta el valor según lo que necesites -->
+                </tr>
+            </tbody>
+        </table>
+
     @endif
 </body>
 </html>

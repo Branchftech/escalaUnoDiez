@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\DB;
 class Ingreso extends Model
 {
     use HasFactory, SoftDeletes;
@@ -87,6 +87,11 @@ class Ingreso extends Model
         $ingreso->deleted_by = $userId;
         $ingreso->deleted_at = now();
         $ingreso->save();
+    }
+
+    public static function getCantMensual()
+    {
+        return Ingreso::whereMonth('fecha', date('m'))->sum('cantidad');  // Sumar el total de la columna 'cantidad'
     }
 
     // Relación con el modelo Obra

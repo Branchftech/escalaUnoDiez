@@ -154,6 +154,18 @@ class Obra extends Model
         return $this->created_at->format('d/m/Y');
     }
 
+    // Función para contar obras con idEstadoObra = 2 pendiente
+    public static function countObrasConEstado2()
+    {
+        return Obra::where('idEstadoObra', 2)->count();
+    }
+
+    // Función para contar obras con idEstadoObra = 3 vencidas
+    public static function countObrasConEstado3()
+    {
+        return Obra::where('idEstadoObra', 3)->count();
+    }
+
     // Relación que indica qué usuario creó una entrada específica
     public function createdBy()
     {

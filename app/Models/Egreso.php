@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\DB;
 class Egreso extends Model
 {
     use HasFactory, SoftDeletes;
@@ -100,6 +100,23 @@ class Egreso extends Model
         $egreso->deleted_at = now();
         $egreso->save();
     }
+
+    public static function getEgresosGrafica()
+    {
+        $egresosPorMes = Egreso::select(DB::raw('MONTH(fecha) as mes'), DB::raw('COUNT(id) as cantidad_egresos'))
+            ->groupBy('mes')
+            ->orderBy('mes')
+            ->get();
+
+        return $egresosPorMes;
+    }
+
+    public static function getCantMensual()
+    {
+        return Egreso::whereMonth('fecha', date('m'))  // Filtrar por el mes actual
+        ->sum('cantidad');  // Sumar el total de la columna 'cantidad'
+    }
+
 
     // Relación con el modelo Obra
     public function obra()

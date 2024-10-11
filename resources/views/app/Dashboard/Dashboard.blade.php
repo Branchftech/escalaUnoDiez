@@ -13,7 +13,7 @@
                     <div class="flex-row">
                         <div>
                             <div class="cardName" >Total Gastos del Mes</div>
-                            <div class="numbers">$2,221,324.50</div>
+                            <div class="numbers">${{ number_format($egresosMensual, 2) }}</div>
                         </div>
                         <div class="iconBx">
                             <i class="fa-solid fa-bag-shopping"></i>
@@ -25,7 +25,7 @@
                     <div class="flex-row">
                         <div>
                             <div class="cardName">Total Ingresos del Mes</div>
-                            <div class="numbers">$221,324.50</div>
+                            <div class="numbers">${{ number_format($ingresosMensual, 2) }}</div>
                         </div>
                         <div class="iconBx">
                             <i class="fa-solid fa-sack-dollar"></i>
@@ -37,7 +37,7 @@
                     <div class="flex-row">
                         <div>
                             <div class="cardName">Obras proceso</div>
-                            <div class="numbers">17</div>
+                            <div class="numbers">{{$obrasPendiente }}</div>
                         </div>
                         <div class="iconBx">
                             <i class="fa-solid fa-user-group"></i>
@@ -49,7 +49,7 @@
                     <div class="flex-row">
                         <div>
                             <div class="cardName">Obras con retraso</div>
-                            <div class="numbers">12.8%</div>
+                            <div class="numbers">{{$obrasVencida }}</div>
                         </div>
                         <div class="iconBx">
                             <i class="fa-solid fa-user-check"></i>
@@ -65,7 +65,8 @@
                         <h2>Ventas</h2>
                         <!-- <a href="#" class="btn">View All</a> -->
                     </div>
-                    <img class="bg-white " style="height:auto;" src="{{ asset('assets/images/grafica.png') }}" alt="" />
+                    @livewire('graficos.graficos')
+
                     <!-- <table>
                         <thead>
                             <tr>
@@ -296,4 +297,5 @@
             </div>
         </div>
     </div>
+
 </x-app-layout>

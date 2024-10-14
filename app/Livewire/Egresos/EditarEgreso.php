@@ -9,6 +9,7 @@ use App\Models\Proveedor;
 use App\Models\FormaPago;
 use App\Models\Banco;
 use App\Models\Servicio;
+use App\Models\Destajo;
 use Illuminate\Support\Facades\Auth;
 
 class EditarEgreso extends ServicesComponent
@@ -20,6 +21,10 @@ class EditarEgreso extends ServicesComponent
     // Select obras
     public $obras;
     public $obraSeleccionada;
+
+    # select destahos
+    public $destajos;
+    public $destajoSeleccionado;
 
     // Select proveedores
     public $proveedores;
@@ -50,8 +55,10 @@ class EditarEgreso extends ServicesComponent
         $this->proveedorSeleccionado = $model->idProveedor;
         $this->formaPagoSeleccionada = $model->idFormaPago;
         $this->bancoSeleccionado = $model->idBanco;
+        $this->destajoSeleccionado = $model->idDestajo;
 
         $this->obras = Obra::all();
+        $this->destajos = Destajo::all();
         $this->proveedores = Proveedor::all();
         $this->formasPago = FormaPago::all();
         $this->bancos = Banco::all();
@@ -62,6 +69,7 @@ class EditarEgreso extends ServicesComponent
     public function render()
     {
         $this->obras = Obra::all();
+        $this->destajos = Destajo::all();
         $this->proveedores = Proveedor::all();
         $this->formasPago = FormaPago::all();
         $this->bancos = Banco::all();
@@ -88,7 +96,7 @@ class EditarEgreso extends ServicesComponent
                 // 'selectedServiciosEditar. *' => 'exists:servicio,id',
             ]);
             $user = Auth::user();
-            $egreso= Egreso::editarEgreso($this->model['id'], $this->cantidad, $this->obraSeleccionada, $this->proveedorSeleccionado, $this->formaPagoSeleccionada, $this->bancoSeleccionado, $this->selectedServiciosEditar, $this->concepto, $this->fecha, $user->id);
+            $egreso= Egreso::editarEgreso($this->model['id'], $this->cantidad, $this->obraSeleccionada, $this->proveedorSeleccionado, $this->formaPagoSeleccionada, $this->bancoSeleccionado,  $this->destajoSeleccionado, $this->selectedServiciosEditar, $this->concepto, $this->fecha, $user->id);
 
             $this->dispatch('refreshEgresosTable')->to(EgresosTable::class);
             $this->render();
@@ -110,6 +118,7 @@ class EditarEgreso extends ServicesComponent
         $this->proveedorSeleccionado = $this->model['idProveedor'];
         $this->formaPagoSeleccionada = $this->model['idFormaPago'];
         $this->bancoSeleccionado = $this->model['idBanco'];
+        $this->destajoSeleccionado= $this->model['idDestajo'];
         $this->selectedServiciosEditar =  Servicio::whereIn('id', $this->model->servicios->pluck('id'))->get(); // Obtener IDs de servicios seleccionados
         $this->obras = Obra::all();
         $this->proveedores = Proveedor::all();
@@ -129,6 +138,7 @@ class EditarEgreso extends ServicesComponent
         $this->reset('proveedorSeleccionado');
         $this->reset('formaPagoSeleccionada');
         $this->reset('bancoSeleccionado');
+        $this->reset('destajoSeleccionado');
         $this->reset('selectedServiciosEditar');
         $this->closeModal();
     }

@@ -23,6 +23,7 @@ class Egreso extends Model
         'idProveedor',
         'idFormaPago',
         'idBanco',
+        'idDestajo',
         'concepto',
         'fecha',
         'firmado',
@@ -35,7 +36,7 @@ class Egreso extends Model
     ];
 
     // Método para crear un egreso
-    static function crearEgreso($cantidad, $idObra, $idProveedor, $idFormaPago, $idBanco, $servicios = [], $concepto, $fecha, $userId)
+    static function crearEgreso($cantidad, $idObra, $idProveedor, $idFormaPago, $idBanco, $idDestajo, $servicios = [], $concepto, $fecha, $userId)
     {
         $egreso = new Egreso();
         $egreso->cantidad = $cantidad;
@@ -43,6 +44,7 @@ class Egreso extends Model
         $egreso->idProveedor = $idProveedor;
         $egreso->idFormaPago = $idFormaPago;
         $egreso->idBanco = $idBanco;
+        $egreso->idDestajo = $idDestajo;
         $egreso->concepto = $concepto;
         $egreso->fecha = $fecha;
         $egreso->firmado = 0;
@@ -61,7 +63,7 @@ class Egreso extends Model
     }
 
     // Método para editar un egreso
-    static function editarEgreso($id, $cantidad, $idObra, $idProveedor, $idFormaPago, $idBanco, $servicios = [], $concepto, $fecha, $userId)
+    static function editarEgreso($id, $cantidad, $idObra, $idProveedor, $idFormaPago, $idBanco, $idDestajo, $servicios = [], $concepto, $fecha, $userId)
     {
         try {
             $egreso = Egreso::findOrFail($id);
@@ -70,6 +72,7 @@ class Egreso extends Model
             $egreso->idProveedor = $idProveedor;
             $egreso->idFormaPago = $idFormaPago;
             $egreso->idBanco = $idBanco;
+            $egreso->idDestajo = $idDestajo;
             $egreso->concepto = $concepto;
             $egreso->fecha = $fecha;
            // $egreso->firmado = 1;
@@ -164,5 +167,9 @@ class Egreso extends Model
     public function servicios()
     {
         return $this->belongsToMany(Servicio::class, 'egreso_servicio', 'idEgreso', 'idServicio');
+    }
+    public function destajo()
+    {
+        return $this->belongsTo(Destajo::class, 'idDestajo'); // 'destajo_id' es la clave foránea en la tabla egresos
     }
 }

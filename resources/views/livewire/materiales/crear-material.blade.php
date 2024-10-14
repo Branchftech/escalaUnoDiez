@@ -30,7 +30,7 @@
                         <x-input type="float" wire:model="precioNormal" class="form-control" />
                         @error('precioNormal') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
-                    <div class="form-group d-flex flex-column">
+                    <div class="form-group d-flex flex-column" wire:ignore>
                         <label for="unidades">Unidades</label>
                         <select wire:model="unidadSelected" class="form-control"  aria-placeholder="Seleccione una Unidad" id="select2EditarUnidadMaterial">
                             <option value="" selected hidden >Seleccione una Unidad</option>
@@ -57,7 +57,10 @@
 </div>
 @push('scripts')
     <script type="module">
-           // Inicializar select2
+        initializeSelect2();
+
+        // Función para inicializar select2
+        function initializeSelect2() {
             $('#select2EditarMaterial').select2({
                 placeholder: "Seleccione un Material",
                 allowClear: true
@@ -65,48 +68,80 @@
                 var data = $(this).val();
                 @this.set('editarMaterialSelected', data);
             });
-            // $('#select2EditarUnidadMaterial').select2({
-            //     placeholder: "Seleccione una Unidad",
-            //     allowClear: true
-            // }).on('change', function(e) {
-            //     var data = $(this).val();
-            //     @this.set('unidadSelected', data);
-            // });
 
+            $('#select2EditarUnidadMaterial').select2({
+                placeholder: "Seleccione una Unidad",
+                allowClear: true
+            }).on('change', function(e) {
+                var data = $(this).val();
+                @this.set('unidadSelected', data);
+            });
+        }
 
-            window.addEventListener('livewire:init', () => {
-                Livewire.on("actualizarMateriales", (data) => {
-                    //se limpia unidades
-                    $('#select2EditarUnidadMaterial').val(null).trigger('change');
-                    let select2 = $('#select2EditarMaterial');
-                    // Limpia las opciones actuales, sin eliminar el placeholder
-                    select2.find('option').not(':first').remove();
-                    // Recargar las opciones desde los materiales obtenidos en el backend
+        // Destruir y reinicializar select2 cuando sea necesario
+        function resetSelect2() {
+            $('#select2EditarMaterial').select2('destroy');
+            $('#select2EditarUnidadMaterial').select2('destroy');
+            initializeSelect2();
+        }
+
+        // Evento cuando se carga la página
+        window.addEventListener('livewire:init', () => {
+            initializeSelect2();
+
+            // Evento para recargar los materiales
+            Livewire.on("actualizarMateriales", (data) => {
+                if (data[0] && data[0]['materiales'] && Array.isArray(data[0]['materiales'])) {
+                    let select2Material = $('#select2EditarMaterial');
+                    select2Material.select2('destroy');
+                    select2Material.find('option').not(':first').remove();
+
                     data[0]['materiales'].forEach(function(material) {
                         let newOption = new Option(material.nombre, material.id, false, false);
-                        select2.append(newOption);
+                        select2Material.append(newOption);
                     });
 
-                    // Refresca el select2 para que muestre las nuevas opciones
-                    select2.trigger('change');
-                });
-
-
-                Livewire.on("actualizarUnidadesMaterial", (data) => {
-                    let select2 = $('#select2EditarUnidadMaterial');
-                    // Limpia las opciones actuales, sin eliminar el placeholder
-                    select2.find('option').not(':first').remove();
-                    // Recargar las opciones desde las unidades obtenidos en el backend
-                    data[0]['unidades'].forEach(function(unidad) {
-                        let newOption = new Option(unidad.nombre, unidad.id, false, false);
-                        select2.append(newOption);
+                    select2Material.select2({
+                        placeholder: "Seleccione un Material",
+                        allowClear: true
                     });
-
-                    // Refresca el select2 para que muestre las nuevas opciones
-                    select2.trigger('change');
-
-                });
-
+                } else {
+                    console.error("Materiales no encontrados o no son un array");
+                }
             });
+
+            // Evento para recargar las unidades cuando se selecciona un material
+            Livewire.on("actualizarUnidadesMaterial", (data) => {
+
+                // Accede a data[0].unidades
+                if (!data[0] || !data[0].unidades || !Array.isArray(data[0].unidades)) {
+                    console.error("No se encontraron unidades en los datos recibidos");
+                    return;
+                }
+
+                let select2Unidad = $('#select2EditarUnidadMaterial');
+                select2Unidad.select2('destroy');
+                select2Unidad.find('option').not(':first').remove();
+
+                // Recorre el array de unidades dentro de data[0].unidades
+                data[0].unidades.forEach(function(unidad) {
+                    let newOption = new Option(unidad.nombre, unidad.id, false, false);
+                    select2Unidad.append(newOption);
+                });
+
+                select2Unidad.select2({
+                    placeholder: "Seleccione una Unidad",
+                    allowClear: true
+                });
+                 // Selecciona automáticamente la unidad asociada
+                 if (data[0].unidadSeleccionada) {
+                    $('#select2EditarUnidadMaterial').val(data[0].unidadSeleccionada).trigger('change');
+                }
+            });
+            // Escucha el evento `resetSelect2` para limpiar y reinicializar los select2
+            window.addEventListener('resetSelect2', () => {
+                resetSelect2();
+            });
+        });
     </script>
 @endpush

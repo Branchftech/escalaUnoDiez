@@ -9,7 +9,7 @@
         window.addEventListener('livewire:init', () => {
             var ctx = document.getElementById('egresosChart').getContext('2d');
             var chart = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: @json($labels), // Meses (Enero, Febrero, etc.)
                     datasets: [
@@ -18,7 +18,8 @@
                             data: @json($egresos), // Cantidad de egresos por mes
                             backgroundColor: 'rgba(255, 99, 132, 0.2)',
                             borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
+                            borderWidth: 1,
+                            fill: false,
                         }
                     ]
                 },

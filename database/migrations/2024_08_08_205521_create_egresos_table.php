@@ -18,6 +18,9 @@ class CreateEgresosTable extends Migration
             $table->foreign('idFormaPago')->references('id')->on('formaPago');
             $table->unsignedBigInteger('idBanco');
             $table->foreign('idBanco')->references('id')->on('banco');
+            $table->unsignedBigInteger('idDestajo')->nullable(); // Ajusta 'after' para ubicar la columna donde la necesites
+            // Definimos la clave foránea a la tabla destajos
+            $table->foreign('idDestajo')->references('id')->on('destajo');
             $table->string('concepto', 100);
             $table->date('fecha');
             $table->timestamps();

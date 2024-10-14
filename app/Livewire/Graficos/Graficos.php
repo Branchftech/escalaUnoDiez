@@ -26,7 +26,21 @@ class Graficos extends Component
         $egresosPorMes = Egreso::getEgresosGrafica();
 
         $this->labels = $egresosPorMes->pluck('mes')->map(function($mes) {
-            return date('F', mktime(0, 0, 0, $mes, 10)); // Convertir el número del mes al nombre (Enero, Febrero, etc.)
+            $mesesEnEspanol = [
+                1 => 'Enero',
+                2 => 'Febrero',
+                3 => 'Marzo',
+                4 => 'Abril',
+                5 => 'Mayo',
+                6 => 'Junio',
+                7 => 'Julio',
+                8 => 'Agosto',
+                9 => 'Septiembre',
+                10 => 'Octubre',
+                11 => 'Noviembre',
+                12 => 'Diciembre'
+            ];
+            return $mesesEnEspanol[$mes]; // Convertir el número del mes al nombre en español
         })->toArray();
 
         $this->egresos = $egresosPorMes->pluck('cantidad_egresos')->toArray();

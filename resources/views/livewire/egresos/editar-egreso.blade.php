@@ -66,6 +66,18 @@
                         </div>
                         @error('bancoSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
+                    <div>
+                        <div class="form-group d-flex flex-column" >
+                            <label for="destajos">Destajos</label>
+                            <select wire:model="destajoSeleccionado" class="form-control" id="select2DestajosEditar">
+                                <option value=""  hidden>Seleccione un Destajo</option>
+                                @foreach ($destajos as $destajo)
+                                    <option value="{{ $destajo->id }}">{{ $destajo->id }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('destajoSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
+                    </div>
 
                     <div>
                         <div class="form-group d-flex flex-column" wire:ignore>
@@ -138,6 +150,15 @@
         }).on('change', function(e) {
             var data = $(this).val();
             @this.set('bancoSeleccionado', data);
+        });
+
+        $('#select2DestajosEditar').select2({
+            width: '100%',
+            placeholder: "Seleccione un Destajo",
+            allowClear: true
+        }).on('change', function(e) {
+            var data = $(this).val();
+            @this.set('destajoSeleccionado', data);
         });
 
         $('#select2ServiciosEditar').select2({

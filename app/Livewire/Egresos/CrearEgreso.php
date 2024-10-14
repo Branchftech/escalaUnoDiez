@@ -9,6 +9,7 @@ use App\Models\Proveedor;
 use App\Models\FormaPago;
 use App\Models\Banco;
 use App\Models\Servicio;
+use App\Models\Destajo;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -20,6 +21,10 @@ class CrearEgreso extends ServicesComponent
     # select obras
     public $obras;
     public $obraSelected;
+
+    # select destahos
+    public $destajos;
+    public $destajoSelected;
 
     # select proveedores
     public $proveedores;
@@ -42,6 +47,7 @@ class CrearEgreso extends ServicesComponent
     public function mount()
     {
         $this->obras = Obra::all();
+        $this->destajos = Destajo::all();
         $this->proveedores = Proveedor::all();
         $this->formasPago = FormaPago::all();
         $this->bancos = Banco::all();
@@ -51,6 +57,7 @@ class CrearEgreso extends ServicesComponent
     public function render()
     {
         $this->obras = Obra::all();
+        $this->destajos = Destajo::all();
         $this->proveedores = Proveedor::all();
         $this->formasPago = FormaPago::all();
         $this->bancos = Banco::all();
@@ -81,6 +88,7 @@ class CrearEgreso extends ServicesComponent
                 $this->proveedorSelected,
                 $this->formaPagoSelected,
                 $this->bancoSelected,
+                $this->destajoSelected,
                 $this->serviciosSeleccionados,
                 $this->concepto,
                 $this->fecha,
@@ -109,6 +117,7 @@ class CrearEgreso extends ServicesComponent
         $this->reset('proveedorSelected');
         $this->reset('formaPagoSelected');
         $this->reset('bancoSelected');
+        $this->reset('destajoSelected');
         $this->reset('serviciosSeleccionados');
         $this->dispatch('clearSelect2');
         $this->closeModal();

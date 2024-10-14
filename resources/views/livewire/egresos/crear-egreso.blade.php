@@ -244,6 +244,18 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group" wire:ignore>
+                        <label for="destajos">Destajos</label>
+                        <select wire:model="destajoSelected" class="form-control" id="select2Destajos" style="width: 100%;">
+                            <option value="" selected hidden>Seleccione un Destajo</option>
+                            @foreach ($destajos as $destajo)
+                                <option value="{{ $destajo->id }}">  {{ $destajo->id . ' - ' . $destajo->obra->detalle->nombreObra . ' - ' . $destajo->proveedor->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('destajoSelected') <span class="text-danger">{{ $message }}</span> @enderror
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group" wire:ignore>
                         <label for="servicios">Servicios</label>
                         <select wire:model="serviciosSeleccionados" multiple class="form-control" id="select2Servicios" style="width: 100%;">
                             <option value="" selected hidden>Seleccione los Servicios</option>
@@ -376,6 +388,16 @@
         var data = $('#select2Bancos').select2("val");
         @this.set('bancoSelected', data);
     });
+    $('#select2Destajos').select2({
+        width: '100%',
+        placeholder: "Seleccione un Destajo",
+        allowClear: true
+    });
+    $('#select2Destajos').on('change', function(e) {
+        var data = $('#select2Destajos').select2("val");
+        @this.set('destajoSelected', data);
+    });
+
 
     $('#select2Servicios').select2({
         width: '100%',

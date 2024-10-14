@@ -7,7 +7,6 @@ use App\Livewire\Insumos\CrearInsumo;
 use App\Models\Material;
 use App\Models\Unidad;
 use Illuminate\Support\Facades\Auth;
-use phpseclib3\File\ASN1\Maps\Certificate;
 
 class CrearMaterial extends ServicesComponent
 {
@@ -53,7 +52,7 @@ class CrearMaterial extends ServicesComponent
         try {
             $user = Auth::user();
             Material::crearEditarMaterial($this->editarMaterialSelected,$this->nombre, $this->precioNormal, $this->unidadSelected, $user->id);
-            $this->render();
+           // $this->render();
             $this->limpiar();
             $this->alertService->success($this, 'Material creado con éxito');
         } catch (\Exception $th) {
@@ -69,7 +68,14 @@ class CrearMaterial extends ServicesComponent
             if ($material) {
                 $this->nombre = $material->nombre;
                 $this->precioNormal = $material->precioNormal;
-                $this->unidadSelected = $material->idUnidad; // Asegúrate de que `unidad_id` es el nombre correcto del campo
+                $this->unidadSelected = $material->idUnidad;
+                $this->materiales = Material::orderBy('nombre', 'asc')->get();
+                 // Obtener las unidades actualizadas y la unidad asociada y enviarla al frontend
+                $unidades = Unidad::orderBy('nombre', 'asc')->get();
+                $this->dispatch('actualizarUnidadesMaterial', [
+                    'unidades' => $unidades,
+                    'unidadSeleccionada' => $material->idUnidad, // Envía la unidad seleccionada
+                ]);
             }
         } else {
             $this->reset(['nombre', 'precioNormal', 'unidadSelected']);
@@ -80,11 +86,14 @@ class CrearMaterial extends ServicesComponent
     {
 
         $this->reset(['nombre', 'precioNormal', 'unidadSelected', 'editarMaterialSelected']);
-
+        $this->materiales = Material::orderBy('nombre', 'asc')->get();
         $materiales = Material::orderBy('nombre', 'asc')->get();
+        $unidades =Unidad::orderBy('nombre', 'asc')->get();
         $this->dispatch('actualizarMateriales', compact('materiales'));
         $this->dispatch('actualizarMateriales')->to(CrearInsumo::class);
-
+        $this->dispatch('actualizarUnidadesMaterial', compact('unidades'));
+        // Limpia y reinicializa los select2 en el frontend
+        $this->dispatch('resetSelect2');
     }
 
     public function openModal()

@@ -16,6 +16,6 @@ class DashboardController extends Controller
         $obrasVencida= Obra::countObrasConEstado3();
         $obrasPendiente = Obra::countObrasConEstado2();
 
-        return view('app.dashboard.Dashboard', compact('name', 'egresosMensual', 'ingresosMensual','obrasVencida','obrasPendiente'));
+        return view('app.Dashboard.Dashboard', compact('name', 'egresosMensual', 'ingresosMensual','obrasVencida','obrasPendiente'));
     }
 }

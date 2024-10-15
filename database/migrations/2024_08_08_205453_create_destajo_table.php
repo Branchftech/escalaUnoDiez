@@ -13,7 +13,7 @@ class CreateDestajoTable extends Migration
             $table->unsignedBigInteger('idObra');
             $table->foreign('idObra')->references('id')->on('obra');
             $table->unsignedBigInteger('idCliente');
-            $table->foreign('idProveedor')->references('id')->on('proveedor');
+            $table->foreignId('idProveedor')->constrained('proveedores');
             $table->unsignedBigInteger('idServicio');
             $table->foreign('idServicio')->references('id')->on('servicio');
             $table->timestamps();

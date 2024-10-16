@@ -19,7 +19,7 @@
                     <h4>Insumos Creados</h4>
                 </div>
                 <hr>
-              {{--  <livewire:insumos.insumos-table />--}}
+                <livewire:insumos.insumos-table />
             </div>
         </div>
       <livewire:insumos.editar-insumo  />

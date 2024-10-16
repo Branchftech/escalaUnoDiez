@@ -148,13 +148,12 @@
     });
     // Evento para recargar los datos de ingresos todos los select2
     Livewire.on("actualizarIngreso", (data) => {
-            console.log(data)
+
             // Accede a data[0].unidades
             if (!data[0] || !data[0].obrasEditarIngreso || !Array.isArray(data[0].obrasEditarIngreso)) {
                 console.error("No se encontraron obras en los datos recibidos");
                 return;
             }
-            console.log("que ondas")
             let select2ObrasEditarIngreso = $('#select2ObrasEditarIngreso');
             select2ObrasEditarIngreso.select2('destroy');
             select2ObrasEditarIngreso.find('option').not(':first').remove();

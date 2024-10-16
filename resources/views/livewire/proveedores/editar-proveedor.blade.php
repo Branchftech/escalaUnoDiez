@@ -90,7 +90,7 @@
         });
         // Evento para recargar las unidades cuando se selecciona un material
         Livewire.on("actualizarServiciosProveedor", (data) => {
-            console.log("hola")
+
             // Accede a data[0].servicios
             if (!data[0] || !data[0].servicios || !Array.isArray(data[0].servicios)) {
                 console.error("No se encontraron servicios en los datos recibidos");

@@ -12,7 +12,7 @@
 
     function renderChart(chartData) {
         // Acceder al primer elemento del array
-        console.log(chartData)
+
         var data = chartData[0] ?? null; // Ajuste importante para acceder a los datos correctos
         // Verificar que los datos son válidos
         // if (data && data.series && data.series.length > 0 && data.series[0].data && data.series[0].data.length > 0 && data.categories && data.categories.length > 0) {
@@ -72,15 +72,6 @@
                 console.error('Los datos del gráfico no son válidos o están vacíos.', data);
             }
     }
-
-    // Escuchar el evento de Livewire para cargar o actualizar el gráfico
-    // document.addEventListener('livewire:init', function () {
-    //     console.log("sigue");
-    //     Livewire.on('chartDataReady', function (chartData) {
-    //         console.log('Evento chartDataReady recibido con los datos:', chartData); // Para depurar los datos
-    //         renderChart(chartData);
-    //     });
-    // });
 
     Livewire.on('chartDataReady', function (chartData) {
         renderChart(chartData);

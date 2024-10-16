@@ -23,7 +23,7 @@ class EditarBanco extends ServicesComponent
 
     public function render()
     {
-        return view('livewire.Bancos.editar-Banco');
+        return view('livewire.bancos.editar-banco');
     }
 
     public function editarBanco()

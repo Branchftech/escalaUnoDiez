@@ -1,39 +1,60 @@
-<div>
+<div x-data="{ editMode: false }" x-on:open-modal.window="editMode = false">
     <div>
-        <x-button class="btn btn-info" style="background-color: #ff6600; border-color: #ff6600; color: rgb(0, 0, 0)" x-data x-on:click="$dispatch('open-modal', {name: 'Crear-Material'})">
+        <x-button class="btn btn-info" style="background-color: #ff6600; border-color: #ff6600; color: rgb(0, 0, 0)" x-on:click="$dispatch('open-modal', {name: 'Crear-Material'})">
             Materiales
         </x-button>
     </div>
 
-    <x-modal-default title="Crear/Editar Material" name="Crear-Material" :modal="'showModal'">
+    <!-- Colocamos x-data en el div que envuelve el modal para asegurarnos de que funcione correctamente -->
+    <x-modal-default name="Crear-Material" :modal="'showModal'">
+        <!-- Título dinámico con botón de edición -->
+        <x-slot:title>
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0" x-text="editMode ? 'Editar Material' : 'Crear Material'"></h5>
+                <!-- Botón con icono de lápiz -->
+                <button type="button" class="btn btn-sm btn-success ms-2"
+                    x-on:click="
+                        editMode = !editMode;
+                        $wire.limpiar();">
+                    <i class="fas fa-pencil-alt"></i>
+                </button>
+            </div>
+        </x-slot:title>
+
         <x-slot:body>
             <div class="p-4">
                 <form wire:submit.prevent="crearMaterial" class="gap-3 d-flex flex-column">
-                    <div class="form-group d-flex flex-column" wire:ignore>
-                        <label for="materiales">Seleccione un material a editar</label>
-                        <select wire:model="editarMaterialSelected" class="form-control" id="select2EditarMaterial">
-                            <option value="" selected hidden></option>
-                            @foreach ($materiales as $material)
-                                <option value="{{ $material->id }}">{{ $material->nombre }}</option>
-                            @endforeach
-                        </select>
+
+                    <!-- Select2 oculto inicialmente y visible solo en modo edición -->
+                    <div x-show="editMode">
+                        <div class="form-group d-flex flex-column" wire:ignore style="display: none;">
+                            <label for="materiales">Seleccione un material a editar</label>
+                            <select wire:model="editarMaterialSelected" class="form-control" id="select2EditarMaterial">
+                                <option value="" selected hidden></option>
+                                @foreach ($materiales as $material)
+                                    <option value="{{ $material->id }}">{{ $material->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('editarMaterialSelected') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
-                    @error('editarMaterialSelected') <span class="text-danger">{{ $message }}</span> @enderror
 
                     <div class="form-group">
                         <label for="nombre">Nombre</label>
                         <x-input type="text" wire:model="nombre" class="form-control" />
                         @error('nombre') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
+
                     <div class="form-group">
                         <label for="precioNormal">Precio Normal</label>
-                        <x-input type="float" wire:model="precioNormal" class="form-control" />
+                        <x-input type="numeric" wire:model="precioNormal" class="form-control" />
                         @error('precioNormal') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
+
                     <div class="form-group d-flex flex-column" wire:ignore>
                         <label for="unidades">Unidades</label>
-                        <select wire:model="unidadSelected" class="form-control"  aria-placeholder="Seleccione una Unidad" id="select2EditarUnidadMaterial">
-                            <option value="" selected hidden >Seleccione una Unidad</option>
+                        <select wire:model="unidadSelected" class="form-control" id="select2EditarUnidadMaterial">
+                            <option value="" selected hidden>Seleccione una Unidad</option>
                             @foreach ($unidades as $unidad)
                                 <option value="{{ $unidad->id }}">{{ $unidad->nombre }}</option>
                             @endforeach
@@ -55,6 +76,9 @@
         </x-slot:body>
     </x-modal-default>
 </div>
+
+
+
 @push('scripts')
     <script type="module">
         initializeSelect2();

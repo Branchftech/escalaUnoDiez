@@ -4,6 +4,8 @@ namespace App\Livewire\Servicios;
 
 use App\Livewire\ServicesComponent;
 use App\Models\Servicio;
+use App\Livewire\Proveedores\EditarProveedor;
+use App\Livewire\Proveedores\ProveedoresTable;
 use Illuminate\Support\Facades\Auth;
 
 class CrearServicio extends ServicesComponent
@@ -27,6 +29,7 @@ class CrearServicio extends ServicesComponent
             $user = Auth::user();
             Servicio::crearServicio($this->nombre, $user->id);
             $this->dispatch('refreshServiciosTable')->to(ServiciosTable::class);
+            $this->dispatch('refreshProveedoresTable')->to(ProveedoresTable::class);
             $this->render();
             $this->limpiar();
             $this->alertService->success($this, 'Servicio creado con éxito');
@@ -39,6 +42,7 @@ class CrearServicio extends ServicesComponent
     public function limpiar()
     {
         $this->reset('nombre');
+        $this->dispatch('actualizarServicios')->to(EditarProveedor::class);
         $this->closeModal();
     }
 

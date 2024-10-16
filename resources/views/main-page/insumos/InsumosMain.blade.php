@@ -1,8 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class=" font-weight-bold text-dark">
-            {{ __('Insumos y Materiales') }}
-        </h2>
+        {{ __('Proveedores y Servicios') }}
     </x-slot>
 <div>
     <div wire:key='materiales'>

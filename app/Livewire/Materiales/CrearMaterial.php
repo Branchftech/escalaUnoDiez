@@ -4,6 +4,7 @@ namespace App\Livewire\Materiales;
 
 use App\Livewire\ServicesComponent;
 use App\Livewire\Insumos\CrearInsumo;
+use App\Livewire\Insumos\InsumosTable;
 use App\Models\Material;
 use App\Models\Unidad;
 use Illuminate\Support\Facades\Auth;
@@ -54,7 +55,8 @@ class CrearMaterial extends ServicesComponent
             Material::crearEditarMaterial($this->editarMaterialSelected,$this->nombre, $this->precioNormal, $this->unidadSelected, $user->id);
            // $this->render();
             $this->limpiar();
-            $this->alertService->success($this, 'Material creado con éxito');
+            $this->dispatch('refreshInsumosTable')->to(InsumosTable::class);
+            $this->alertService->success($this, 'Material guardado con éxito');
         } catch (\Exception $th) {
             $this->alertService->error($this, 'Error al crear el Material');
             $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());

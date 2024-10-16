@@ -25,7 +25,7 @@
                     </div>
                     <div class=" form-group d-flex flex-column" wire:ignore>
                         <label for="servicios">Servicios</label>
-                        <select wire:model="servicios" class="form-control" id="select2Edit">
+                        <select wire:model="servicios" class="form-control" id="select2EditServicioProveedor">
                             <option value="" selected hidden>Seleccione un servicio</option>
                             @foreach ($servicios as $servicio)
                                 <option value="{{ $servicio->id }}">{{ $servicio->nombre }}</option>
@@ -56,11 +56,63 @@
 </div>
 
 @push('scripts')
-    <script type="module">
-            $('#select2Edit').select2();
-            $('#select2Edit').on('change', function(e) {
-                var data = $('#select2Edit').select2("val");
+     <script type="module">
+            // $('#select2Edit').select2();
+            // $('#select2Edit').on('change', function(e) {
+            //     var data = $('#select2Edit').select2("val");
+            //     @this.set('servicioSeleccionado', data);
+            // });
+
+        initializeSelect2();
+
+        // Función para inicializar select2
+        function initializeSelect2() {
+            $('#select2EditServicioProveedor').select2({
+                placeholder: "Seleccione un Servicio",
+                allowClear: true
+            }).on('change', function(e) {
+                var data = $(this).val();
                 @this.set('servicioSeleccionado', data);
             });
+        }
+
+        // Destruir y reinicializar select2 cuando sea necesario
+        function resetSelect2() {
+            $('#select2EditServicioProveedor').select2('destroy');
+            initializeSelect2();
+        }
+
+        // Evento cuando se carga la página
+        window.addEventListener('livewire:init', () => {
+            initializeSelect2();
+        });
+        // Evento para recargar las unidades cuando se selecciona un material
+        Livewire.on("actualizarServiciosProveedor", (data) => {
+            console.log("hola")
+            // Accede a data[0].servicios
+            if (!data[0] || !data[0].servicios || !Array.isArray(data[0].servicios)) {
+                console.error("No se encontraron servicios en los datos recibidos");
+                return;
+            }
+
+            let select2ServicioProv = $('#select2EditServicioProveedor');
+            select2ServicioProv.select2('destroy');
+            select2ServicioProv.find('option').not(':first').remove();
+
+            // Recorre el array de servicios dentro de data[0].servicios
+            data[0].servicios.forEach(function(servicio) {
+                let newOption = new Option(servicio.nombre, servicio.id, false, false);
+                select2ServicioProv.append(newOption);
+            });
+
+            select2ServicioProv.select2({
+                placeholder: "Seleccione un Servicio",
+                allowClear: true
+            });
+        });
+        // Escucha el evento `resetSelect2` para limpiar y reinicializar los select2
+        window.addEventListener('resetSelect2', () => {
+            resetSelect2();
+        });
     </script>
 @endpush

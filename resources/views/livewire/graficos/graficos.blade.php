@@ -1,37 +1,90 @@
 <div>
-    <canvas id="egresosChart" width="400" height="150"></canvas>
-
+    <div class="cardHeader">
+        <h2>Egresos</h2>
+    </div>
+    <div id="egresosChart" style="height: 400px; width: 100%;"></div>
 </div>
+
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module">
-        console.log("holi");
-        window.addEventListener('livewire:init', () => {
-            var ctx = document.getElementById('egresosChart').getContext('2d');
-            var chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: @json($labels), // Meses (Enero, Febrero, etc.)
-                    datasets: [
-                        {
-                            label: 'Cantidad de Egresos',
-                            data: @json($egresos), // Cantidad de egresos por mes
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1,
-                            fill: false,
-                        }
-                    ]
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    var chart = null; // Variable global para el gráfico
+
+    function renderChart(chartData) {
+        // Acceder al primer elemento del array
+        console.log(chartData)
+        var data = chartData[0] ?? null; // Ajuste importante para acceder a los datos correctos
+        // Verificar que los datos son válidos
+        // if (data && data.series && data.series.length > 0 && data.series[0].data && data.series[0].data.length > 0 && data.categories && data.categories.length > 0) {
+        if (
+            data && data.series && data.categories && data.series[0] && data.series[0].data &&
+            Array.isArray(data.series) && data.series.length > 0 &&
+            Array.isArray(data.series[0].data) && data.series[0].data.length > 0 &&
+            Array.isArray(data.categories) && data.categories.length > 0
+        ){
+            var options = {
+                chart: {
+                    type: 'line',
+                    height: 400,
+                    width: '100%'
                 },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+                series: data.series,
+                xaxis: {
+                    categories: data.categories // Meses
+                },
+                stroke: {
+                    curve: 'smooth'
+                },
+                markers: {
+                    size: 6, // Tamaño de los puntitos
+                    colors: ['#269ffb'], // Color de los puntitos
+                    strokeColors: '#269ffb', // Color del borde del puntito
+                    strokeWidth: 2,
+                    hover: {
+                        size: 8 // Tamaño al pasar el mouse
+                    }
+                },
+                title: {
+                    text: 'Egresos por Mes',
+                    align: 'center'
+                },
+                yaxis: {
+                    min: 0,
+                    title: {
+                        text: 'Cantidad de Egresos'
                     }
                 }
-            });
-        });
-    </script>
-@endpush
+            };
 
+            // Si el gráfico ya existe, destrúyelo antes de volver a crearlo
+            if (chart) {
+                chart.destroy();
+            }
+
+            // Seleccionar el elemento del gráfico
+            var chartElement = document.querySelector("#egresosChart");
+
+            // Crear y renderizar el gráfico
+            chart = new ApexCharts(chartElement, options);
+            chart.render();
+
+            } else {
+                console.error('Los datos del gráfico no son válidos o están vacíos.', data);
+            }
+    }
+
+    // Escuchar el evento de Livewire para cargar o actualizar el gráfico
+    // document.addEventListener('livewire:init', function () {
+    //     console.log("sigue");
+    //     Livewire.on('chartDataReady', function (chartData) {
+    //         console.log('Evento chartDataReady recibido con los datos:', chartData); // Para depurar los datos
+    //         renderChart(chartData);
+    //     });
+    // });
+
+    Livewire.on('chartDataReady', function (chartData) {
+        renderChart(chartData);
+    });
+
+</script>
+@endpush

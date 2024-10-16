@@ -24,44 +24,44 @@
         <x-slot:body>
             <div class="p-4">
                 <form wire:submit.prevent="crearMaterial" class="gap-3 d-flex flex-column">
+                    <div class="gap-3 overflow-y-auto d-flex flex-column" style="max-height: 40vh;">
+                        <!-- Select2 oculto inicialmente y visible solo en modo edición -->
+                        <div x-show="editMode">
+                            <div class="form-group d-flex flex-column" wire:ignore style="display: none;">
+                                <label for="materiales">Seleccione un material a editar</label>
+                                <select wire:model="editarMaterialSelected" class="form-control" id="select2EditarMaterial">
+                                    <option value="" selected hidden></option>
+                                    @foreach ($materiales as $material)
+                                        <option value="{{ $material->id }}">{{ $material->nombre }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @error('editarMaterialSelected') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
 
-                    <!-- Select2 oculto inicialmente y visible solo en modo edición -->
-                    <div x-show="editMode">
-                        <div class="form-group d-flex flex-column" wire:ignore style="display: none;">
-                            <label for="materiales">Seleccione un material a editar</label>
-                            <select wire:model="editarMaterialSelected" class="form-control" id="select2EditarMaterial">
-                                <option value="" selected hidden></option>
-                                @foreach ($materiales as $material)
-                                    <option value="{{ $material->id }}">{{ $material->nombre }}</option>
+                        <div class="form-group">
+                            <label for="nombre">Nombre</label>
+                            <x-input type="text" wire:model="nombre" class="form-control" />
+                            @error('nombre') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="precioNormal">Precio Normal</label>
+                            <x-input type="numeric" wire:model="precioNormal" class="form-control" />
+                            @error('precioNormal') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="form-group d-flex flex-column" wire:ignore>
+                            <label for="unidades">Unidades</label>
+                            <select wire:model="unidadSelected" class="form-control" id="select2EditarUnidadMaterial">
+                                <option value="" selected hidden>Seleccione una Unidad</option>
+                                @foreach ($unidades as $unidad)
+                                    <option value="{{ $unidad->id }}">{{ $unidad->nombre }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        @error('editarMaterialSelected') <span class="text-danger">{{ $message }}</span> @enderror
+                        @error('unidadSelected') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
-
-                    <div class="form-group">
-                        <label for="nombre">Nombre</label>
-                        <x-input type="text" wire:model="nombre" class="form-control" />
-                        @error('nombre') <span class="text-danger">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label for="precioNormal">Precio Normal</label>
-                        <x-input type="numeric" wire:model="precioNormal" class="form-control" />
-                        @error('precioNormal') <span class="text-danger">{{ $message }}</span> @enderror
-                    </div>
-
-                    <div class="form-group d-flex flex-column" wire:ignore>
-                        <label for="unidades">Unidades</label>
-                        <select wire:model="unidadSelected" class="form-control" id="select2EditarUnidadMaterial">
-                            <option value="" selected hidden>Seleccione una Unidad</option>
-                            @foreach ($unidades as $unidad)
-                                <option value="{{ $unidad->id }}">{{ $unidad->nombre }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @error('unidadSelected') <span class="text-danger">{{ $message }}</span> @enderror
-
                     <div class="gap-2 d-flex justify-content-end">
                         <button type="button" class="btn btn-secondary" wire:click="limpiar">
                             Limpiar

@@ -64,27 +64,27 @@
         <x-slot:body>
             <div class="p-4">
                 <form wire:submit.prevent="crearEditarUnidad" class="gap-3 d-flex flex-column">
-
-                    <!-- Select2 oculto inicialmente y visible solo en modo edición -->
-                    <div x-show="editMode">
-                        <div class="form-group d-flex flex-column" wire:ignore style="display: none;">
-                            <label for="unidades">Seleccione la unidad a editar</label>
-                            <select wire:model="editarUnidadSelected" class="form-control" id="select2EditarUnidad">
-                                <option value="" selected hidden>Seleccione una unidad</option>
-                                @foreach ($unidades as $unidad)
-                                    <option value="{{ $unidad->id }}">{{ $unidad->nombre }}</option>
-                                @endforeach
-                            </select>
+                    <div class="gap-3 overflow-y-auto d-flex flex-column" style="max-height: 30vh;">
+                        <!-- Select2 oculto inicialmente y visible solo en modo edición -->
+                        <div x-show="editMode">
+                            <div class="form-group d-flex flex-column" wire:ignore style="display: none;">
+                                <label for="unidades">Seleccione la unidad a editar</label>
+                                <select wire:model="editarUnidadSelected" class="form-control" id="select2EditarUnidad">
+                                    <option value="" selected hidden>Seleccione una unidad</option>
+                                    @foreach ($unidades as $unidad)
+                                        <option value="{{ $unidad->id }}">{{ $unidad->nombre }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @error('editarUnidadSelected') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        @error('editarUnidadSelected') <span class="text-danger">{{ $message }}</span> @enderror
-                    </div>
 
-                    <div class="form-group">
-                        <label for="nombre">Nuevo Nombre</label>
-                        <x-input type="text" wire:model="nombre" class="form-control" />
-                        @error('nombre') <span class="text-danger">{{ $message }}</span> @enderror
+                        <div class="form-group">
+                            <label for="nombre">Nuevo Nombre</label>
+                            <x-input type="text" wire:model="nombre" class="form-control" />
+                            @error('nombre') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
                     </div>
-
                     <div class="gap-2 d-flex justify-content-end">
                         <button type="button" class="btn btn-secondary" wire:click="limpiar">
                             Limpiar

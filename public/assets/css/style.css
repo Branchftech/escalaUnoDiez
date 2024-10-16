@@ -646,3 +646,9 @@ body {
     color:#fff;
     background-color: #2a2185;
 }
+/* Estilo para dispositivos móviles (ancho máximo de 767px) */
+@media (max-width: 767px) {
+    .modal-default {
+        max-width: 100% !important; /* Ancho completo */
+    }
+}

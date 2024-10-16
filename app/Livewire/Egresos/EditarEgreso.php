@@ -43,7 +43,7 @@ class EditarEgreso extends ServicesComponent
     public $servicioSeleccionado;
     public $selectedServiciosEditar = [];
 
-    public $listeners = ['cargarModalEditarEgreso'];
+    public $listeners = ['cargarModalEditarEgreso', 'actualizarEgreso' => 'actualizarEgreso'];
 
     public function mount(Egreso $model)
     {
@@ -57,18 +57,19 @@ class EditarEgreso extends ServicesComponent
         $this->bancoSeleccionado = $model->idBanco;
         $this->destajoSeleccionado = $model->idDestajo;
 
-        $this->obras = Obra::all();
+        $this->obras = Obra::with('detalle')->get();
         $this->destajos = Destajo::all();
         $this->proveedores = Proveedor::all();
         $this->formasPago = FormaPago::all();
         $this->bancos = Banco::all();
+
         $this->servicios = Servicio::orderBy('nombre', 'asc')->get();
 
     }
 
     public function render()
     {
-        $this->obras = Obra::all();
+        $this->obras = Obra::with('detalle')->get();
         $this->destajos = Destajo::all();
         $this->proveedores = Proveedor::all();
         $this->formasPago = FormaPago::all();
@@ -80,9 +81,6 @@ class EditarEgreso extends ServicesComponent
 
     public function editarEgreso()
     {
-
-
-
         try {
             $this->validate([
                 'cantidad' => 'required|numeric',
@@ -118,13 +116,29 @@ class EditarEgreso extends ServicesComponent
         $this->proveedorSeleccionado = $this->model['idProveedor'];
         $this->formaPagoSeleccionada = $this->model['idFormaPago'];
         $this->bancoSeleccionado = $this->model['idBanco'];
-        $this->destajoSeleccionado= $this->model['idDestajo'];
-        $this->selectedServiciosEditar =  Servicio::whereIn('id', $this->model->servicios->pluck('id'))->get(); // Obtener IDs de servicios seleccionados
-        $this->obras = Obra::all();
+        $this->destajoSeleccionado = $this->model['idDestajo'];
+        $this->selectedServiciosEditar =  Servicio::whereIn('id', $this->model->servicios->pluck('id'))->get();// Obtener IDs de servicios seleccionados
+        $this->obras = Obra::with('detalle')->get();
+        $this->destajos = Destajo::all();
         $this->proveedores = Proveedor::all();
         $this->formasPago = FormaPago::all();
         $this->bancos = Banco::all();
         $this->servicios = Servicio::orderBy('nombre', 'asc')->get();
+
+
+        $this->dispatch('actualizarEgreso', [
+            'obras' => $this->obras,
+            'proveedores' => $this->proveedores,
+            'formasPago' =>$this->formasPago,
+            'bancos' =>$this->bancos,
+            'servicios' =>$this->servicios,
+            'destajos' => $this->destajos,
+            'obraSeleccionada' => $this->obraSeleccionada,
+            'bancoSeleccionado' =>  $this->bancoSeleccionado,
+            'proveedorSeleccionado' => $this->proveedorSeleccionado,
+            'formaPagoSeleccionada' => $this->formaPagoSeleccionada,
+            'destajoSeleccionado' => $this->destajoSeleccionado,
+        ]);
 
         $this->showModal = true;
     }
@@ -140,6 +154,7 @@ class EditarEgreso extends ServicesComponent
         $this->reset('bancoSeleccionado');
         $this->reset('destajoSeleccionado');
         $this->reset('selectedServiciosEditar');
+        $this->dispatch('resetSelect2');
         $this->closeModal();
     }
 
@@ -150,21 +165,26 @@ class EditarEgreso extends ServicesComponent
 
     public function updatedServicioSeleccionado($servicioId)
     {
+
         $this->validate([
             'servicioSeleccionado' => 'required|exists:servicio,id',
         ]);
 
         $servicio = Servicio::find($servicioId);
 
-        if ($servicio && !in_array($servicioId, $this->selectedServiciosEditar)) {
-            $this->selectedServiciosEditar[] = $servicioId;
+        // if ($servicio && !in_array($servicioId, $this->selectedServiciosEditar)) {
+        //     $this->selectedServiciosEditar[] = $servicioId;
+        // }
+        if ($servicio && !$this->selectedServiciosEditar->contains($servicio)) {
+            $this->selectedServiciosEditar->push($servicio);
         }
     }
 
     public function eliminarServicio($servicioId)
     {
-        $this->selectedServiciosEditar = array_filter($this->selectedServiciosEditar, function($id) use ($servicioId) {
-            return $id != $servicioId;
+        $this->selectedServiciosEditar = $this->selectedServiciosEditar->filter(function($servicio) use ($servicioId) {
+            return $servicio->id !== $servicioId;
         });
     }
+
 }

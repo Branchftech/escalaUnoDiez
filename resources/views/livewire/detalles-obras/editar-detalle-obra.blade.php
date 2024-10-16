@@ -11,6 +11,7 @@
         <div x-show="open" x-cloak>
             <hr>
             <form wire:submit.prevent="editarDetalleObra" class="row g-3">
+
                 <!-- Primer fila -->
                 <div class="col-md-3">
                     <div class="form-group">
@@ -76,7 +77,6 @@
                         @error('lote') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                 </div>
-
                 <!-- Tercera fila -->
                 <div class="col-md-3">
                     <div class="form-group">

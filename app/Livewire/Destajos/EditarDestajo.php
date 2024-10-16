@@ -16,19 +16,19 @@ class EditarDestajo extends ServicesComponent
     public $editpresupuesto, $editfecha;
 
     // Select obras
-    public $editobras;
+    public $obrasEditarDestajo;
     public $editobraSeleccionada;
 
     // Select proveedores
-    public $editproveedores;
+    public $proveedoresEditarDestajo;
     public $editproveedorSeleccionado;
 
     #Select servicios
-    public $editservicios;
+    public $serviciosEditarDestajo;
     public $editservicioSeleccionado;
     public $editselectedServicios = [];
 
-    public $listeners = ['cargarModalEditarDestajo'];
+    public $listeners = ['cargarModalEditarDestajo', 'actualizarDestajo' => 'actualizarDestajo'];
 
     public function mount(Destajo $model)
     {
@@ -37,16 +37,16 @@ class EditarDestajo extends ServicesComponent
         $this->editobraSeleccionada = $model->idObra;
         $this->editproveedorSeleccionado = $model->idProveedor;
 
-        $this->editobras = Obra::all();
-        $this->editproveedores = Proveedor::all();
-        $this->editservicios = Servicio::orderBy('nombre', 'asc')->get();
+        $this->obrasEditarDestajo = Obra::all();
+        $this->proveedoresEditarDestajo = Proveedor::all();
+        $this->serviciosEditarDestajo = Servicio::orderBy('nombre', 'asc')->get();
     }
 
     public function render()
     {
-        $this->editobras = Obra::all();
-        $this->editproveedores = Proveedor::all();
-        $this->editservicios = Servicio::orderBy('nombre', 'asc')->get();
+        $this->obrasEditarDestajo = Obra::all();
+        $this->proveedoresEditarDestajo = Proveedor::all();
+        $this->serviciosEditarDestajo = Servicio::orderBy('nombre', 'asc')->get();
 
         return view('livewire.destajos.editar-destajo');
     }
@@ -73,6 +73,7 @@ class EditarDestajo extends ServicesComponent
             $this->dispatch('refreshDestajosTable')->to(DestajosTable::class);
             $this->render();
             $this->limpiar();
+            $this->closeModal();
             $this->alertService->success($this, 'Destajo actualizado con éxito');
         } catch (\Exception $th) {
             $this->alertService->error($this, 'Error al actualizar el Destajo');
@@ -88,10 +89,16 @@ class EditarDestajo extends ServicesComponent
         $this->editproveedorSeleccionado = $this->model['idProveedor'];
         $this->editselectedServicios = $this->model->servicios->all();
 
-        $this->editobras = Obra::all();
-        $this->editproveedores = Proveedor::all();
-        $this->editservicios = Servicio::orderBy('nombre', 'asc')->get();
-
+        $this->obrasEditarDestajo = Obra::with('detalle')->get();
+        $this->proveedoresEditarDestajo = Proveedor::all();
+        $this->serviciosEditarDestajo = Servicio::orderBy('nombre', 'asc')->get();
+        $this->dispatch('actualizarDestajo', [
+            'obrasEditarDestajo' => $this->obrasEditarDestajo,
+            'proveedoresEditarDestajo' => $this->proveedoresEditarDestajo,
+            'serviciosEditarDestajo' =>$this->serviciosEditarDestajo,
+            'editobraSeleccionada' => $this->editobraSeleccionada,
+            'editproveedorSeleccionado' =>  $this->editproveedorSeleccionado,
+        ]);
         $this->showModal = true;
     }
 

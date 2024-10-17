@@ -7,17 +7,6 @@ use App\Models\Egreso;
 
 class Graficos extends Component
 {
-    // public $labels = [];
-    // public $egresos = [];
-    // public $ingresos = [];
-
-    // public function mount()
-    // {
-    //     // Datos predefinidos
-    //     $this->labels = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo']; // Meses
-    //     $this->egresos = [1000, 2000, 1500, 1700, 1800]; // Egresos por mes
-    //     $this->ingresos = [1500, 2500, 3000, 2000, 3500]; // Ingresos por mes
-    // }
     public $labels = [];
     public $egresos = [];
 
@@ -25,6 +14,7 @@ class Graficos extends Component
     {
         $egresosPorMes = Egreso::getEgresosGrafica();
 
+        // Convertir los meses numéricos a nombres en español
         $this->labels = $egresosPorMes->pluck('mes')->map(function($mes) {
             $mesesEnEspanol = [
                 1 => 'Enero',
@@ -43,11 +33,25 @@ class Graficos extends Component
             return $mesesEnEspanol[$mes]; // Convertir el número del mes al nombre en español
         })->toArray();
 
+        // Recoger la cantidad de egresos
         $this->egresos = $egresosPorMes->pluck('cantidad_egresos')->toArray();
     }
 
     public function render()
     {
+        // Emitir los datos si son válidos
+        if (!empty($this->labels) && !empty($this->egresos)) {
+            $this->dispatch('chartDataReady', [
+                'series' => [
+                    [
+                        'name' => 'Egresos',
+                        'data' => $this->egresos
+                    ]
+                ],
+                'categories' => $this->labels
+            ]);
+        }
+
         return view('livewire.graficos.graficos');
     }
 }

@@ -13,7 +13,7 @@ class DetalleObra extends Model
     use SoftDeletes;
 
     protected $connection = 'mysql';
-    public $table = 'detalleObra';
+    public $table = 'detalleobra';
     public $incrementing = true;
     public $timestamps = true;
     protected $primaryKey = 'id';

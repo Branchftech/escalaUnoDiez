@@ -1,161 +1,3 @@
-{{-- <div style="margin: 20px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" x-data="{ open: false }">
-    <div class="">
-        <div class="mb-3 d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-                <h4 class="mb-0 me-3">Crear Egreso</h4>
-                <button type="button" style="background-color: #50a803; border-color: #50a803; color: white;" class="btn btn-primary" x-on:click="open = !open">
-                    <span x-show="!open"><i class="fas fa-plus"></i></span>
-                    <span x-show="open"><i class="fa-solid fa-minus"></i></span>
-                </button>
-            </div>
-        </div>
-
-        <div x-show="open" x-cloak>
-            <hr>
-            <form wire:submit.prevent="crearEgreso" class="row g-3">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="cantidad">Cantidad</label>
-                        <x-input type="number" wire:model="cantidad" class="form-control" />
-                        @error('cantidad') <span class="text-danger">{{ $message }}</span> @enderror
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="concepto">Concepto</label>
-                        <x-input type="text" wire:model="concepto" class="form-control" />
-                        @error('concepto') <span class="text-danger">{{ $message }}</span> @enderror
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="fecha">Fecha</label>
-                        <x-input type="date" wire:model="fecha" class="form-control" />
-                        @error('fecha') <span class="text-danger">{{ $message }}</span> @enderror
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group" wire:ignore>
-                        <label for="obras">Obras</label>
-                        <select wire:model="obraSelected" class="form-control" id="select2Obras" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione una Obra</option>
-                            @foreach ($obras as $obra)
-                                <option value="{{ $obra->id }}">{{ $obra->detalle->nombreObra }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @error('obraSelected') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group" wire:ignore>
-                        <label for="proveedores">Proveedores</label>
-                        <select wire:model="proveedorSelected" class="form-control" id="select2Proveedores" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione un Proveedor</option>
-                            @foreach ($proveedores as $proveedor)
-                                <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @error('proveedorSelected') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group" wire:ignore>
-                        <label for="formasPago">Forma de Pago</label>
-                        <select wire:model="formaPagoSelected" class="form-control" id="select2FormasPago" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione una Forma de Pago</option>
-                            @foreach ($formasPago as $formaPago)
-                                <option value="{{ $formaPago->id }}">{{ $formaPago->nombre }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @error('formaPagoSelected') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group" wire:ignore>
-                        <label for="bancos">Bancos</label>
-                        <select wire:model="bancoSelected" class="form-control" id="select2Bancos" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione un Banco</option>
-                            @foreach ($bancos as $banco)
-                                <option value="{{ $banco->id }}">{{ $banco->nombre }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @error('bancoSelected') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group" wire:ignore>
-                        <label for="servicios">Servicios</label>
-                        <select wire:model="serviciosSeleccionados" multiple class="form-control" id="select2Servicios" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione los Servicios</option>
-                            @foreach ($servicios as $servicio)
-                                <option value="{{ $servicio->id }}">{{ $servicio->nombre }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @error('serviciosSeleccionados') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
-                <div class="col-md-12">
-                    <div class="gap-2 mt-3 d-flex justify-content-center">
-                        <button type="button" class="btn btn-secondary" wire:click="limpiar">
-                            Limpiar
-                        </button>
-                        <x-button type="submit" class="btn btn-primary">
-                            Guardar
-                        </x-button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div>
-        <div class="container mt-5">
-            <h2>Generar Reporte de Egresos</h2>
-            <form action="{{ route('generarReporte') }}" method="POST">
-                @csrf
-                <div class="mb-3">
-                    <div class="form-group">
-                        <label for="obrasReporte">Obras</label>
-                        <select wire:model="obraReporteSelected" class="form-control" id="select2Obras" name="obra_id" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione una Obra</option>
-                            @foreach ($obras as $obra)
-                                <option value="{{ $obra->id }}">{{ $obra->detalle->nombreObra }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @error('obraSelected') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
-
-                <div class="mb-3">
-                    <div class="form-group">
-                        <label for="proveedoresReporte">Proveedores</label>
-                        <select wire:model="proveedorReporteSelected" class="form-control" id="select2Proveedores" name="proveedor_id" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione un Proveedor</option>
-                            @foreach ($proveedores as $proveedor)
-                                <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <div class="form-group">
-                        <label for="serviciosReporte">Servicios</label>
-                        <select wire:model="serviciosReporteSeleccionados" class="form-control" id="select2Servicios" name="servicio_id" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione un Servicio</option>
-                            @foreach ($servicios as $servicio)
-                                <option value="{{ $servicio->id }}">{{ $servicio->nombre }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Generar Reporte</button>
-            </form>
-
-        </div>
-    </div>
-</div> --}}
 <div style="margin: 20px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" x-data="{ openCrearEgreso: false, openGenerarReporte: false }">
     <!-- Sección de Crear Egreso -->
     <div class="">
@@ -172,100 +14,102 @@
         <div x-show="openCrearEgreso" x-cloak>
             <hr>
             <form wire:submit.prevent="crearEgreso" class="row g-3">
-                <!-- Campos del formulario de Crear Egreso -->
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="cantidad">Cantidad</label>
-                        <x-input type="number" wire:model="cantidad" class="form-control" />
-                        @error('cantidad') <span class="text-danger">{{ $message }}</span> @enderror
+
+                    <!-- Campos del formulario de Crear Egreso -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="cantidad">Cantidad</label>
+                            <x-input type="number" wire:model="cantidad" class="form-control" />
+                            @error('cantidad') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="concepto">Concepto</label>
-                        <x-input type="text" wire:model="concepto" class="form-control" />
-                        @error('concepto') <span class="text-danger">{{ $message }}</span> @enderror
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="concepto">Concepto</label>
+                            <x-input type="text" wire:model="concepto" class="form-control" />
+                            @error('concepto') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="fecha">Fecha</label>
-                        <x-input type="date" wire:model="fecha" class="form-control" />
-                        @error('fecha') <span class="text-danger">{{ $message }}</span> @enderror
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="fecha">Fecha</label>
+                            <x-input type="date" wire:model="fecha" class="form-control" />
+                            @error('fecha') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group" wire:ignore>
-                        <label for="obras">Obras</label>
-                        <select wire:model="obraSelected" class="form-control" id="select2Obras" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione una Obra</option>
-                            @foreach ($obras as $obra)
-                                <option value="{{ $obra->id }}">{{ $obra->detalle->nombreObra }}</option>
-                            @endforeach
-                        </select>
+                    <div class="col-md-4">
+                        <div class="form-group" wire:ignore>
+                            <label for="obras">Obras</label>
+                            <select wire:model="obraSelected" class="form-control" id="select2Obras" style="width: 100%;">
+                                <option value="" selected hidden>Seleccione una Obra</option>
+                                @foreach ($obras as $obra)
+                                    <option value="{{ $obra->id }}">{{ $obra->detalle->nombreObra }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('obraSelected') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
-                    @error('obraSelected') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group" wire:ignore>
-                        <label for="proveedores">Proveedores</label>
-                        <select wire:model="proveedorSelected" class="form-control" id="select2Proveedores" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione un Proveedor</option>
-                            @foreach ($proveedores as $proveedor)
-                                <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option>
-                            @endforeach
-                        </select>
+                    <div class="col-md-4">
+                        <div class="form-group" wire:ignore>
+                            <label for="proveedores">Proveedores</label>
+                            <select wire:model="proveedorSelected" class="form-control" id="select2Proveedores" style="width: 100%;">
+                                <option value="" selected hidden>Seleccione un Proveedor</option>
+                                @foreach ($proveedores as $proveedor)
+                                    <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('proveedorSelected') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
-                    @error('proveedorSelected') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group" wire:ignore>
-                        <label for="formasPago">Forma de Pago</label>
-                        <select wire:model="formaPagoSelected" class="form-control" id="select2FormasPago" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione una Forma de Pago</option>
-                            @foreach ($formasPago as $formaPago)
-                                <option value="{{ $formaPago->id }}">{{ $formaPago->nombre }}</option>
-                            @endforeach
-                        </select>
+                    <div class="col-md-4">
+                        <div class="form-group" wire:ignore>
+                            <label for="formasPago">Forma de Pago</label>
+                            <select wire:model="formaPagoSelected" class="form-control" id="select2FormasPago" style="width: 100%;">
+                                <option value="" selected hidden>Seleccione una Forma de Pago</option>
+                                @foreach ($formasPago as $formaPago)
+                                    <option value="{{ $formaPago->id }}">{{ $formaPago->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('formaPagoSelected') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
-                    @error('formaPagoSelected') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group" wire:ignore>
-                        <label for="bancos">Bancos</label>
-                        <select wire:model="bancoSelected" class="form-control" id="select2Bancos" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione un Banco</option>
-                            @foreach ($bancos as $banco)
-                                <option value="{{ $banco->id }}">{{ $banco->nombre }}</option>
-                            @endforeach
-                        </select>
+                    <div class="col-md-4">
+                        <div class="form-group" wire:ignore>
+                            <label for="bancos">Bancos</label>
+                            <select wire:model="bancoSelected" class="form-control" id="select2Bancos" style="width: 100%;">
+                                <option value="" selected hidden>Seleccione un Banco</option>
+                                @foreach ($bancos as $banco)
+                                    <option value="{{ $banco->id }}">{{ $banco->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('bancoSelected') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
-                    @error('bancoSelected') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group" wire:ignore>
-                        <label for="destajos">Destajos</label>
-                        <select wire:model="destajoSelected" class="form-control" id="select2Destajos" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione un Destajo</option>
-                            @foreach ($destajos as $destajo)
-                                <option value="{{ $destajo->id }}">  {{ $destajo->id . ' - ' . $destajo->obra->detalle->nombreObra . ' - ' . $destajo->proveedor->nombre }}</option>
-                            @endforeach
-                        </select>
+                    <div class="col-md-4">
+                        <div class="form-group" wire:ignore>
+                            <label for="destajos">Destajos</label>
+                            <select wire:model="destajoSelected" class="form-control" id="select2Destajos" style="width: 100%;">
+                                <option value="" selected hidden>Seleccione un Destajo</option>
+                                @foreach ($destajos as $destajo)
+                                    <option value="{{ $destajo->id }}">  {{ $destajo->id . ' - ' . $destajo->obra->detalle->nombreObra . ' - ' . $destajo->proveedor->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('destajoSelected') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
-                    @error('destajoSelected') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group" wire:ignore>
-                        <label for="servicios">Servicios</label>
-                        <select wire:model="serviciosSeleccionados" multiple class="form-control" id="select2Servicios" style="width: 100%;">
-                            <option value="" selected hidden>Seleccione los Servicios</option>
-                            @foreach ($servicios as $servicio)
-                                <option value="{{ $servicio->id }}">{{ $servicio->nombre }}</option>
-                            @endforeach
-                        </select>
+                    <div class="col-md-4">
+                        <div class="form-group" wire:ignore>
+                            <label for="servicios">Servicios</label>
+                            <select wire:model="serviciosSeleccionados" multiple class="form-control" id="select2Servicios" style="width: 100%;">
+                                <option value="" selected hidden>Seleccione los Servicios</option>
+                                @foreach ($servicios as $servicio)
+                                    <option value="{{ $servicio->id }}">{{ $servicio->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('serviciosSeleccionados') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
-                    @error('serviciosSeleccionados') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
+
                 <div class="col-md-12">
                     <div class="gap-2 mt-3 d-flex justify-content-center">
                         <button type="button" class="btn btn-secondary" wire:click="limpiar">

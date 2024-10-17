@@ -50,7 +50,8 @@ class CrearUnidad extends ServicesComponent
             Unidad::crearEditarUnidad($this->editarUnidadSelected, $this->nombre, $user->id);
             $this->render();
             $this->limpiar();
-            $this->alertService->success($this, 'Unidad creado con éxito');
+            $this->closeModal();
+            $this->alertService->success($this, 'Unidad guardada con éxito');
         } catch (\Exception $th) {
             $this->alertService->error($this, 'Error al crear la unidad');
             $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());
@@ -75,7 +76,7 @@ class CrearUnidad extends ServicesComponent
         $unidades = Unidad::orderBy('nombre', 'asc')->get();
         $this->dispatch('actualizarUnidades', compact('unidades'));
         $this->dispatch('actualizarUnidades')->to(CrearMaterial::class);
-        $this->closeModal();
+        //$this->closeModal();
     }
 
     public function openModal()

@@ -1,9 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class=" font-weight-bold text-dark">
             {{ __('Obras') }}
-        </h2>
     </x-slot>
+
     <div>
         <livewire:obras.crear-obra />
         <div style="margin: 20px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">

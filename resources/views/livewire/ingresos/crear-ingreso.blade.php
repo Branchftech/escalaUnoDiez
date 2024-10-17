@@ -13,6 +13,7 @@
         <div x-show="open" x-cloak>
             <hr>
             <form wire:submit.prevent="crearIngreso" x-on:submit="open = false" class="row g-3">
+
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="factura">Factura</label>
@@ -89,6 +90,7 @@
                     </div>
                     @error('bancoSelected') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
+
                 <div class="col-md-12">
                     <div class="gap-2 mt-3 d-flex justify-content-center">
                         <button type="button" class="btn btn-secondary" wire:click="limpiar">

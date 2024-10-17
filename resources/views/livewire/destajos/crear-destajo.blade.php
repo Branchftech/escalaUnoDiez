@@ -7,9 +7,9 @@
 
     <x-modal-default title="Crear Destajo" name="Crear-Destajo" :modal="'showModal'">
         <x-slot:body>
-            <div class="p-4 ">
+            <div class="p-1">
                 <form wire:submit.prevent="crearDestajo" class="gap-3 d-flex flex-column">
-
+                    <div class="gap-3 overflow-y-auto d-flex flex-column" style="max-height: 40vh;">
                         <div class="form-group">
                             <label for="presupuesto">Presupuesto</label>
                             <x-input type="number" wire:model="presupuesto" class="form-control" />
@@ -58,6 +58,7 @@
                                 @endforeach
                             </ul>
                         </div>
+                    </div>
 
                     <div class="col-md-12">
                         <div class="gap-2 mt-3 d-flex justify-content-center">
@@ -109,10 +110,10 @@
 
 
     window.addEventListener('livewire:init', () => {
-        Livewire.on("clearSelect2", () => {
+        Livewire.on("resetSelect2", () => {
             $('#select2Obras').val(null).trigger('change');
             $('#select2Proveedores').val(null).trigger('change');
-            $('#select2Servicios').val(null).trigger('change');
+            $('#select2CrearServicios').val(null).trigger('change');
         });
     });
 </script>

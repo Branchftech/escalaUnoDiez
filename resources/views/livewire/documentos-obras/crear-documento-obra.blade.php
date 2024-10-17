@@ -7,29 +7,30 @@
 
     <x-modal-default title="Crear Documento" name="Crear-DocumentoObra" :modal="'showModal'">
         <x-slot:body>
-            <div class="p-4 ">
+            <div class="p-1">
                 <form wire:submit.prevent="crearDocumentoObra" class="gap-3 d-flex flex-column">
-                    <div class="form-group">
-                        <label for="nombre">Nombre</label>
-                        <x-input type="text" wire:model="nombre" class="form-control" />
-                        @error('nombre') <span class="text-danger">{{ $message }}</span> @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="documento">Documento</label>
-                        <input type="file" wire:model="documento" class="form-control" />
+                    <div class="gap-3 overflow-y-auto d-flex flex-column" style="max-height: 40vh;">
+                        <div class="form-group">
+                            <label for="nombre">Nombre</label>
+                            <x-input type="text" wire:model="nombre" class="form-control" />
+                            @error('nombre') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="documento">Documento</label>
+                            <input type="file" wire:model="documento" class="form-control" />
+                            @error('documento') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class=" form-group d-flex flex-column" wire:ignore>
+                            <label for="tiposDocumento">Tipo Documento</label>
+                            <select wire:model="tipoDocumentoSeleccionado" class="form-control" id="select2tiposDocumento">
+                                <option value="" selected hidden >Seleccione un Tipo de Documento</option>
+                                @foreach ($tiposDocumento as $tipoDocumento)
+                                    <option value="{{ $tipoDocumento->id }}">{{ $tipoDocumento->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         @error('documento') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
-
-                    <div class=" form-group d-flex flex-column" wire:ignore>
-                        <label for="tiposDocumento">Tipo Documento</label>
-                        <select wire:model="tipoDocumentoSeleccionado" class="form-control" id="select2tiposDocumento">
-                            <option value="" selected hidden >Seleccione un Tipo de Documento</option>
-                            @foreach ($tiposDocumento as $tipoDocumento)
-                                <option value="{{ $tipoDocumento->id }}">{{ $tipoDocumento->nombre }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @error('documento') <span class="text-danger">{{ $message }}</span> @enderror
                     <div class="gap-2 d-flex justify-content-end">
                         <button type="button" class="btn btn-secondary" wire:click="limpiar">
                             Limpiar

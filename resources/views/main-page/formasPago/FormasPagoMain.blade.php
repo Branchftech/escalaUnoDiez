@@ -1,8 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class=" font-weight-bold text-dark">
-            {{ __('Formas de Pago') }}
-        </h2>
+        {{ __('Formas de Pago') }}
     </x-slot>
     <div style="margin: 20px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
         <div style="display: flex; justify-content: space-between; align-items: center;" class="pb-5">

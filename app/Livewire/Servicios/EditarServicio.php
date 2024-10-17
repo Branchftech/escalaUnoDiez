@@ -4,6 +4,8 @@ namespace App\Livewire\Servicios;
 
 use App\Livewire\ServicesComponent;
 use App\Models\Servicio;
+use App\Livewire\Proveedores\EditarProveedor;
+use App\Livewire\Proveedores\ProveedoresTable;
 use Illuminate\Support\Facades\Auth;
 
 class EditarServicio extends ServicesComponent
@@ -45,6 +47,7 @@ class EditarServicio extends ServicesComponent
 
             $this->reset('showModal');
             $this->dispatch('refreshServiciosTable')->to(ServiciosTable::class);
+            $this->dispatch('refreshProveedoresTable')->to(ProveedoresTable::class);
             $this->render();
             $this->limpiar();
             $this->alertService->success($this, 'Servicio actualizado con éxito');
@@ -63,6 +66,7 @@ class EditarServicio extends ServicesComponent
     public function limpiar()
     {
         $this->reset('nombre');
+        $this->dispatch('actualizarServicios')->to(EditarProveedor::class);
         $this->closeModal();
     }
 

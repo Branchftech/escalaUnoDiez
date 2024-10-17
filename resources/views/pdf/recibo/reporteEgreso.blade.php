@@ -19,7 +19,7 @@
     </style>
 </head>
 <body>
-    <h2>Reporte de Egresos</h2>
+
 
     @if($mensaje)
         <p>{{ $mensaje }}</p>
@@ -47,12 +47,12 @@
             </tbody>
         </table>
         <!-- Tabla de Destajos -->
-        <h3>Destajo del Proveedor y Servicio</h3>
-        <table>
+       <br><br>
+        <table style="background-color: #dff3f5;">
             <tbody>
                 <tr>
                     <td style="text-align: right;">Presupuesto</td>
-                    <td style="text-align: right;">${{ $destajos->sum('presupuesto')  }}</td> <!-- Puedes ajustar esta línea según el dato específico -->
+                    <td style="text-align: right;">${{ $destajo->presupuesto  }}</td> <!-- Puedes ajustar esta línea según el dato específico -->
                 </tr>
                 <tr>
                     <td style="text-align: right;">Total Pagado</td>

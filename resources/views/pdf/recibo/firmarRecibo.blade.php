@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recibo</title>
     <style>
-         body {
+        body {
             font-family: Arial, sans-serif;
         }
         .container {
@@ -16,23 +16,21 @@
         }
         .header {
             width: 100%;
-            overflow: hidden; /* Asegura que los elementos flotados se contengan dentro del contenedor */
+            overflow: hidden;
             padding-bottom: 10px;
             font-weight: bold;
         }
         .logo {
-            float: left; /* Alinea la imagen a la izquierda */
+            float: left;
             width: 200px;
             height: 130px;
         }
         .title {
             display: inline-block;
-            font-size: 5px;
+            font-size: 50px;
             font-weight: bold;
-            color: rgb(49, 1, 153)
-            line-height: 100px; /* Alinea verticalmente el texto con la imagen */
-            text-align: center;
-             /* Restamos el ancho del logo y un pequeño margen */
+            color: blue;
+            line-height: 130px;
         }
         .details {
             margin-top: 20px;
@@ -56,7 +54,6 @@
             border-top: 1px solid black;
             width: 200px;
             margin-left: auto;
-            font-weight: bold;
         }
         #signatureCanvas {
             border: 1px solid black;
@@ -64,17 +61,17 @@
             height: 100px;
             margin-left: auto;
         }
-        #saveSignature {
+        #saveSignature, #clearSignature {
             margin-top: 10px;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <!-- Logo alineado a la izquierda -->
             <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="logo">
-            <span style="font-size: 50px; font-weight: bold; color: blue; padding-bottom:0; line-height: 130px;">RECIBO</span>
+            <span class="title">RECIBO</span>
         </div>
 
         <div class="details">
@@ -88,121 +85,103 @@
 
         <!-- Zona de firma con canvas -->
         <div class="signature">
-            <p>Por favor, firme abajo:</p>
+            <p>Por favor, firme dentro del recuadro:</p>
+
             <canvas id="signatureCanvas"></canvas>
+            <br>
+            <button id="clearSignature">Limpiar</button>
             <button id="saveSignature">Guardar Firma</button>
         </div>
 
     </div>
-    {{--
+
     <script>
         var canvas = document.getElementById('signatureCanvas');
         var ctx = canvas.getContext('2d');
         var drawing = false;
+        var isSaved = false;  // Variable para controlar si la firma ha sido guardada
+        var isEmpty = true;   // Variable para controlar si el canvas está vacío
 
+        // Comenzar a dibujar
         canvas.addEventListener('mousedown', function(e) {
-            drawing = true;
-            ctx.moveTo(e.offsetX, e.offsetY);
+            if (!isSaved) {
+                drawing = true;
+                ctx.moveTo(e.offsetX, e.offsetY);
+                isEmpty = false;  // Marcamos que el canvas ya no está vacío
+            }
         });
 
+        // Continuar dibujando
         canvas.addEventListener('mousemove', function(e) {
-            if (drawing) {
+            if (drawing && !isSaved) {
                 ctx.lineTo(e.offsetX, e.offsetY);
                 ctx.stroke();
             }
         });
 
+        // Detener el dibujo
         canvas.addEventListener('mouseup', function() {
             drawing = false;
         });
 
-        // Guardar la firma en base64
-        document.getElementById('saveSignature').addEventListener('click', function() {
-            var signatureData = canvas.toDataURL('image/png');
-
-            // Enviar la firma al backend
-            fetch('/guardar-firma', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    firma: signatureData,
-                    egreso_id: {{ $egreso->id }}
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Firma guardada con éxito');
-                    window.location.href = '/pdf/recibo/' + {{ $egreso->id }};
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    </script> --}}
-    <script>
-        var canvas = document.getElementById('signatureCanvas');
-        var ctx = canvas.getContext('2d');
-        var drawing = false;
-
-        canvas.addEventListener('mousedown', function(e) {
-            drawing = true;
-            ctx.moveTo(e.offsetX, e.offsetY);
-        });
-
-        canvas.addEventListener('mousemove', function(e) {
-            if (drawing) {
-                ctx.lineTo(e.offsetX, e.offsetY);
-                ctx.stroke();
+        // Limpiar el canvas
+        document.getElementById('clearSignature').addEventListener('click', function() {
+            if (!isSaved) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpia el contenido del canvas
+                ctx.beginPath(); // Restablece el contexto del canvas para evitar trazos antiguos
+                isEmpty = true;  // Marcamos que el canvas está vacío
             }
         });
 
-        canvas.addEventListener('mouseup', function() {
-            drawing = false;
-        });
-
-        // Guardar la firma en base64
+        // Guardar la firma
         document.getElementById('saveSignature').addEventListener('click', function() {
-            var signatureData = canvas.toDataURL('image/png');
+            if (isEmpty) {
+                alert('No puede guardar una firma vacía.');
+                return;
+            }
 
-            // Enviar la firma al backend con fetch
-            fetch('/guardar-firma', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Asegúrate de que se está enviando el token CSRF
-                },
-                body: JSON.stringify({
-                    firma: signatureData,
-                    egreso_id: {{ $egreso->id }}
-                })
-            })
-            .then(response => {
-                // Verifica si la respuesta es correcta
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Error en la respuesta del servidor');
+            if (!isSaved) {
+                var confirmation = confirm('¿Está seguro de que desea guardar la firma? No podrá editarla después.');
+                if (confirmation) {
+                    var signatureData = canvas.toDataURL('image/png');
+
+                    // Enviar la firma al backend
+                    fetch('/guardar-firma', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            firma: signatureData,
+                            egreso_id: {{ $egreso->id }}
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Firma guardada con éxito');
+                            isSaved = true;
+                            document.getElementById('saveSignature').disabled = true;  // Deshabilitar el botón de guardar
+                            document.getElementById('clearSignature').disabled = true; // Deshabilitar el botón de limpiar
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
                 }
-            })
-            .then(data => {
-                // Si la firma se guardó correctamente, mostrar un alert
-                if (data.success) {
-                    alert('Firma guardada con éxito, por favor regrese a la pestaña anterior.');
-                } else {
-                    alert('Error al guardar la firma');
-                }
-            })
-            .catch(error => {
-                console.error('Error en la solicitud:', error);
-                alert('Hubo un problema al guardar la firma');
-            });
+            }
         });
+
+        // Función para verificar si el canvas está vacío
+        function isCanvasEmpty(canvas) {
+            const blank = document.createElement('canvas');
+            blank.width = canvas.width;
+            blank.height = canvas.height;
+            return canvas.toDataURL() === blank.toDataURL();
+        }
     </script>
 
 </body>
 </html>
+

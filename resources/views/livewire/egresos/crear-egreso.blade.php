@@ -138,131 +138,188 @@
 
         <div x-show="openGenerarReporte" x-cloak>
             <hr>
-            <form action="{{ route('generarReporte') }}" method="POST">
+            <form action="{{ route('generarReporte') }}" method="POST" target="_blank">
                 @csrf
                 <div class="row">
                     <!-- Columna Obras -->
-                    <div class="col-md-3">
-                        <div class="form-group">
+                    <div class="col-md-2">
+                        <div class="form-group" wire:ignore>
                             <label for="obrasReporte">Obras</label>
-                            <select wire:model="obraReporteSelected" class="form-control" id="select2Obras" name="obra_id" style="width: 100%;">
+                            <select wire:model="obraReporteSeleccionado" class="form-control" id="select2ObrasReporte" name="obra_id" style="width: 100%;">
                                 <option value="" selected hidden>Seleccione una Obra</option>
                                 @foreach ($obras as $obra)
                                     <option value="{{ $obra->id }}">{{ $obra->detalle->nombreObra }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        @error('obraSelected') <span class="text-danger">{{ $message }}</span> @enderror
+                        @error('obraReporteSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
 
                     <!-- Columna Proveedores -->
-                    <div class="col-md-3">
-                        <div class="form-group">
+                    <div class="col-md-2">
+                        <div class="form-group" wire:ignore>
                             <label for="proveedoresReporte">Proveedores</label>
-                            <select wire:model="proveedorReporteSelected" class="form-control" id="select2Proveedores" name="proveedor_id" style="width: 100%;">
+                            <select wire:model="proveedorReporteSeleccionado" class="form-control" id="select2ProveedoresReporte" name="proveedor_id" style="width: 100%;">
                                 <option value="" selected hidden>Seleccione un Proveedor</option>
                                 @foreach ($proveedores as $proveedor)
                                     <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option>
                                 @endforeach
                             </select>
                         </div>
+                        @error('proveedorReporteSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
 
                     <!-- Columna Servicios -->
                     <div class="col-md-3">
-                        <div class="form-group">
+                        <div class="form-group" wire:ignore>
                             <label for="serviciosReporte">Servicios</label>
-                            <select wire:model="serviciosReporteSeleccionados" class="form-control" id="select2Servicios" name="servicio_id" style="width: 100%;">
+                            <select wire:model="serviciosReporteSeleccionados" class="form-control" multiple id="select2ServiciosReporte" name="servicio_id" style="width: 100%;">
                                 <option value="" selected hidden>Seleccione un Servicio</option>
                                 @foreach ($servicios as $servicio)
                                     <option value="{{ $servicio->id }}">{{ $servicio->nombre }}</option>
                                 @endforeach
                             </select>
                         </div>
+                        @error('serviciosReporteSeleccionados') <span class="text-danger">{{ $message }}</span> @enderror
+                    </div>
+                    <!-- Columna Destajos -->
+                    <div class="col-md-3">
+                        <div class="form-group" wire:ignore>
+                            <label for="destajosReporte">Destajos</label>
+                            <select wire:model="destajoReporteSeleccionado" class="form-control" id="select2DestajosReporte" name="destajo_id" style="width: 100%;">
+                                <option value="" selected hidden>Seleccione un Destajo</option>
+                                @foreach ($destajos as $destajo)
+                                    <option value="{{ $destajo->id }}">{{ $destajo->id }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('destajoReporteSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
 
                     <!-- Columna Botón -->
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100">Generar Reporte</button>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100" >Generar Reporte</button>
                     </div>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
+
 @push('scripts')
-<script type="module">
-    $('#select2Obras').select2({
-        width: '100%',
-        placeholder: "Seleccione una Obra",
-        allowClear: true
-    });
-    $('#select2Obras').on('change', function(e) {
-        var data = $('#select2Obras').select2("val");
-        @this.set('obraSelected', data);
-    });
+    <script type="module">
+        // Inicializamos Select2 cuando la página carga por primera vez
+        initSelect2();
+            function initSelect2() {
+            $('#select2Obras').select2({
+                width: '100%',
+                placeholder: "Seleccione una Obra",
+                allowClear: true
+            }).on('change', function(e) {
+                var data = $(this).select2("val");
+                @this.set('obraSelected', data);
+            });
 
-    $('#select2Proveedores').select2({
-        width: '100%',
-        placeholder: "Seleccione un Proveedor",
-        allowClear: true
-    });
-    $('#select2Proveedores').on('change', function(e) {
-        var data = $('#select2Proveedores').select2("val");
-        @this.set('proveedorSelected', data);
-    });
+            $('#select2ObrasReporte').select2({
+                width: '100%',
+                placeholder: "Seleccione una Obra",
+                allowClear: true
+            }).on('change', function(e) {
+                var data = $(this).select2("val");
+                @this.set('obraReporteSeleccionado', data);
+            });
 
-    $('#select2FormasPago').select2({
-        width: '100%',
-        placeholder: "Seleccione una Forma de Pago",
-        allowClear: true
-    });
-    $('#select2FormasPago').on('change', function(e) {
-        var data = $('#select2FormasPago').select2("val");
-        @this.set('formaPagoSelected', data);
-    });
+            $('#select2Proveedores').select2({
+                width: '100%',
+                placeholder: "Seleccione un Proveedor",
+                allowClear: true
+            }).on('change', function(e) {
+                var data = $(this).select2("val");
+                @this.set('proveedorSelected', data);
+            });
 
-    $('#select2Bancos').select2({
-        width: '100%',
-        placeholder: "Seleccione un Banco",
-        allowClear: true
-    });
-    $('#select2Bancos').on('change', function(e) {
-        var data = $('#select2Bancos').select2("val");
-        @this.set('bancoSelected', data);
-    });
-    $('#select2Destajos').select2({
-        width: '100%',
-        placeholder: "Seleccione un Destajo",
-        allowClear: true
-    });
-    $('#select2Destajos').on('change', function(e) {
-        var data = $('#select2Destajos').select2("val");
-        @this.set('destajoSelected', data);
-    });
+            $('#select2ProveedoresReporte').select2({
+                width: '100%',
+                placeholder: "Seleccione un Proveedor",
+                allowClear: true
+            }).on('change', function(e) {
+                var data = $(this).select2("val");
+                @this.set('proveedorReporteSeleccionado', data);
+            });
 
+            $('#select2FormasPago').select2({
+                width: '100%',
+                placeholder: "Seleccione una Forma de Pago",
+                allowClear: true
+            }).on('change', function(e) {
+                var data = $(this).select2("val");
+                @this.set('formaPagoSelected', data);
+            });
 
-    $('#select2Servicios').select2({
-        width: '100%',
-        placeholder: "Seleccione los Servicios",
-        allowClear: true
-    });
-    $('#select2Servicios').on('change', function(e) {
-        var data = $('#select2Servicios').select2("val");
-        @this.set('serviciosSeleccionados', data);
-    });
+            $('#select2Bancos').select2({
+                width: '100%',
+                placeholder: "Seleccione un Banco",
+                allowClear: true
+            }).on('change', function(e) {
+                var data = $(this).select2("val");
+                @this.set('bancoSelected', data);
+            });
 
-    window.addEventListener('livewire:init', () => {
-        Livewire.on("clearSelect2", () => {
+            $('#select2Destajos').select2({
+                width: '100%',
+                placeholder: "Seleccione un Destajo",
+                allowClear: true
+            }).on('change', function(e) {
+                var data = $(this).select2("val");
+                @this.set('destajoSelected', data);
+            });
+
+            $('#select2DestajosReporte').select2({
+                width: '100%',
+                placeholder: "Seleccione un Destajo",
+                allowClear: true
+            }).on('change', function(e) {
+                var data = $(this).select2("val");
+                @this.set('destajoReporteSeleccionado', data);
+            });
+
+            $('#select2Servicios').select2({
+                width: '100%',
+                placeholder: "Seleccione los Servicios",
+                allowClear: true
+            }).on('change', function(e) {
+                var data = $(this).select2("val");
+                @this.set('serviciosSeleccionados', data);
+            });
+
+            $('#select2ServiciosReporte').select2({
+                width: '100%',
+                placeholder: "Seleccione los Servicios",
+                allowClear: true
+            }).on('change', function(e) {
+                var data = $(this).select2("val");
+                @this.set('serviciosReporteSeleccionados', data);
+            });
+        }
+
+        Livewire.on("refreshSelect2", () => {
             $('#select2Obras').val(null).trigger('change');
             $('#select2Proveedores').val(null).trigger('change');
             $('#select2FormasPago').val(null).trigger('change');
             $('#select2Bancos').val(null).trigger('change');
             $('#select2Servicios').val(null).trigger('change');
+            $('#select2Destajos').val(null).trigger('change');
+
+            $('#select2ObrasReporte').val(null).trigger('change');
+            $('#select2ProveedoresReporte').val(null).trigger('change');
+            $('#select2DestajosReporte').val(null).trigger('change');
+            $('#select2ServiciosReporte').val(null).trigger('change');
         });
-    });
+
+        document.addEventListener('livewire:init', function () {
+            initSelect2();
+        });
 
 
-</script>
+    </script>
 @endpush

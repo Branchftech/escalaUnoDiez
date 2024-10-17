@@ -10,6 +10,7 @@ class CreateEgresosTable extends Migration
         Schema::create('egresos', function (Blueprint $table) {
             $table->id();
             $table->decimal('cantidad', 10, 2);
+            $table->tinyInteger('firmado')->nullable()->default(null);
             $table->unsignedBigInteger('idObra');
             $table->foreign('idObra')->references('id')->on('obra');
             $table->unsignedBigInteger('idProveedor');

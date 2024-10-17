@@ -12,10 +12,7 @@ class CreateDestajoTable extends Migration
             $table->decimal('presupuesto', 10, 2);
             $table->unsignedBigInteger('idObra');
             $table->foreign('idObra')->references('id')->on('obra');
-            $table->unsignedBigInteger('idCliente');
             $table->foreignId('idProveedor')->constrained('proveedores');
-            $table->unsignedBigInteger('idServicio');
-            $table->foreign('idServicio')->references('id')->on('servicio');
             $table->timestamps();
             $table->softDeletes();
             $table->unsignedBigInteger('created_by')->nullable();

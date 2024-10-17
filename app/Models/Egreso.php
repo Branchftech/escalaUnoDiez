@@ -75,16 +75,16 @@ class Egreso extends Model
             $egreso->idDestajo = $idDestajo;
             $egreso->concepto = $concepto;
             $egreso->fecha = $fecha;
-           // $egreso->firmado = 1;
-            // Aquí simplemente sincronizas los IDs de servicios seleccionados
-        if (!empty($servicios)) {
-            $egreso->servicios()->sync($servicios);
-        } else {
-            $egreso->servicios()->sync([]); // Si no hay servicios seleccionados
-        }
             $egreso->updated_by = $userId;
             $egreso->updated_at = now();
             $egreso->save();
+            // Aquí simplemente sincronizas los IDs de servicios seleccionados
+            if (!empty($servicios)) {
+                $egreso->servicios()->sync($servicios);
+            } else {
+                $egreso->servicios()->sync([]); // Si no hay servicios seleccionados
+            }
+
             return $egreso;
         } catch (\Throwable $th) {
             Log::error('Error al actualizar Egreso: ' . $th->getMessage(), [
@@ -119,7 +119,6 @@ class Egreso extends Model
         return Egreso::whereMonth('fecha', date('m'))  // Filtrar por el mes actual
         ->sum('cantidad');  // Sumar el total de la columna 'cantidad'
     }
-
 
     // Relación con el modelo Obra
     public function obra()
@@ -168,6 +167,8 @@ class Egreso extends Model
     {
         return $this->belongsToMany(Servicio::class, 'egreso_servicio', 'idEgreso', 'idServicio');
     }
+
+    //relacion con destajos
     public function destajo()
     {
         return $this->belongsTo(Destajo::class, 'idDestajo'); // 'destajo_id' es la clave foránea en la tabla egresos

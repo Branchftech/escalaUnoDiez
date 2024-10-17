@@ -51,11 +51,6 @@ class EgresosController extends Controller
         $fileName = 'recibo_' . $egreso->id . '.pdf';
         $filePath = 'pdfs/' . $fileName;
 
-        // // Guardar el PDF en storage si no existe
-        // if (!Storage::disk('public')->exists($filePath)) {
-        //     Storage::disk('public')->put($filePath, $pdf->output());
-        // }
-
         // Mostrar el PDF generado
         return $pdf->stream('pdfRecibo.pdf');
     }
@@ -123,31 +118,28 @@ class EgresosController extends Controller
         $obraId = $request->input('obra_id');
         $proveedorId = $request->input('proveedor_id');
         $servicioId = $request->input('servicio_id');
+        $destajoId = $request->input('destajo_id');
 
         // Consulta para obtener los egresos filtrados
         $egresos = Egreso::where('idObra', $obraId)
                         ->where('idProveedor', $proveedorId)
+                        ->where('idDestajo', $destajoId)
                         ->whereHas('servicios', function($query) use ($servicioId) {
                             $query->where('servicio.id', $servicioId);
                         })
                         ->get();
-        // Consulta para obtener el destajo filtrado
-        $destajos = Destajo::where('idObra', $obraId)
-                    ->where('idProveedor', $proveedorId)
-                    ->whereHas('servicios', function($query) use ($servicioId) {
-                        $query->where('servicio.id', $servicioId);
-                    })
-                    ->get();
 
         // Cálculo del total pagado (suma de las cantidades de los egresos)
         $totalPagado = $egresos->sum('cantidad');
         // Cálculo del saldo a pagar
-        $saldoAPagar = $destajos->sum('presupuesto') - $totalPagado;
+        $destajo = Destajo::find($destajoId);
+
+        $saldoAPagar = $destajo->presupuesto - $totalPagado;
 
         // Generar el PDF con la firma en la parte inferior derecha
         $pdf = PDF::loadView('pdf.recibo.reporteEgreso', [
             'egresos' => $egresos,
-            'destajos' => $destajos, // Pasa la información de los destajos a la vista
+            'destajo' => $destajo, // Pasa la información de los destajos a la vista
             'totalPagado' => $totalPagado,
             'saldoAPagar' => $saldoAPagar,
             'mensaje' => $egresos->isEmpty() ? 'No se encontraron egresos para los criterios seleccionados.' : null,

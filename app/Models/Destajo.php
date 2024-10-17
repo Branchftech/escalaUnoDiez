@@ -41,6 +41,7 @@ class Destajo extends Model
 
         $destajo->created_at = now();
         $destajo->save();
+
         if (!empty($servicios)) {
             $serviciosCollection = collect($servicios);
             $servicioIds = $serviciosCollection->pluck('id')->toArray();
@@ -49,7 +50,7 @@ class Destajo extends Model
         }else{
             $destajo->servicios()->sync([]);
         }
-        $destajo->save();
+
         return $destajo;
     }
 
@@ -61,17 +62,17 @@ class Destajo extends Model
             $destajo->presupuesto = $presupuesto;
             $destajo->idObra = $idObra;
             $destajo->idProveedor = $idProveedor;
+            $destajo->updated_by = $userId;
+            $destajo->updated_at = now();
+            $destajo->save();
             if (!empty($servicios)) {
                 $serviciosCollection = collect($servicios);
                 $servicioIds = $serviciosCollection->pluck('id')->toArray();
                 $destajo->servicios()->sync($servicioIds);
-
             }else{
                 $destajo->servicios()->sync([]);
             }
-            $destajo->updated_by = $userId;
-            $destajo->updated_at = now();
-            $destajo->save();
+
 
             return $destajo;
         } catch (\Throwable $th) {

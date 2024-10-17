@@ -8,6 +8,7 @@ use Rappasoft\LaravelLivewireTables\Views\Column;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
+use Illuminate\Support\Facades\Schema;
 
 class EgresosTable extends DataTableComponent{
     use LivewireAlert;
@@ -37,57 +38,64 @@ class EgresosTable extends DataTableComponent{
 
     public function query(): Builder
     {
-        return Egreso::query();
+        $query = Egreso::query();
+
+        if (Schema::hasTable('obra') && Schema::hasTable('detalleObra') && Schema::hasTable('proveedores') && Schema::hasTable('formapago') && Schema::hasTable('banco')) {
+            $query = $query
+                ->leftJoin('obra', 'egresos.idObra', '=', 'obra.id')
+                ->leftJoin('detalleObra', 'obra.idDetalleObra', '=', 'detalleObra.id')
+                ->leftJoin('proveedores', 'egresos.idProveedor', '=', 'proveedores.id')
+                ->leftJoin('formapago', 'egresos.idFormaPago', '=', 'formapago.id')
+                ->leftJoin('banco', 'egresos.idBanco', '=', 'banco.id');
+        }
+
+        return $query;
     }
     public function builder(): Builder
     {
         return Egreso::query();//->with('obra')->where('idObra', $this->id);
     }
 
-
     public function dataTableFingerprint()
     {
         return md5('Egreso');
     }
 
-
     public function columns(): array
     {
         return [
-        Column::make('ID', 'id')
-            ->sortable()->searchable()
-            ->setSortingPillDirections('Asc', 'Desc'),
-        Column::make('Concepto', 'concepto'),
-        Column::make('Cantidad', 'cantidad'),
-        Column::make('Fecha', 'fecha'),
-        BooleanColumn::make('Firmado', 'firmado')->deselected(),
-        Column::make('Obra', 'obra.detalle.nombreObra')
+            Column::make('ID', 'id')
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),
-        Column::make('Proveedor', 'proveedor.nombre')
-                ->sortable()->searchable()
-                ->setSortingPillDirections('Asc', 'Desc'),
-        // Nueva columna para mostrar los servicios asociados
-        Column::make('Servicios')
-        ->label(
-            fn ($row, Column $column) => $row->servicios->pluck('nombre')->implode(', ')
-        ),
-        Column::make('Forma de Pago', 'formaPago.nombre')
-                ->sortable()->searchable()
-                ->setSortingPillDirections('Asc', 'Desc'),
-        Column::make('Banco', 'banco.nombre')
-                ->sortable()->searchable()
-                ->setSortingPillDirections('Asc', 'Desc'),
-        Column::make('Creado por', 'createdBy.name')->deselected(),
-        Column::make('Fecha Creación', 'created_at')->deselected(),
-        Column::make('Actualizado por', 'updatedBy.name')->deselected(),
-        Column::make('Fecha Actualización', 'updated_at')->deselected(),
-        Column::make('Acciones')
-            ->label(
-                fn ($row, Column $column) => view('livewire.egresos.actions-table')->with([
-                    'model' => json_encode($row),
-                ])
-            )->html(),
+            Column::make('Concepto', 'concepto'),
+            Column::make('Cantidad', 'cantidad'),
+            Column::make('Fecha', 'fecha'),
+            BooleanColumn::make('Firmado', 'firmado')->deselected(),
+            Column::make('Obra', 'obra.detalle.nombreObra')
+                    ->sortable()->searchable()
+                    ->setSortingPillDirections('Asc', 'Desc'),
+            Column::make('Proveedor', 'proveedor.nombre')
+                    ->sortable()->searchable()
+                    ->setSortingPillDirections('Asc', 'Desc'),
+            // Nueva columna para mostrar los servicios asociados
+            Column::make('Servicios')
+                ->label(fn ($row, Column $column) => $row->servicios->pluck('nombre')->implode(', ') ?? 'N/A'),
+            Column::make('Forma de Pago', 'formaPago.nombre')
+                    ->sortable()->searchable()
+                    ->setSortingPillDirections('Asc', 'Desc'),
+            Column::make('Banco', 'banco.nombre')
+                    ->sortable()->searchable()
+                    ->setSortingPillDirections('Asc', 'Desc'),
+            Column::make('Creado por', 'createdBy.name')->deselected(),
+            Column::make('Fecha Creación', 'created_at')->deselected(),
+            Column::make('Actualizado por', 'updatedBy.name')->deselected(),
+            Column::make('Fecha Actualización', 'updated_at')->deselected(),
+            Column::make('Acciones')
+                ->label(
+                    fn ($row, Column $column) => view('livewire.egresos.actions-table')->with([
+                        'model' => json_encode($row),
+                    ])
+                )->html(),
         ];
     }
 

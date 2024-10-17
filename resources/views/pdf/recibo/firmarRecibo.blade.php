@@ -169,9 +169,6 @@
         document.getElementById('saveSignature').addEventListener('click', function() {
             var signatureData = canvas.toDataURL('image/png');
 
-            // Mostrar mensaje en la consola para depuración
-            console.log("Enviando la firma al servidor...");
-
             // Enviar la firma al backend con fetch
             fetch('/guardar-firma', {
                 method: 'POST',

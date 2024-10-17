@@ -18,8 +18,7 @@ class EditarProveedor extends ServicesComponent
     public $servicios;
     public $servicioSeleccionado;
     public $selectedServicios = [];
-    public $listeners = ['cargarModalEditarProveedor'];
-
+    public $listeners = ['cargarModalEditarProveedor', 'actualizarServicios' => 'actualizarServiciosProveedor'];
 
     public function mount(Proveedor $model)
     {
@@ -102,5 +101,12 @@ class EditarProveedor extends ServicesComponent
         $this->selectedServicios = array_filter($this->selectedServicios, function($servicio) use ($index) {
             return $servicio->id !== $index;
         });
+    }
+
+    public function actualizarServiciosProveedor()
+    {
+        $servicios =Servicio::orderBy('nombre', 'asc')->get();
+
+        $this->dispatch('actualizarServiciosProveedor', compact('servicios'));
     }
 }

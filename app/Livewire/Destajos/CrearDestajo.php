@@ -66,7 +66,7 @@ class CrearDestajo extends ServicesComponent
             $this->dispatch('refreshDestajosTable')->to(DestajosTable::class);
             // Limpiar los campos
             $this->limpiar();
-
+            $this->closeModal();
             // Mostrar mensaje de éxito
             $this->alertService->success($this, 'Destajo creado con éxito');
         } catch (\Exception $th) {
@@ -80,8 +80,9 @@ class CrearDestajo extends ServicesComponent
         $this->reset('presupuesto');
         $this->reset('obraSelected');
         $this->reset('proveedorSelected');
-        $this->dispatch('clearSelect2');
-        $this->closeModal();
+        $this->reset('selectedServicios');
+        $this->dispatch('resetSelect2');
+
     }
 
     public function openModal()

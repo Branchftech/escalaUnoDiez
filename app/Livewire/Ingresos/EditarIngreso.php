@@ -16,23 +16,23 @@ class EditarIngreso extends ServicesComponent
     public $model;
     public $cantidad, $fecha, $concepto, $factura;
 
-    // Select obras
-    public $obras;
+    // Select obrasEditarIngreso
+    public $obrasEditarIngreso;
     public $obraSeleccionada;
 
-    // Select clientes
-    public $clientes;
+    // Select clientesEditarIngreso
+    public $clientesEditarIngreso;
     public $clienteSeleccionado;
 
     // Select formas de pago
-    public $formasPago;
+    public $formasPagoEditarIngreso;
     public $formaPagoSeleccionada;
 
-    // Select bancos
-    public $bancos;
+    // Select bancosEditarIngreso
+    public $bancosEditarIngreso;
     public $bancoSeleccionado;
 
-    public $listeners = ['cargarModalEditarIngreso'];
+    public $listeners = ['cargarModalEditarIngreso', 'actualizarIngreso' => 'actualizarIngreso'];
 
     public function mount(Ingreso $model)
     {
@@ -46,18 +46,18 @@ class EditarIngreso extends ServicesComponent
         $this->formaPagoSeleccionada = $model->idFormaPago;
         $this->bancoSeleccionado = $model->idBanco;
 
-        $this->obras = Obra::all();
-        $this->clientes = Cliente::all();
-        $this->formasPago = FormaPago::all();
-        $this->bancos = Banco::all();
+        $this->obrasEditarIngreso = Obra::all();
+        $this->clientesEditarIngreso = Cliente::all();
+        $this->formasPagoEditarIngreso = FormaPago::all();
+        $this->bancosEditarIngreso = Banco::all();
     }
 
     public function render()
     {
-        $this->obras = Obra::all();
-        $this->clientes = Cliente::all();
-        $this->formasPago = FormaPago::all();
-        $this->bancos = Banco::all();
+        $this->obrasEditarIngreso = Obra::all();
+        $this->clientesEditarIngreso = Cliente::all();
+        $this->formasPagoEditarIngreso = FormaPago::all();
+        $this->bancosEditarIngreso = Banco::all();
 
         return view('livewire.ingresos.editar-ingreso');
     }
@@ -112,11 +112,21 @@ class EditarIngreso extends ServicesComponent
         $this->formaPagoSeleccionada = $this->model['idFormaPago'];
         $this->bancoSeleccionado = $this->model['idBanco'];
 
-        $this->obras = Obra::all();
-        $this->clientes = Cliente::all();
-        $this->formasPago = FormaPago::all();
-        $this->bancos = Banco::all();
+        $this->obrasEditarIngreso = Obra::with('detalle')->get();
+        $this->clientesEditarIngreso = Cliente::all();
+        $this->formasPagoEditarIngreso = FormaPago::all();
+        $this->bancosEditarIngreso = Banco::all();
 
+        $this->dispatch('actualizarIngreso', [
+            'obrasEditarIngreso' => $this->obrasEditarIngreso,
+            'clientesEditarIngreso' => $this->clientesEditarIngreso,
+            'formasPagoEditarIngreso' =>$this->formasPagoEditarIngreso,
+            'bancosEditarIngreso' =>$this->bancosEditarIngreso,
+            'obraSeleccionada' => $this->obraSeleccionada,
+            'bancoSeleccionado' =>  $this->bancoSeleccionado,
+            'clienteSeleccionado' => $this->clienteSeleccionado,
+            'formaPagoSeleccionada' => $this->formaPagoSeleccionada,
+        ]);
         $this->showModal = true;
     }
 
@@ -130,6 +140,7 @@ class EditarIngreso extends ServicesComponent
         $this->reset('clienteSeleccionado');
         $this->reset('formaPagoSeleccionada');
         $this->reset('bancoSeleccionado');
+        $this->dispatch('resetSelect2');
         $this->closeModal();
     }
 

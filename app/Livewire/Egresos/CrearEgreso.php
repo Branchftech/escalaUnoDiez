@@ -119,7 +119,7 @@ class CrearEgreso extends ServicesComponent
         $this->reset('bancoSelected');
         $this->reset('destajoSelected');
         $this->reset('serviciosSeleccionados');
-        $this->dispatch('clearSelect2');
+        $this->dispatch('refreshSelect2');
         $this->closeModal();
     }
 

@@ -1,8 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class=" font-weight-bold text-dark">
             {{ __('Egresos') }}
-        </h2>
     </x-slot>
     <div>
         <livewire:egresos.crear-egreso />

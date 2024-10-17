@@ -7,13 +7,14 @@
 
     <x-modal-default title="Crear Bitacora" name="Crear-BitacoraObra" :modal="'showModal'">
         <x-slot:body>
-            <div class="p-4 ">
+            <div class="p-1">
                 <form wire:submit.prevent="crearBitacoraObra" class="gap-3 d-flex flex-column">
-                    <div class="form-group">
-                        <label for="descripcion">Descripcion</label>
-                        <textarea wire:model="descripcion" class="form-control" rows="5"></textarea>
-
-                        @error('descripcion') <span class="text-danger">{{ $message }}</span> @enderror
+                    <div class="gap-3 overflow-y-auto d-flex flex-column" style="max-height: 30vh;">
+                        <div class="form-group">
+                            <label for="descripcion">Descripcion</label>
+                            <textarea wire:model="descripcion" class="form-control" rows="5"></textarea>
+                            @error('descripcion') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
                     </div>
                     <div class="gap-2 d-flex justify-content-end">
                         <button type="button" class="btn btn-secondary" wire:click="limpiar">

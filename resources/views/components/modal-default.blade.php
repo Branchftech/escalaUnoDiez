@@ -7,7 +7,7 @@
     class="" x-cloak style="position: fixed;z-index: 50;top   : 10%;right: 0;bottom: 0;left: 0; transition: opacity 0.2s;">
 
     <div x-on:click="show = false" class=""style="position: fixed; opacity: 0.4;background-color: black;inset: 0px;"></div>
-    <div class="p-4 rounded-lg shadow-lg card"style="position: relative;margin: auto; border-radius: 0.5rem;{{$maxWidth}};{{$positionTop}}">
+    <div class="p-4 rounded-lg shadow-lg card modal-default "style="position: relative;margin: auto; border-radius: 0.5rem;{{$maxWidth}}{{$positionTop}}">
 
         @if (isset($title))
             <div class="d-flex justify-content-between">
@@ -25,5 +25,3 @@
         </div>
     </div>
 </div>
-
-

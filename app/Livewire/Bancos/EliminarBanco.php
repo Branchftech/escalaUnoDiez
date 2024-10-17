@@ -19,7 +19,7 @@ class EliminarBanco extends ServicesComponent
 
     public function render()
     {
-        return view('livewire.Bancos.eliminar-Banco');
+        return view('livewire.bancos.eliminar-banco');
     }
 
     public function cancelModal()

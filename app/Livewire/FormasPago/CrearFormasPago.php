@@ -19,7 +19,7 @@ class CrearFormasPago extends ServicesComponent
     public function crearFormasPago()
     {
         $this->validate([
-            'nombre' => 'required|string|unique:FormaPago,nombre,NULL,id,deleted_at,NULL'
+            'nombre' => 'required|string|unique:formaspago,nombre,NULL,id,deleted_at,NULL'
         ]);
         try{
             $user = Auth::user();

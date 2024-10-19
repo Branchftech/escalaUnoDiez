@@ -33,11 +33,11 @@ class EditarCliente extends ServicesComponent
     {
 
         $this->validate([
-            'cedula' => 'required|string',
+            //'cedula' => 'required|string',
             'nombre' => 'required|string',
-            'apellido' => 'required|string',
-            'telefono' => 'required|numeric',
-            'email' => 'required|email',
+            'apellido' => 'nullable|string',
+            'telefono' => 'nullable|numeric',
+            'email' => 'nullable|email',
         ]);
 
         try {

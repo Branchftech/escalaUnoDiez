@@ -51,9 +51,9 @@ class ClientesTable extends DataTableComponent{
             Column::make('Apellido', 'apellido')
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),
-            Column::make('Cedula', 'cedula')
-                ->sortable()->searchable()
-                ->setSortingPillDirections('Asc', 'Desc'),
+            // Column::make('Cedula', 'cedula')
+            //     ->sortable()->searchable()
+            //     ->setSortingPillDirections('Asc', 'Desc'),
             Column::make('Telefono', 'telefono')
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),

@@ -25,7 +25,7 @@ class CrearProveedor extends ServicesComponent
     {
 
         $this->validate([
-            'nombre' => 'required|string|unique:proveedores,nombre',
+            'nombre' => 'required|string|unique:proveedores,nombre,NULL,id,deleted_at,NULL',
             'direccion' => 'required|string',
             'telefono' => 'required|numeric',
             'email' => 'required|email',

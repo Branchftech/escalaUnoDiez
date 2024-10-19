@@ -22,7 +22,7 @@ class CrearServicio extends ServicesComponent
     {
 
         $this->validate([
-            'nombre' => 'required|string|unique:Servicio,nombre,NULL,id,deleted_at,NULL',
+            'nombre' => 'required|string|unique:servicio,nombre,NULL,id,deleted_at,NULL',
 
         ]);
         try{

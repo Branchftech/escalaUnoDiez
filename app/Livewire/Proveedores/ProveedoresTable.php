@@ -26,6 +26,10 @@ class ProveedoresTable extends DataTableComponent{
         $this->setRememberColumnSelectionEnabled();
         $this->setDataTableFingerprint(route('proveedores') . '-' . $this->dataTableFingerprint());
         $this->setEmptyMessage('No se encontraron Proveedores');
+        // Establecer valores aceptados para la paginación
+        $this->setPerPageAccepted([5, 10, 25, 50]); // Incluye 5 en la lista
+        // Establecer el número de resultados por página a 5
+        $this->setPerPage(5); // Aquí estableces el límite de resultados
     }
 
     public function query(): Builder
@@ -68,7 +72,7 @@ class ProveedoresTable extends DataTableComponent{
             ->html(),
             Column::make('Acciones')
                 ->label(
-                    fn ($row, Column $column) => view('livewire.Proveedores.actions-table')->with([
+                    fn ($row, Column $column) => view('livewire.proveedores.actions-table')->with([
                         'model' => json_encode($row),
                     ])
                 )->html(),

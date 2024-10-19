@@ -19,11 +19,11 @@ class CrearCliente extends ServicesComponent
     public function crearCliente()
     {
         $this->validate([
-            'cedula' => 'required|string|unique:cliente,cedula,NULL,id,deleted_at,NULL',
+            //'cedula' => 'required|string|unique:cliente,cedula,NULL,id,deleted_at,NULL',
             'nombre' => 'required|string',
-            'apellido' => 'required|string',
-            'telefono' => 'required|numeric',
-            'email' => 'required|email',
+            'apellido' => 'nullable|string',
+            'telefono' => 'nullable|numeric',
+            'email' => 'nullable|email',
         ]);
         try{
             $user = Auth::user();

@@ -37,45 +37,7 @@ class Obra extends Model
     $calle,$manzana,$lote,$metrosCuadrados, $fraccionamiento,$estado, $pais,$proveedores = [], $cliente,
     $userId)
     {
-        // try {
-        //     $Obra = new Obra();
 
-        //     $Obra->detalle->nombreObra = $nombreObra;
-        //     $Obra->detalle->total = $total;
-        //     $Obra->detalle->moneda = $moneda;
-        //     $Obra->detalle->fechaInicio = $fechaInicio;
-        //     $Obra->detalle->fechaFin = $fechaFin;
-        //     $Obra->detalle->dictamenUsoSuelo = $dictamenUsoSuelo;
-        //     $Obra->detalle->created_at = now();
-        //     $Obra->detalle->created_by = $userId;
-
-        //     // Asegúrate de que los cambios en `obra` y `direccion` se guarden
-        //     $Obra->idEstadoObra = $estadoObra;
-        //     $Obra->contrato = $contrato;
-        //     $Obra->licenciaConstruccion = $licenciaConstruccion;
-        //     $Obra->created_at = now();
-        //     $Obra->created_by = $userId;
-
-        //     $Obra->detalle->direccion->calle = $calle;
-        //     $Obra->detalle->direccion->manzana = $manzana;
-        //     $Obra->detalle->direccion->lote = $lote;
-        //     $Obra->detalle->direccion->metrosCuadrados = $metrosCuadrados;
-        //     $Obra->detalle->direccion->fraccionamiento = $fraccionamiento;
-        //     $Obra->detalle->direccion->idPais = $pais;
-        //     $Obra->detalle->direccion->idEstado = $estado;
-        //     $Obra->detalle->direccion->created_at = now();
-        //     $Obra->detalle->direccion->created_by = $userId;
-        //     $Obra->detalle->direccion->save();
-        //     $Obra->detalle->save();
-
-        //     // Finalmente guarda el `detalleObra`
-        //     $Obra->save();
-
-        //     return $Obra;
-        // } catch (\Throwable $th) {
-        //     Log::error('Error al crear obra: ' . $th->getMessage());
-        //     throw $th;
-        // }
             // Crear el detalle de la obra
             $detalle = new DetalleObra([
                 'nombreObra' => $nombreObra,

@@ -51,15 +51,15 @@ class ProveedoresTable extends DataTableComponent{
             Column::make('Nombre', 'nombre')
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),
-            Column::make('Direccion', 'direccion')
-                ->sortable()->searchable()
-                ->setSortingPillDirections('Asc', 'Desc'),
-            Column::make('Telefono', 'telefono')
-                ->sortable()->searchable()
-                ->setSortingPillDirections('Asc', 'Desc'),
-            Column::make('Email', 'email')
-                ->sortable()->searchable()
-                ->setSortingPillDirections('Asc', 'Desc'),
+            // Column::make('Direccion', 'direccion')
+            //     ->sortable()->searchable()
+            //     ->setSortingPillDirections('Asc', 'Desc'),
+            // Column::make('Telefono', 'telefono')
+            //     ->sortable()->searchable()
+            //     ->setSortingPillDirections('Asc', 'Desc'),
+            // Column::make('Email', 'email')
+            //     ->sortable()->searchable()
+            //     ->setSortingPillDirections('Asc', 'Desc'),
             //Column::make('Servicio', 'Servicios.nombre'),
             // Column::make('Fecha Creación', 'created_at'),
             // Column::make('Actualizado por', 'updatedBy.name'),

@@ -95,12 +95,12 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label for="total">Total</label>
+                            <label for="total">Presupuesto</label>
                             <x-input type="number" wire:model="total" class="form-control" />
                             @error('total') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    {{-- <div class="col-md-3">
                         <div class="form-group">
                             <label for="moneda">Moneda</label>
                             <select wire:model="moneda" class="form-control" style="width: 100%;">
@@ -110,7 +110,7 @@
                             </select>
                             @error('moneda') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="calle">Calle</label>
@@ -148,13 +148,13 @@
                             @error('fraccionamiento') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    {{-- <div class="col-md-3">
                         <div class="form-group">
                             <label for="dictamenUsoSuelo">Dictamen Uso Suelo</label>
                             <x-input type="text" wire:model="dictamenUsoSuelo" class="form-control" />
                             @error('dictamenUsoSuelo') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Cuarta fila -->
                     <div class="col-md-3">

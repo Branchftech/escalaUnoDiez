@@ -14,73 +14,18 @@ class DetallesObrasTable extends Component
     public $calle,$id, $manzana, $lote, $estado,$pais, $fraccionamiento, $lat, $lng;
     protected $listeners = ['reverseGeocode' => 'reverseGeocode', 'recargarMapa' => 'recargarMapa','refreshDetallesObrasTable' => '$refresh'];
 
-/*
-    public function mount($id)
-    {
-        $this->id= $id;
-        $this->model = Obra::with('detalle')->find($id);
-        $this->calle = $this->model->detalle->direccion->calle;
-        $this->manzana = $this->model->detalle->direccion->manzana;
-        $this->lote = $this->model->detalle->direccion->lote;
-        $this->pais = $this->model->detalle->direccion->pais->nombre;
-        $this->estado = $this->model->detalle->direccion->estado->nombre;
-        $this->geocodeAddress();
-    }
-
-    public function geocodeAddress()
-    {
-
-        $direccion = "$this->calle, $this->estado, $this->pais";
-
-        $client = new Client();
-
-        try {
-            $response = $client->get('https://nominatim.openstreetmap.org/search', [
-                'query' => [
-                    'q' => $direccion,
-                    'format' => 'json',
-                    'limit' => 1
-                ],
-                'headers' => [
-                    'User-Agent' => 'YourAppName/1.0 (eunodiez@gmail.com)'  // Reemplaza con tu correo y nombre de app
-                ]
-            ]);
-
-            $responseData = json_decode($response->getBody(), true);
-
-            if (!empty($responseData)) {
-                $this->lat = $responseData[0]['lat'];
-                $this->lng = $responseData[0]['lon'];
-            } else {
-                $this->lat = null;
-                $this->lng = null;
-            }
-
-        } catch (\Exception $e) {
-            $this->lat = null;
-            $this->lng = null;
-        }
-    }
-
-    public function render()
-    {
-        return view('livewire.detalles-obras.detalles-obras-table', [
-            'lat' => $this->lat,
-            'lng' => $this->lng
-        ]);
-    }
-*/
     public function mount($id)
     {
         $this->id = $id;
         $this->model = Obra::with('detalle')->find($id);
 
-        $this->calle = $this->model->detalle->direccion->calle;
-        $this->manzana = $this->model->detalle->direccion->manzana;
-        $this->lote = $this->model->detalle->direccion->lote;
-        $this->pais = $this->model->detalle->direccion->pais->nombre;
-        $this->estado = $this->model->detalle->direccion->estado->nombre;
-
+        if ($this->model->direccion) {
+            $this->calle = $this->model->direccion->calle ?? null;
+            $this->manzana = $this->model->detalle->direccion->manzana ?? null;
+            $this->lote = $this->model->detalle->direccion->lote ?? null;
+            $this->pais = $this->model->detalle->direccion->pais->nombre ?? null;
+            $this->estado = $this->model->detalle->direccion->estado->nombre ?? null;
+        }
         // Inicializa la geocodificación para obtener las coordenadas
         $this->geocodeAddress();
     }
@@ -90,11 +35,11 @@ class DetallesObrasTable extends Component
         $this->id = $id;
         $this->model = Obra::with('detalle')->find($id);
 
-        $this->calle = $this->model->detalle->direccion->calle;
-        $this->manzana = $this->model->detalle->direccion->manzana;
-        $this->lote = $this->model->detalle->direccion->lote;
-        $this->pais = $this->model->detalle->direccion->pais->nombre;
-        $this->estado = $this->model->detalle->direccion->estado->nombre;
+        $this->calle = $this->model->detalle->direccion->calle ?? null;
+        $this->manzana = $this->model->detalle->direccion->manzana ?? null;
+        $this->lote = $this->model->detalle->direccion->lote ?? null;
+        $this->pais = $this->model->detalle->direccion->pais->nombre ?? null;
+        $this->estado = $this->model->detalle->direccion->estado->nombre ?? null;
 
         $this->geocodeAddress();
     }
@@ -103,9 +48,9 @@ class DetallesObrasTable extends Component
     public function geocodeAddress()
     {
         $this->model = Obra::with('detalle')->find($this->model->id);
-        $this->calle = $this->model->detalle->direccion->calle;
-        $this->pais = $this->model->detalle->direccion->pais->nombre;
-        $this->estado = $this->model->detalle->direccion->estado->nombre;
+        $this->calle = $this->model->detalle->direccion->calle ?? null;
+        $this->pais = $this->model->detalle->direccion->pais->nombre ?? "Mexico";
+        $this->estado = $this->model->detalle->direccion->estado->nombre ?? "Ciudad de Mexico";
 
         $direccion = "$this->calle, $this->estado, $this->pais";
 
@@ -129,13 +74,13 @@ class DetallesObrasTable extends Component
                 $this->lat = $responseData[0]['lat'];
                 $this->lng = $responseData[0]['lon'];
             } else {
-                $this->lat = null;
-                $this->lng = null;
+                $this->lat = 19.42305;
+                $this->lng = -99.13376;
             }
 
         } catch (\Exception $e) {
-            $this->lat = null;
-            $this->lng = null;
+            $this->lat = 19.42305;
+            $this->lng = -99.13376;
         }
         $coordenadas = [
             'latitud' => $this->lat,

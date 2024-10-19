@@ -33,7 +33,7 @@ class CrearDocumentoObra extends ServicesComponent
     {
 
         $this->validate([
-            'nombre' => 'required|string',
+            'nombre' => 'nullable|string',
             'documento' => 'required|file|max:10240', // max 10MB
             'tipoDocumentoSeleccionado' =>'required|exists:tipodocumentoobra,id',
         ]);

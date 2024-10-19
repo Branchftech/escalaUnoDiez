@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -17,16 +17,68 @@
         </style>
     </head>
     <body class="antialiased">
-        <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
+        <div class="relative flex justify-center min-h-screen bg-gray-100 items-top dark:bg-gray-900 sm:items-center sm:pt-0">
             <div class="max-w-xl mx-auto sm:px-6 lg:px-8">
                 <div class="flex items-center pt-8 sm:justify-start sm:pt-0">
-                    <div class="px-4 text-lg text-gray-500 border-r border-gray-400 tracking-wider">
+                    <div class="px-4 text-lg tracking-wider text-gray-500 border-r border-gray-400">
                         @yield('code')
                     </div>
 
-                    <div class="ml-4 text-lg text-gray-500 uppercase tracking-wider">
+                    <div class="ml-4 text-lg tracking-wider text-gray-500 uppercase">
                         @yield('message')
                     </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html> --}}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>@yield('title')</title>
+        <style>
+            /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+            html, body {
+                height: 100%;
+                margin: 0;
+                font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            }
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-image: url('{{ asset('assets/images/error500.png') }}'); /* Ruta a tu imagen */
+                background-size: cover; /* Hace que la imagen cubra toda la pantalla */
+                background-position: center; /* Centra la imagen */
+                background-repeat: no-repeat; /* Evita que la imagen se repita */
+            }
+            .container {
+                padding: 20px;
+            }
+            .code {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-right: 10px;
+                padding-right: 10px;
+            }
+            .message {
+                font-size: 18px;
+                text-transform: uppercase;
+                color: #666;
+            }
+        </style>
+    </head>
+    <body class="antialiased">
+        <div class="container">
+            <div class="flex items-center">
+                <div class="code" style="text-align: center">
+                    @yield('code')
+                </div>
+                <div class="ml-4 message">
+                    @yield('message')
                 </div>
             </div>
         </div>

@@ -22,26 +22,55 @@ class EditarDetalleObra extends ServicesComponent
 
     public function mount($id)
     {
-        $this->id= $id;
+        // $this->id= $id;
+        // $obra = Obra::find($id);
+        // $this->model =  $obra->detalle;
+        // $this->calle = $this->model->direccion->calle;
+        // $this->manzana = $this->model->direccion->manzana;
+        // $this->lote = $this->model->direccion->lote;
+        // $this->paisSeleccionado = $this->model->direccion->pais->id;
+        // $this->estadoSeleccionado = $this->model->direccion->estado->id;
+        // $this->metrosCuadrados = $this->model->direccion->metrosCuadrados;
+        // $this->fraccionamiento = $this->model->direccion->fraccionamiento;
+        // $this->nombreObra = $this->model->nombreObra;
+        // $this->total = $this->model->total;
+        // //$this->moneda = $this->model->moneda;
+        // $this->fechaInicio = $this->model->fechaInicio;
+        // $this->fechaFin = $this->model->fechaFin;
+        // //$this->dictamenUsoSuelo = $this->model->dictamenUsoSuelo;
+        // $this->paises = Pais::all();
+        // $this->estadosObra = EstadoObra::all();
+        // $this->estadoObraSeleccionado= $this->model->obra->estado->id;
+        // $this->estados = [];
+        $this->id = $id;
         $obra = Obra::find($id);
-        $this->model =  $obra->detalle;
-        $this->calle = $this->model->direccion->calle;
-        $this->manzana = $this->model->direccion->manzana;
-        $this->lote = $this->model->direccion->lote;
-        $this->paisSeleccionado = $this->model->direccion->pais->id;
-        $this->estadoSeleccionado = $this->model->direccion->estado->id;
-        $this->metrosCuadrados = $this->model->direccion->metrosCuadrados;
-        $this->fraccionamiento = $this->model->direccion->fraccionamiento;
+        $this->model = $obra->detalle;
+
+        // Verifica si la dirección existe antes de acceder a sus propiedades
+        if ($this->model->direccion) {
+            $this->calle = $this->model->direccion->calle ?? null;
+            $this->manzana = $this->model->direccion->manzana ?? null;
+            $this->lote = $this->model->direccion->lote ?? null;
+            $this->paisSeleccionado = $this->model->direccion->pais->id ?? null;
+            $this->estadoSeleccionado = $this->model->direccion->estado->id ?? null;
+            $this->metrosCuadrados = $this->model->direccion->metrosCuadrados ?? null;
+            $this->fraccionamiento = $this->model->direccion->fraccionamiento ?? null;
+        }
+
+        // Resto de las propiedades
         $this->nombreObra = $this->model->nombreObra;
         $this->total = $this->model->total;
         $this->moneda = $this->model->moneda;
         $this->fechaInicio = $this->model->fechaInicio;
         $this->fechaFin = $this->model->fechaFin;
         $this->dictamenUsoSuelo = $this->model->dictamenUsoSuelo;
+
+        // Cargar los países y estados de obra
         $this->paises = Pais::all();
         $this->estadosObra = EstadoObra::all();
-        $this->estadoObraSeleccionado= $this->model->obra->estado->id;
+        $this->estadoObraSeleccionado = $this->model->obra->estado->id ?? null;
         $this->estados = [];
+
     }
 
     public function render()
@@ -51,7 +80,9 @@ class EditarDetalleObra extends ServicesComponent
 
     public function cambiar()
     {
-        $this->estados = Estado::where('idPais', $this->paisSeleccionado)->get();
+        if ($this->paisSeleccionado) {
+            $this->estados = Estado::where('idPais', $this->paisSeleccionado)->get();
+        }
         $this->estadoSeleccionado = null;
     }
 
@@ -60,18 +91,18 @@ class EditarDetalleObra extends ServicesComponent
         $this->validate([
             'nombreObra'=> 'required|string',
             'total' => 'required|numeric',
-            'moneda'=> 'required|in:mnx,dls',
+            //'moneda'=> 'nullable|in:mnx,dls',
             'fechaInicio'=> 'required|date',
             'fechaFin'=> 'required|date',
             'calle'=> 'required|string',
-            'manzana'=> 'required|string',
-            'lote'=> 'required|string',
-            'metrosCuadrados'=> 'required|numeric',
+            'manzana'=> 'nullable|string',
+            'lote'=> 'nullable|string',
+            'metrosCuadrados'=> 'nullable|numeric',
             'fraccionamiento'=> 'required|string',
-            'dictamenUsoSuelo'=> 'required|string',
-            'paisSeleccionado' => 'required|exists:paises,id',
-            'estadoSeleccionado' => 'required|exists:estados,id',
-            'estadoObraSeleccionado' => 'required|exists:estadoobra,id',
+            //'dictamenUsoSuelo'=> 'nullable|string',
+            'paisSeleccionado' => 'nullable|exists:paises,id',
+            'estadoSeleccionado' => 'nullable|exists:estados,id',
+            'estadoObraSeleccionado' => 'nullable|exists:estadoobra,id',
         ]);
         try{
             $user = Auth::user();
@@ -83,7 +114,7 @@ class EditarDetalleObra extends ServicesComponent
 
             //$this->dispatch('refreshClientesTable')->to(ClientesTable::class);
             $this->render();
-            $this->dispatch( 'recargarMapa', $this->model->id);
+            //$this->dispatch( 'recargarMapa', $this->model->id);
             // $this->limpiar();
             $this->alertService->success($this, 'Detalle Obra editado con éxito');
         } catch (\Exception $th) {
@@ -114,7 +145,7 @@ class EditarDetalleObra extends ServicesComponent
             // Manejar el caso donde no se encontró el país
             $this->paisSeleccionado = null;
         }
-        $this->dispatch( 'recargarMapa', $this->model->id);
+        //$this->dispatch( 'recargarMapa', $this->model->id);
     }
 
 }

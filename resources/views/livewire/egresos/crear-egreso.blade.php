@@ -87,9 +87,9 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group" wire:ignore>
-                            <label for="destajos">Destajos</label>
+                            <label for="destajos">Presupuestos</label>
                             <select wire:model="destajoSelected" class="form-control" id="select2Destajos" style="width: 100%;">
-                                <option value="" selected hidden>Seleccione un Destajo</option>
+                                <option value="" selected hidden>Seleccione un Presupuesto</option>
                                 @foreach ($destajos as $destajo)
                                     <option value="{{ $destajo->id }}">  {{ $destajo->id . ' - ' . $destajo->obra->detalle->nombreObra . ' - ' . $destajo->proveedor->nombre }}</option>
                                 @endforeach
@@ -185,9 +185,9 @@
                     <!-- Columna Destajos -->
                     <div class="col-md-3">
                         <div class="form-group" wire:ignore>
-                            <label for="destajosReporte">Destajos</label>
+                            <label for="destajosReporte">Presupuesto</label>
                             <select wire:model="destajoReporteSeleccionado" class="form-control" id="select2DestajosReporte" name="destajo_id" style="width: 100%;">
-                                <option value="" selected hidden>Seleccione un Destajo</option>
+                                <option value="" selected hidden>Seleccione un Presupuesto</option>
                                 @foreach ($destajos as $destajo)
                                     <option value="{{ $destajo->id }}">{{ $destajo->id }}</option>
                                 @endforeach
@@ -267,7 +267,7 @@
 
             $('#select2Destajos').select2({
                 width: '100%',
-                placeholder: "Seleccione un Destajo",
+                placeholder: "Seleccione un Presupuesto",
                 allowClear: true
             }).on('change', function(e) {
                 var data = $(this).select2("val");
@@ -276,7 +276,7 @@
 
             $('#select2DestajosReporte').select2({
                 width: '100%',
-                placeholder: "Seleccione un Destajo",
+                placeholder: "Seleccione un Presupuesto",
                 allowClear: true
             }).on('change', function(e) {
                 var data = $(this).select2("val");

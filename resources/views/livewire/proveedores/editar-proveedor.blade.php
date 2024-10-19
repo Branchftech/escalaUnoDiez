@@ -9,7 +9,7 @@
                             <x-input type="text" wire:model="nombre" class="form-control" />
                             @error('nombre') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="direccion">Direccion</label>
                             <x-input type="text" wire:model="direccion" class="form-control" />
                             @error('direccion') <span class="text-danger">{{ $message }}</span> @enderror
@@ -23,7 +23,7 @@
                             <label for="email">Email</label>
                             <x-input type="email" wire:model="email" class="form-control" />
                             @error('email') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
+                        </div> --}}
                         <div class=" form-group d-flex flex-column" wire:ignore>
                             <label for="servicios">Servicios</label>
                             <select wire:model="servicios" class="form-control" id="select2EditServicioProveedor">

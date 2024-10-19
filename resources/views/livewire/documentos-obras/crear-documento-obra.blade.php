@@ -29,7 +29,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        @error('documento') <span class="text-danger">{{ $message }}</span> @enderror
+                        @error('tipoDocumentoSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                     <div class="gap-2 d-flex justify-content-end">
                         <button type="button" class="btn btn-secondary" wire:click="limpiar">

@@ -24,11 +24,11 @@
                             <x-input type="email" wire:model="email" class="form-control" />
                             @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="cedula">Cedula</label>
                             <x-input type="text" wire:model="cedula" class="form-control" />
                             @error('cedula') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="gap-3 d-flex justify-content-end">
                         <x-button type="submit" class="btn btn-primary">

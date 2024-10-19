@@ -87,7 +87,7 @@ class EditarEgreso extends ServicesComponent
             'concepto' => 'required|string',
             'obraSeleccionada' => 'required|exists:obra,id',
             'proveedorSeleccionado' => 'required|exists:proveedores,id',
-            'formaPagoSeleccionada' => 'required|exists:formaPago,id',
+            'formaPagoSeleccionada' => 'required|exists:formapago,id',
             'bancoSeleccionado' => 'required|exists:banco,id',
             'destajoSeleccionado' => 'required|exists:destajo,id',
             // 'selectedServiciosEditar' => 'required|array',

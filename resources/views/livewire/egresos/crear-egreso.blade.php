@@ -189,7 +189,7 @@
                             <select wire:model="destajoReporteSeleccionado" class="form-control" id="select2DestajosReporte" name="destajo_id" style="width: 100%;">
                                 <option value="" selected hidden>Seleccione un Presupuesto</option>
                                 @foreach ($destajos as $destajo)
-                                    <option value="{{ $destajo->id }}">{{ $destajo->id }}</option>
+                                    <option value="{{ $destajo->id }}"> {{ $destajo->id . ' - ' . $destajo->obra->detalle->nombreObra . ' - ' . $destajo->proveedor->nombre }}</option>
                                 @endforeach
                             </select>
                         </div>

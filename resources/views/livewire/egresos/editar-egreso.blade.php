@@ -73,7 +73,7 @@
                                 <select wire:model="destajoSeleccionado" class="form-control" id="select2DestajosEditar">
                                     <option value=""  hidden>Seleccione un Destajo</option>
                                     @foreach ($destajos as $destajo)
-                                        <option value="{{ $destajo->id }}">{{ $destajo->id }}</option>
+                                        <option value="{{ $destajo->id }}"> {{ $destajo->id . ' - ' . $destajo->obra->detalle->nombreObra . ' - ' . $destajo->proveedor->nombre }}</option>
                                     @endforeach
                                 </select>
                             </div>

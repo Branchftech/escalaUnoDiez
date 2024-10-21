@@ -123,7 +123,10 @@ class EgresosController extends Controller
         // Consulta para obtener los egresos filtrados
         $egresos = Egreso::where('idObra', $obraId)
                         ->where('idProveedor', $proveedorId)
-                        ->where('idDestajo', $destajoId)
+                        // Añadir la condición solo si destajo_id no es nulo
+                        ->when($destajoId, function($query, $destajoId) {
+                            return $query->where('idDestajo', $destajoId);
+                        })
                         ->whereHas('servicios', function($query) use ($servicioId) {
                             $query->where('servicio.id', $servicioId);
                         })
@@ -131,15 +134,14 @@ class EgresosController extends Controller
 
         // Cálculo del total pagado (suma de las cantidades de los egresos)
         $totalPagado = $egresos->sum('cantidad');
-        // Cálculo del saldo a pagar
-        $destajo = Destajo::find($destajoId);
-
-        $saldoAPagar = $destajo->presupuesto - $totalPagado;
+        // Cálculo del saldo a pagar, solo si hay un destajo seleccionado
+        $destajo = $destajoId ? Destajo::find($destajoId) : null;
+        $saldoAPagar = $destajo ? ($destajo->presupuesto - $totalPagado) : null;
 
         // Generar el PDF con la firma en la parte inferior derecha
         $pdf = PDF::loadView('pdf.recibo.reporteEgreso', [
             'egresos' => $egresos,
-            'destajo' => $destajo, // Pasa la información de los destajos a la vista
+            'destajo' => $destajo, // Pasa la información de los destajos a la vista si se seleccionó uno
             'totalPagado' => $totalPagado,
             'saldoAPagar' => $saldoAPagar,
             'mensaje' => $egresos->isEmpty() ? 'No se encontraron egresos para los criterios seleccionados.' : null,

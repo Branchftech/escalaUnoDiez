@@ -112,14 +112,16 @@ class CrearEgreso extends ServicesComponent
         ]);
 
         try {
-            // Obtén el destajo asociado
-            $destajo = Destajo::findOrFail($this->destajoSelected);
-            // Suma de todos los egresos asociados a este destajo
-            $sumaEgresos = Egreso::where('idDestajo', $this->destajoSelected)->sum('cantidad');
-            // Validar si la cantidad del nuevo egreso más la suma de los egresos existentes no supera el presupuesto
-            if (($sumaEgresos + $this->cantidad) > $destajo->presupuesto) {
-                $this->alertService->error($this, 'La cantidad total de egresos supera el presupuesto del destajo.');
-                //throw new \Exception('La cantidad total de egresos supera el presupuesto del destajo.');
+            if($this->destajoSelected){
+                // Obtén el destajo asociado
+                $destajo = Destajo::findOrFail($this->destajoSelected);
+                // Suma de todos los egresos asociados a este destajo
+                $sumaEgresos = Egreso::where('idDestajo', $this->destajoSelected)->sum('cantidad');
+                // Validar si la cantidad del nuevo egreso más la suma de los egresos existentes no supera el presupuesto
+                if (($sumaEgresos + $this->cantidad) > $destajo->presupuesto) {
+                    $this->alertService->error($this, 'La cantidad total de egresos supera el presupuesto del destajo.');
+                    //throw new \Exception('La cantidad total de egresos supera el presupuesto del destajo.');
+                }
             }else{
                 $user = Auth::user();
                 Egreso::crearEgreso(

@@ -6,7 +6,7 @@
                     <div class="gap-3 overflow-y-auto d-flex flex-column" style="max-height: 40vh;">
                         <div class="form-group">
                             <label for="cantidad">Cantidad</label>
-                            <x-input type="number" wire:model="cantidad" class="form-control" />
+                            <x-input type="numeric" wire:model="cantidad" class="form-control" />
                             @error('cantidad') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="form-group">

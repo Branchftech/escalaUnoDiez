@@ -82,7 +82,7 @@ class EditarEgreso extends ServicesComponent
     public function editarEgreso()
     {
         $this->validate([
-            'cantidad' => 'required|numeric',
+            'cantidad' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
             'fecha' => 'required|date',
             'concepto' => 'required|string',
             'obraSeleccionada' => 'required|exists:obra,id',

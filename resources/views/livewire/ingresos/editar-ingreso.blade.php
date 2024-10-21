@@ -11,7 +11,7 @@
                     </div>
                     <div class="form-group">
                         <label for="cantidad">Cantidad</label>
-                        <x-input type="number" wire:model="cantidad" class="form-control" />
+                        <x-input type="numeric" wire:model="cantidad" class="form-control" />
                         @error('cantidad') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                     <div class="form-group">

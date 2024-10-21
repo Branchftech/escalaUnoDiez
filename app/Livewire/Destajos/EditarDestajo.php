@@ -54,7 +54,7 @@ class EditarDestajo extends ServicesComponent
     public function editarDestajo()
     {
         $this->validate([
-            'editpresupuesto' => 'required|numeric',
+            'editpresupuesto' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
             'editobraSeleccionada' => 'required|exists:obra,id',
             'editproveedorSeleccionado' => 'required|exists:proveedores,id',
         ]);

@@ -66,7 +66,7 @@ class EditarIngreso extends ServicesComponent
     {
         $this->validate([
             'factura' => 'required|string|max:255',
-            'cantidad' => 'required|numeric',
+            'cantidad' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
             'fecha' => 'required|date',
             'concepto' => 'required|string|max:100',
             'obraSeleccionada' => 'required|exists:obra,id',

@@ -70,7 +70,7 @@ class CrearObra extends ServicesComponent
 
         $this->validate([
             'nombreObra'=> 'required|string',
-            'total' => 'required|numeric',
+            'total' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
             //'moneda'=> 'required|in:mnx,dls',
             'fechaInicio'=> 'required|date',
             'fechaFin'=> 'required|date',

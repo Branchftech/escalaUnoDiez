@@ -100,7 +100,7 @@ class CrearEgreso extends ServicesComponent
     public function crearEgreso()
     {
         $this->validate([
-            'cantidad' => 'required|numeric|min:1',
+            'cantidad' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
             'concepto' => 'required|string|max:255',
             'fecha' => 'required|date',
             'obraSelected' => 'required|exists:obra,id',

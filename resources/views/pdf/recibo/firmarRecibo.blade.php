@@ -102,11 +102,23 @@
         var isSaved = false;  // Variable para controlar si la firma ha sido guardada
         var isEmpty = true;   // Variable para controlar si el canvas está vacío
 
+       // Obtener la posición exacta del mouse relativa al canvas
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            var scaleX = canvas.width / rect.width;   // Relación de escalado horizontal
+            var scaleY = canvas.height / rect.height; // Relación de escalado vertical
+            return {
+                x: (evt.clientX - rect.left) * scaleX,
+                y: (evt.clientY - rect.top) * scaleY
+            };
+        }
+
         // Comenzar a dibujar
         canvas.addEventListener('mousedown', function(e) {
             if (!isSaved) {
                 drawing = true;
-                ctx.moveTo(e.offsetX, e.offsetY);
+                var pos = getMousePos(canvas, e);
+                ctx.moveTo(pos.x, pos.y);
                 isEmpty = false;  // Marcamos que el canvas ya no está vacío
             }
         });
@@ -114,7 +126,8 @@
         // Continuar dibujando
         canvas.addEventListener('mousemove', function(e) {
             if (drawing && !isSaved) {
-                ctx.lineTo(e.offsetX, e.offsetY);
+                var pos = getMousePos(canvas, e);
+                ctx.lineTo(pos.x, pos.y);
                 ctx.stroke();
             }
         });
@@ -123,6 +136,7 @@
         canvas.addEventListener('mouseup', function() {
             drawing = false;
         });
+
 
         // Limpiar el canvas
         document.getElementById('clearSignature').addEventListener('click', function() {

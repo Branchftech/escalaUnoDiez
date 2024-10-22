@@ -102,6 +102,54 @@
         var isSaved = false;  // Variable para controlar si la firma ha sido guardada
         var isEmpty = true;   // Variable para controlar si el canvas está vacío
 
+        canvas.addEventListener("touchstart", startDrawing, false);
+        canvas.addEventListener("touchmove", draw, false);
+        canvas.addEventListener("touchend", stopDrawing, false);
+        canvas.addEventListener("touchcancel", stopDrawing, false);
+
+        function startDrawing(event) {
+            drawing = true;
+            const rect = canvas.getBoundingClientRect();
+            const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+
+            // Ajustar la escala del canvas según la densidad de píxeles
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            const x = (clientX - rect.left) * scaleX;
+            const y = (clientY - rect.top) * scaleY;
+
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            event.preventDefault();
+        }
+
+        function draw(event) {
+            if (!drawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+
+            // Ajustar la escala del canvas según la densidad de píxeles
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            const x = (clientX - rect.left) * scaleX;
+            const y = (clientY - rect.top) * scaleY;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            event.preventDefault();
+        }
+
+        function stopDrawing(event) {
+            if (!drawing) return;
+            drawing = false;
+            ctx.closePath();
+            event.preventDefault();
+        }
+
        // Obtener la posición exacta del mouse relativa al canvas
         function getMousePos(canvas, evt) {
             var rect = canvas.getBoundingClientRect();

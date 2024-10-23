@@ -99,6 +99,9 @@
                         @error('fraccionamiento') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                 </div>
+                <!-- Campos ocultos de latitud y longitud -->
+                <input type="text" wire:model="latitud" hidden>
+                <input type="text" wire:model="longitud" hidden>
                 {{-- <div class="col-md-3">
                     <div class="form-group">
                         <label for="dictamenUsoSuelo">Dictamen Uso Suelo</label>
@@ -110,7 +113,7 @@
                 <!-- Cuarta fila -->
                 <div class="col-md-3">
                     <label for="paises">País</label>
-                    <select wire:model="paisSeleccionado" wire:change="cambiar" class="form-control" id="select2Paises">
+                    <select wire:model="paisSeleccionado" class="form-control" id="select2Paises">
                         <option value="" selected hidden >Seleccione un Pais</option>
                         @foreach ($paises as $pais)
                             <option value="{{ $pais->id }}">{{ $pais->nombre }}</option>
@@ -120,8 +123,8 @@
                 </div>
                 <!-- Campo Estado -->
                 <div class="col-md-3">
-                    <label for="estados">Estado</label>
-                    <select wire:model="estadoSeleccionado" class="form-control" id="select2Estados">
+                    <label for="estados">Estados</label>
+                    <select wire:model="estadoSeleccionado" class="form-control">
                         <option value="" selected hidden >Seleccione un Estado</option>
                         @foreach ($estados as $estado)
                             <option value="{{ $estado->id }}">{{ $estado->nombre }}</option>

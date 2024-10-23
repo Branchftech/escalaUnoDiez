@@ -62,7 +62,7 @@ class DetalleObra extends Model
     static function editarDetalleObra(
     $id, $nombreObra, $total,$moneda,$fechaInicio, $fechaFin,$dictamenUsoSuelo,
     $estadoObra,
-    $calle,$manzana,$lote,$metrosCuadrados, $fraccionamiento,$estado, $pais,
+    $calle,$manzana,$lote,$metrosCuadrados, $fraccionamiento,$estado, $pais, $latitud,$longitud,
     $userId)
     {
         try {
@@ -88,6 +88,8 @@ class DetalleObra extends Model
             $detalleObra->direccion->fraccionamiento = $fraccionamiento;
             $detalleObra->direccion->idPais = $pais;
             $detalleObra->direccion->idEstado = $estado;
+            $detalleObra->direccion->latitud = $latitud;
+            $detalleObra->direccion->longitud = $longitud;
             $detalleObra->direccion->save();
 
             // Finalmente guarda el `detalleObra`

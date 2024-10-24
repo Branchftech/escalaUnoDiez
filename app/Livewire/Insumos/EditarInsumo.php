@@ -44,7 +44,7 @@ class EditarInsumo extends ServicesComponent
     public function editarInsumo()
     {
         $this->validate([
-            'costo' => 'required|numeric',
+            'costo' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
             'cantidad' => 'required|integer',
             'fecha' => 'required|date',
             'obraSeleccionada' => 'required|exists:obra,id', // Validar que el ID de obra exista en la tabla 'obras'

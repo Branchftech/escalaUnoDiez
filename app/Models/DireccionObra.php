@@ -21,6 +21,8 @@ class DireccionObra extends Model
         'calle',
         'manzana',
         'lote',
+        'latitud',
+        'longitud',
         'metrosCuadrados',
         'fraccionamiento',
         'idPais',
@@ -30,12 +32,14 @@ class DireccionObra extends Model
         'deleted_by',
     ];
 
-    static function crearDireccionObra($calle, $manzana,$lote, $metrosCuadrados,$fraccionamiento, $idPais,$idEstado, $userId)
+    static function crearDireccionObra($calle, $manzana,$lote, $metrosCuadrados,$fraccionamiento, $idPais,$idEstado, $latitud,$longitud, $userId)
     {
         $estado = new DireccionObra();
         $estado->calle = $calle;
         $estado->manzana =$manzana;
         $estado->lote = $lote;
+        $latitud->manzana =$latitud;
+        $longitud->lote = $longitud;
         $estado->metrosCuadrados =$metrosCuadrados;
         $estado->fraccionamiento = $fraccionamiento;
         $estado->idPais =$idPais;
@@ -47,12 +51,14 @@ class DireccionObra extends Model
     }
 
 
-    static function editarDireccionObra($id, $calle, $manzana,$lote, $metrosCuadrados,$fraccionamiento, $idPais,$idEstado, $userId)
+    static function editarDireccionObra($id, $calle, $manzana,$lote, $metrosCuadrados,$fraccionamiento, $idPais,$idEstado,$latitud,$longitud, $userId)
     {
         $estado = DireccionObra::findOrfail($id);
         $estado->calle = $calle;
         $estado->manzana =$manzana;
         $estado->lote = $lote;
+        $latitud->manzana =$latitud;
+        $longitud->lote = $longitud;
         $estado->metrosCuadrados =$metrosCuadrados;
         $estado->fraccionamiento = $fraccionamiento;
         $estado->idPais =$idPais;

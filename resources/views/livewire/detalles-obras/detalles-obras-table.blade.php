@@ -34,9 +34,11 @@
                     <livewire:documentos-obras.eliminar-documento-obra  />
                 </div>
             </div>
-            <div class="tab-pane fade" id="ex-with-icons-tabs-3" role="tabpanel" aria-labelledby="ex-with-icons-tab-3">
-                <div style="margin:2rem">
-                    <div id="map" style="height: 400px; width: 100%;"></div>
+            <div  wire:ignore>
+                <div class="tab-pane fade" id="ex-with-icons-tabs-3" role="tabpanel" aria-labelledby="ex-with-icons-tab-3" >
+                    <div style="margin:2rem; justify-content: center">
+                        <div id="map" style="height: 400px; width: 100%;"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -80,15 +82,16 @@
         let marker;
         let leafletMap;
 
-        // Escuchar el evento de cambiar la pestaña y asegurarse de que el mapa se inicializa solo una vez
-        // document.querySelector('a[href="#ex-with-icons-tabs-3"]').addEventListener('shown.bs.tab', function () {
+        // Evento al cambiar a la pestaña del mapa
+        document.querySelector('a[href="#ex-with-icons-tabs-3"]').addEventListener('shown.bs.tab', function () {
+            if (leafletMap) {
+                leafletMap.invalidateSize();  // Forzar redimensionamiento al cambiar de pestaña
+            }
+        });
 
-        // });
-        function manejarCambioDePestana() {
+        // Inicializar el mapa si no está ya inicializado
+        function initializeMap(lat, lng) {
             if (!mapInitialized) {
-                const lat = @json($lat);
-                const lng = @json($lng);
-
                 if (lat === null || lng === null) {
                     console.error('Las coordenadas son nulas. No se puede inicializar el mapa.');
                     return;
@@ -102,7 +105,7 @@
                     return;
                 }
 
-                // Inicializa el mapa centrado en las coordenadas obtenidas por la dirección
+                // Inicializa el mapa centrado en las coordenadas obtenidas
                 leafletMap = L.map('map').setView([latitude, longitude], 13);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -126,37 +129,34 @@
                         lat: newLat,
                         lng: newLng
                     });
+
+                    //  // Forzar redimensionamiento del mapa cuando se muestra
+                    // leafletMap.invalidateSize();
+                    // mapInitialized = true;
+
                 });
-                // Forzar redimensionamiento del mapa cuando se muestra
-                leafletMap.invalidateSize();
-                mapInitialized = true;
             }
         }
 
-        document.querySelector('a[href="#ex-with-icons-tabs-3"]').addEventListener('shown.bs.tab', function () {
-            // Invoca la función manejarCambioDePestana cuando se muestra la pestaña
-            manejarCambioDePestana();
-        });
-
-        // Escuchar eventos de actualización desde Livewire si es necesario
+        // Maneja la actualización del mapa cuando se guardan nuevas coordenadas
         Livewire.on('updateMap', (data) => {
-             // Seleccionar y mostrar el Tab 1 antes de crear el mapa
-            mostrarTab1();
+            const latitude = data[0].coordenadas.latitud;
+            const longitude = data[0].coordenadas.longitud;
 
-            if (mapInitialized && marker && leafletMap) {
-                const latitude = data[0]['coordenadas'].latitud;
-                const longitude = data[0]['coordenadas'].longitud;
-                leafletMap.remove();
-                mapInitialized = false;
-                const mapContainer = document.getElementById('map');
-
-
+            if (mapInitialized && marker) {
+                // Mueve el marcador a la nueva posición
+                marker.setLatLng([latitude, longitude]).update();
+                leafletMap.setView([latitude, longitude], 13);  // Centrar el mapa en las nuevas coordenadas
+                leafletMap.invalidateSize();  // Redimensionar el mapa
             }
         });
-        // Livewire.on('recargar', ()=> {
-        //     mostrarTab1()
-        // });
+
+        // Inicializar el mapa al cargar el componente
+        const lat = @json($lat);
+        const lng = @json($lng);
+        initializeMap(lat, lng);
     });
+
 
 </script>
 @endpush

@@ -149,7 +149,7 @@ class Obra extends Model
     // relación con el modelo detalle Obra
     public function detalle()
     {
-        return $this->belongsTo(DetalleObra::class, 'idDetalleObra');
+        return $this->belongsTo(DetalleObra::class, 'idDetalleObra')->with('direccion');
     }
     // relación con el modelo cliente
     public function cliente()

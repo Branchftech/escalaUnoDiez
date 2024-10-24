@@ -7,7 +7,6 @@ use App\Models\Pais;
 use App\Models\Estado;
 use App\Models\EstadoObra;
 use App\Models\Obra;
-
 use App\Livewire\DetallesObras\DetallesObrasTable;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,31 +16,12 @@ class EditarDetalleObra extends ServicesComponent
     $fechaFin,$calle,$manzana,$lote,$metrosCuadrados,
     $fraccionamiento,$dictamenUsoSuelo, $estados, $paises, $paisSeleccionado, $estadoSeleccionado,
     $estadosObra, $estadoObraSeleccionado;
+    public $latitud, $longitud;
     public $model, $id;
     protected $listeners = ['refreshDireccion' => 'refreshDireccion'];
 
     public function mount($id)
     {
-        // $this->id= $id;
-        // $obra = Obra::find($id);
-        // $this->model =  $obra->detalle;
-        // $this->calle = $this->model->direccion->calle;
-        // $this->manzana = $this->model->direccion->manzana;
-        // $this->lote = $this->model->direccion->lote;
-        // $this->paisSeleccionado = $this->model->direccion->pais->id;
-        // $this->estadoSeleccionado = $this->model->direccion->estado->id;
-        // $this->metrosCuadrados = $this->model->direccion->metrosCuadrados;
-        // $this->fraccionamiento = $this->model->direccion->fraccionamiento;
-        // $this->nombreObra = $this->model->nombreObra;
-        // $this->total = $this->model->total;
-        // //$this->moneda = $this->model->moneda;
-        // $this->fechaInicio = $this->model->fechaInicio;
-        // $this->fechaFin = $this->model->fechaFin;
-        // //$this->dictamenUsoSuelo = $this->model->dictamenUsoSuelo;
-        // $this->paises = Pais::all();
-        // $this->estadosObra = EstadoObra::all();
-        // $this->estadoObraSeleccionado= $this->model->obra->estado->id;
-        // $this->estados = [];
         $this->id = $id;
         $obra = Obra::find($id);
         $this->model = $obra->detalle;
@@ -55,8 +35,9 @@ class EditarDetalleObra extends ServicesComponent
             $this->estadoSeleccionado = $this->model->direccion->estado->id ?? null;
             $this->metrosCuadrados = $this->model->direccion->metrosCuadrados ?? null;
             $this->fraccionamiento = $this->model->direccion->fraccionamiento ?? null;
+            $this->latitud = $this->model->direccion->latitud ?? null;
+            $this->longitud = $this->model->direccion->longitud ?? null;
         }
-
         // Resto de las propiedades
         $this->nombreObra = $this->model->nombreObra;
         $this->total = $this->model->total;
@@ -67,9 +48,10 @@ class EditarDetalleObra extends ServicesComponent
 
         // Cargar los países y estados de obra
         $this->paises = Pais::all();
+        $this->estados = Estado::all();
+
         $this->estadosObra = EstadoObra::all();
         $this->estadoObraSeleccionado = $this->model->obra->estado->id ?? null;
-        $this->estados = [];
 
     }
 
@@ -78,19 +60,11 @@ class EditarDetalleObra extends ServicesComponent
         return view('livewire.detalles-obras.editar-detalle-obra');
     }
 
-    public function cambiar()
-    {
-        if ($this->paisSeleccionado) {
-            $this->estados = Estado::where('idPais', $this->paisSeleccionado)->get();
-        }
-        $this->estadoSeleccionado = null;
-    }
-
     public function editarDetalleObra()
     {
         $this->validate([
             'nombreObra'=> 'required|string',
-            'total' => 'required|numeric',
+            'total' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
             //'moneda'=> 'nullable|in:mnx,dls',
             'fechaInicio'=> 'required|date',
             'fechaFin'=> 'required|date',
@@ -99,23 +73,24 @@ class EditarDetalleObra extends ServicesComponent
             'lote'=> 'nullable|string',
             'metrosCuadrados'=> 'nullable|numeric',
             'fraccionamiento'=> 'required|string',
+
             //'dictamenUsoSuelo'=> 'nullable|string',
             'paisSeleccionado' => 'nullable|exists:paises,id',
             'estadoSeleccionado' => 'nullable|exists:estados,id',
             'estadoObraSeleccionado' => 'nullable|exists:estadoobra,id',
         ]);
         try{
+            $this->latitud = substr($this->latitud, 0, -1);
+            $this->longitud = substr($this->longitud, 0, -1);
             $user = Auth::user();
             DetalleObra::editarDetalleObra(
             $this->model->id, $this->nombreObra, $this->total,$this->moneda,$this->fechaInicio, $this->fechaFin,$this->dictamenUsoSuelo,
             $this->estadoObraSeleccionado,
-            $this->calle,$this->manzana,$this->lote,$this->metrosCuadrados, $this->fraccionamiento,$this->estadoSeleccionado, $this->paisSeleccionado,
+            $this->calle,$this->manzana,$this->lote,$this->metrosCuadrados, $this->fraccionamiento,$this->estadoSeleccionado, $this->paisSeleccionado, $this->latitud, $this->longitud,
             $user->id);
-
-            //$this->dispatch('refreshClientesTable')->to(ClientesTable::class);
             $this->render();
-            //$this->dispatch( 'recargarMapa', $this->model->id);
-            // $this->limpiar();
+            // Emitir evento para recargar el mapa con las nuevas coordenadas
+            //$this->dispatch('refreshMapa', $this->latitud, $this->longitud);
             $this->alertService->success($this, 'Detalle Obra editado con éxito');
         } catch (\Exception $th) {
             $this->alertService->error($this, 'Error al actualizar la obra');
@@ -123,10 +98,11 @@ class EditarDetalleObra extends ServicesComponent
         }
     }
 
-    public function refreshDireccion($calle, $estado, $pais)
+    public function refreshDireccion($calle, $estado, $pais, $latitud, $longitud)
     {
-
         $this->calle = $calle;
+        $this->latitud = $latitud."s";
+        $this->longitud = $longitud."s";
         // Busca el ID del estado sin importar mayúsculas o minúsculas
         $estadoEncontrado = Estado::whereRaw('LOWER(nombre) = ?', [strtolower($estado)])->first();
         if ($estadoEncontrado) {

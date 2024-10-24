@@ -82,34 +82,38 @@ class EditarEgreso extends ServicesComponent
     public function editarEgreso()
     {
         $this->validate([
-            'cantidad' => 'required|numeric',
+            'cantidad' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
             'fecha' => 'required|date',
             'concepto' => 'required|string',
             'obraSeleccionada' => 'required|exists:obra,id',
             'proveedorSeleccionado' => 'required|exists:proveedores,id',
             'formaPagoSeleccionada' => 'required|exists:formapago,id',
             'bancoSeleccionado' => 'required|exists:banco,id',
-            'destajoSeleccionado' => 'required|exists:destajo,id',
+            'destajoSeleccionado' => 'nullable|exists:destajo,id',
             // 'selectedServiciosEditar' => 'required|array',
             // 'selectedServiciosEditar. *' => 'exists:servicio,id',
         ]);
         try {
-            //busco el destajo que esta seleccionado
-            $destajo = Destajo::findOrFail($this->destajoSeleccionado);
-            // Suma de todos los egresos asociados al destajo, excepto el que estamos editando
-            $sumaEgresos = Egreso::where('idDestajo', $this->destajoSeleccionado)->where('id', '!=', $this->model['id'])->sum('cantidad');
-            // Validar si la nueva cantidad más la suma de los otros egresos no supera el presupuesto del destajo
-            if (($sumaEgresos + $this->cantidad) > $destajo->presupuesto) {
-                $this->alertService->error($this, 'La cantidad total de egresos supera el presupuesto del destajo.');
+            if($this->destajoSeleccionado){
+                //busco el destajo que esta seleccionado
+                $destajo = Destajo::findOrFail($this->destajoSeleccionado);
+                // Suma de todos los egresos asociados al destajo, excepto el que estamos editando
+                $sumaEgresos = Egreso::where('idDestajo', $this->destajoSeleccionado)->where('id', '!=', $this->model['id'])->sum('cantidad');
+                // Validar si la nueva cantidad más la suma de los otros egresos no supera el presupuesto del destajo
+                if (($sumaEgresos + $this->cantidad) > $destajo->presupuesto) {
+                    $this->alertService->error($this, 'La cantidad total de egresos supera el presupuesto del destajo.');
+                }
             }else{
-                $user = Auth::user();
-                $egreso= Egreso::editarEgreso($this->model['id'], $this->cantidad, $this->obraSeleccionada, $this->proveedorSeleccionado, $this->formaPagoSeleccionada, $this->bancoSeleccionado,  $this->destajoSeleccionado, $this->selectedServiciosEditar, $this->concepto, $this->fecha, $user->id);
-
-                $this->dispatch('refreshEgresosTable')->to(EgresosTable::class);
-                $this->render();
-                $this->limpiar();
-                $this->alertService->success($this, 'Egreso actualizado con éxito');
+                $this->destajoSeleccionado = null;
             }
+            $user = Auth::user();
+            $egreso= Egreso::editarEgreso($this->model['id'], $this->cantidad, $this->obraSeleccionada, $this->proveedorSeleccionado, $this->formaPagoSeleccionada, $this->bancoSeleccionado,  $this->destajoSeleccionado, $this->selectedServiciosEditar, $this->concepto, $this->fecha, $user->id);
+
+            $this->dispatch('refreshEgresosTable')->to(EgresosTable::class);
+            $this->render();
+            $this->limpiar();
+            $this->alertService->success($this, 'Egreso actualizado con éxito');
+
         } catch (\Exception $th) {
             $this->alertService->error($this, 'Error al actualizar el Egreso');
             $this->loggerService->logError($th->getMessage() . '\nTraza:\n' . $th->getTraceAsString());

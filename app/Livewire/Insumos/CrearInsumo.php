@@ -37,7 +37,7 @@ class CrearInsumo extends ServicesComponent
     public function crearInsumo()
     {
         $this->validate([
-            'costo' => 'required|numeric',
+            'costo' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
             'cantidad' => 'required|integer',
             'fecha' => 'required|date',
             'obraSelected' =>'required|exists:obra,id',

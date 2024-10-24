@@ -48,7 +48,7 @@ class CrearDestajo extends ServicesComponent
     public function crearDestajo()
     {
         $this->validate([
-            'presupuesto' => 'required|numeric|min:1',
+            'presupuesto' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
             'obraSelected' => 'required|exists:obra,id',
             'proveedorSelected' => 'required|exists:proveedores,id',
         ]);

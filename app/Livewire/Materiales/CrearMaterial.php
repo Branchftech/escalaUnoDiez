@@ -40,13 +40,13 @@ class CrearMaterial extends ServicesComponent
         if (is_null($this->editarMaterialSelected)) {
             $this->validate([
                 'nombre' => 'required|string|unique:material,nombre,NULL,id,deleted_at,NULL',
-                'precioNormal' => 'required|numeric',
+                'precioNormal' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
                 'unidadSelected' => 'required|exists:unidad,id',
             ]);
         } else {
             $this->validate([
                 'nombre' => 'required|string',
-                'precioNormal' => 'required|numeric',
+                'precioNormal' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
                 'unidadSelected' => 'min:1|exists:unidad,id',
             ]);
         }

@@ -12,22 +12,28 @@ class DetallesObrasTable extends Component
 {
     public $model;
     public $calle,$id, $manzana, $lote, $estado,$pais, $fraccionamiento, $lat, $lng;
-    protected $listeners = ['reverseGeocode' => 'reverseGeocode', 'recargarMapa' => 'recargarMapa','refreshDetallesObrasTable' => '$refresh'];
+    protected $listeners = ['reverseGeocode' => 'reverseGeocode', 'recargarMapa' => 'recargarMapa', 'refreshMapa' => 'refreshMapa'];
 
     public function mount($id)
     {
         $this->id = $id;
         $this->model = Obra::with('detalle')->find($id);
 
-        if ($this->model->direccion) {
-            $this->calle = $this->model->direccion->calle ?? null;
+        if ($this->model->detalle->direccion) {
+            $this->calle = $this->model->detalle->direccion->calle ?? null;
             $this->manzana = $this->model->detalle->direccion->manzana ?? null;
             $this->lote = $this->model->detalle->direccion->lote ?? null;
             $this->pais = $this->model->detalle->direccion->pais->nombre ?? null;
             $this->estado = $this->model->detalle->direccion->estado->nombre ?? null;
+            $this->lat = $this->model->detalle->direccion->latitud ?? null;
+            $this->lng = $this->model->detalle->direccion->longitud ?? null;
+
         }
-        // Inicializa la geocodificación para obtener las coordenadas
-        $this->geocodeAddress();
+        // Inicializa la geocodificación para obtener las coordenadas solo si no se han guardado previamente
+        if (!$this->lat || !$this->lng) {
+
+            $this->geocodeAddress();
+        }
     }
 
     public function recargarMapa($id)
@@ -43,7 +49,6 @@ class DetallesObrasTable extends Component
 
         $this->geocodeAddress();
     }
-
 
     public function geocodeAddress()
     {
@@ -91,8 +96,6 @@ class DetallesObrasTable extends Component
 
     public function reverseGeocode($lat, $lng)
     {
-       // $this->dispatch('recargar');
-
         $client = new Client();
 
         try {
@@ -104,46 +107,44 @@ class DetallesObrasTable extends Component
                     'format' => 'json'
                 ],
                 'headers' => [
-                    'User-Agent' => 'YourAppName/1.0 (eunodiez@gmail.com)' // Reemplaza con tu correo y nombre de app
+                    'User-Agent' => 'YourAppName/1.0 (eunodiez@gmail.com)'
                 ]
             ]);
 
             $responseData = json_decode($response->getBody(), true);
 
             if (!empty($responseData)) {
-
                 $this->calle = $responseData['address']['road'] ?? '';
-                $this->estado = isset($responseData['address']['state']) ? $responseData['address']['state'] : (isset($responseData['address']['city']) ? $responseData['address']['city'] : '');
+                $this->estado = $responseData['address']['state'] ?? $responseData['address']['city'] ?? '';
                 $this->pais = $responseData['address']['country'] ?? '';
-
-               // $this->dispatch('refreshDireccion', $this->calle, $this->estado, $this->pais)->to(EditarDetalleObra::class);
-               //$this->emitTo('App\\Livewire\\DetallesObras\\EditarDetalleObra', 'refreshDireccion', $this->calle, $this->estado, $this->pais);
-
-            } else {
-                $this->calle = null;
-                $this->estado = null;
-                $this->pais = null;
             }
+
+            $this->lat = $lat;
+            $this->lng = $lng;
+
+            $this->dispatch('refreshDireccion', $this->calle, $this->estado, $this->pais, $this->lat, $this->lng);
+            //$this->refreshMapa($this->lat, $this->lng);
+            // $this->render();
         } catch (\Exception $e) {
             $this->calle = null;
             $this->estado = null;
             $this->pais = null;
+            $this->lat = null;
+            $this->lng = null;
         }
-        // Actualiza las coordenadas
-        $this->lat = $lat;
-        $this->lng = $lng;
+    }
+
+    public function refreshMapa($latitud, $longitud)
+    {
+        $this->lat = $latitud;
+        $this->lng = $longitud;
+
         $coordenadas = [
             'latitud' => $this->lat,
             'longitud' => $this->lng,
         ];
-        $this->dispatch('updateMap', compact('coordenadas'));
-        $this->dispatch( 'refreshDireccion', $this->calle, $this->estado, $this->pais);
-        //$this->dispatch('refreshDetallesObrasTable');
 
+        $this->dispatch('updateMap', compact('coordenadas'));  // Actualiza el mapa con las nuevas coordenadas
     }
-
-
-
-
 }
 

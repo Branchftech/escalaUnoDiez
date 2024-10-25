@@ -24,7 +24,7 @@
 <body>
     <div id="app">
         <main>
-            @include('components.app-layout.sidebar')
+            @livewire('accesos.accesos')
             <div class="main">
                 @include('components.app-layout.navbar', ['header' => $header ?? ''])
                 <div class="main-content">

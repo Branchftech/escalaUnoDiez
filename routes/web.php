@@ -21,9 +21,16 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Controllers\Accesos\AccesosController;
 
 Route::middleware(['auth'])->group(function () {
 
+    Route::get('/accesos', [AccesosController::class, 'getSidebarAccesos'])->name('accesos');
+
+    Route::middleware(['role:Administrador'])->group(function () {
+        Route::get('/crear-acceso', [AccesosController::class, 'index'])->name('crearAcceso');
+        Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios');
+    });
 
     Route::post('/logout', function () {
         Auth::logout();
@@ -68,22 +75,22 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/destajos', [DestajosController::class, 'index'])->name('destajos');
 
 
-    Route::get('/generar-pdf', function () {
-        // Datos que puedes enviar a la vista (si es necesario)
-        $data = [
-            'nombre' => 'Mario Resendiz',
-            'cantidad' => 5800,
-            'obra' => 'Zirahuen',
-            'concepto' => 'Plomería',
-            'fecha' => '15 Enero 2024'
-        ];
+    // Route::get('/generar-pdf', function () {
+    //     // Datos que puedes enviar a la vista (si es necesario)
+    //     $data = [
+    //         'nombre' => 'Mario Resendiz',
+    //         'cantidad' => 5800,
+    //         'obra' => 'Zirahuen',
+    //         'concepto' => 'Plomería',
+    //         'fecha' => '15 Enero 2024'
+    //     ];
 
-        // Renderiza la vista y pasa los datos
-        $pdf = PDF::loadView('pdf.recibo.recibo', $data);
+    //     // Renderiza la vista y pasa los datos
+    //     $pdf = PDF::loadView('pdf.recibo.recibo', $data);
 
-        // Devuelve el PDF en el navegador
-        return $pdf->stream('archivo.pdf');
-    });
+    //     // Devuelve el PDF en el navegador
+    //     return $pdf->stream('archivo.pdf');
+    // });
 
     // Route::get('/pdf/recibo/{id}', [EgresosController::class, 'pdfRecibo'])->name('pdf.recibo');
     // Route::get('/firmar-recibo/{id}', [EgresosController::class, 'mostrarFormularioFirma']);

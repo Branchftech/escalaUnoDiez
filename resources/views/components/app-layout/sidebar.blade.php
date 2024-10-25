@@ -1,4 +1,4 @@
-
+{{--
 <div class="overflow-y-auto navigation scroll-container">
     <ul class="gap-2 p-0 d-flex flex-column">
         <li>
@@ -106,6 +106,13 @@
                 </a>
             </li>
         @endcan
+        <li data-title="" class=" {{ request()->routeIs('menu') ? 'activar' : '' }}">
+            <a href="{{ route('menu') }}" wire:navigate
+                class="d-flex align-items-center ">
+                <span class="icon d-flex justify-content-center align-items-center me-2"><i class="fa-solid fa-list"></i></span>
+                <span class="title">Menu</span>
+            </a>
+        </li>
         {{-- <li data-title="" class=" {{ request()->routeIs('permisos') ? 'activar' : '' }}">
             <a href="{{ route('permisos') }}" wire:navigate
                 class="d-flex align-items-center">
@@ -113,10 +120,35 @@
                         class="fas fa-user"></i></span>
                 <span class="title">permisos</span>
             </a>
-        </li> --}}
+        </li>
 
     </ul>
+</div> --}}
+<div class="overflow-y-auto navigation scroll-container">
+    <ul class="gap-2 p-0 d-flex flex-column">
+        <li>
+            <a href="#" class="d-flex align-items-center" style="justify-content: center;">
+                <div style="width: 60px; height: 45px;">
+                    <div class="overflow-hidden" style="width: 60px; height: 60px; border-radius: 50%;">
+                        <img class="object-fit-cover" style="width: 100%; height: 100%;" src="{{ asset('assets/images/logo.png') }}" alt="Logo" />
+                    </div>
+                </div>
+            </a>
+        </li>
+
+        @foreach (App\Services\MenuService::getMenuItemsByRole() as $menu)
+            <li data-title="{{ $menu->nombre }}" class="{{ request()->routeIs($menu->url) ? 'activar' : '' }}">
+                <a href="{{ route($menu->url) }}" class="d-flex align-items-center">
+                    <span class="icon d-flex justify-content-center align-items-center me-2">
+                        <i class="{{ $menu->icono }}"></i>
+                    </span>
+                    <span class="title">{{ $menu->nombre }}</span>
+                </a>
+            </li>
+        @endforeach
+    </ul>
 </div>
+
 
 @push('scripts')
     <script type="module">

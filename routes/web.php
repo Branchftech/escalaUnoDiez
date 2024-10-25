@@ -15,6 +15,8 @@ use App\Http\Controllers\DocumentosObras\DocumentosObrasController;
 use App\Http\Controllers\Egresos\EgresosController;
 use App\Http\Controllers\Ingresos\IngresosController;
 use App\Http\Controllers\Destajos\DestajosController;
+use App\Http\Controllers\Roles\RolesController;
+use App\Http\Controllers\Permisos\PermisosController;
 use App\Http\Controllers\Obras\ObrasController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
         return Redirect::to('/login');
     })->name('logout');
 
+
     Route::get('/home', [DashboardController::class, 'render'])->name('home');
 
     Route::get('/', [DashboardController::class, 'render']);
@@ -38,6 +41,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'render'])->name('dashboard');
 
     Route::get('/profile', [UsuarioController::class, 'profile'])->name('profile');
+
+    Route::middleware(['role_or_permission:Administrador|Permisos|ver-permiso'])->group(function () {
+        Route::get('/permisos', [PermisosController::class, 'index'])->name('permisos');
+    });
+
+    Route::middleware(['role_or_permission:Administrador|Roles|ver-rol'])->group(function () {
+        Route::get('/roles', [RolesController::class, 'index'])->name('roles');
+    });
+
+    Route::middleware(['role_or_permission:Administrador|Usuarios|ver-usuario'])->group(function () {
+        Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios');
+    });
+
+    Route::get('/formasPago', [FormasPagoController::class, 'index'])->name('formasPago');
 
     Route::get('/formasPago', [FormasPagoController::class, 'index'])->name('formasPago');
 

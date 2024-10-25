@@ -38,8 +38,5 @@
                 </form>
             </div>
         </x-slot:body>
-
-
-
     </x-modal-default>
 </div>

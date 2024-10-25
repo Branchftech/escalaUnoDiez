@@ -86,6 +86,34 @@
                 <span class="title">Destajos</span>
             </a>
         </li>
+        @can('ver-rol')
+            <li data-title="" class=" {{ request()->routeIs('roles') ? 'activar' : '' }}">
+                <a href="{{ route('roles') }}" wire:navigate
+                    class="d-flex align-items-center">
+                    <span class="icon d-flex justify-content-center align-items-center me-2"><i
+                            class="fas fa-user"></i></span>
+                    <span class="title">roles</span>
+                </a>
+            </li>
+        @endcan
+        @can('ver-usuario')
+            <li data-title="" class=" {{ request()->routeIs('usuarios') ? 'activar' : '' }}">
+                <a href="{{ route('usuarios') }}" wire:navigate
+                    class="d-flex align-items-center">
+                    <span class="icon d-flex justify-content-center align-items-center me-2"><i
+                            class="fas fa-users"></i></span>
+                    <span class="title">usuarios</span>
+                </a>
+            </li>
+        @endcan
+        {{-- <li data-title="" class=" {{ request()->routeIs('permisos') ? 'activar' : '' }}">
+            <a href="{{ route('permisos') }}" wire:navigate
+                class="d-flex align-items-center">
+                <span class="icon d-flex justify-content-center align-items-center me-2"><i
+                        class="fas fa-user"></i></span>
+                <span class="title">permisos</span>
+            </a>
+        </li> --}}
 
     </ul>
 </div>

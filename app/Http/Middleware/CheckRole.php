@@ -8,18 +8,37 @@ use Illuminate\Support\Facades\Auth;
 
 class CheckRole
 {
-    /**
-     * Manejar una solicitud entrante.
-     */
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next)
     {
+        // Detectar si la solicitud es de Livewire (solicitud AJAX)
+        if ($request->header('X-Livewire')) {
+            return $next($request); // Permitir solicitudes Livewire sin verificación
+        }
+
         $user = Auth::user();
 
-        // Verifica si el usuario tiene el rol especificado
-        if (!$user || !$user->roles->contains('nombre', $role)) {
+        if (!$user) {
+            return redirect('/login')->with('error', 'Debes iniciar sesión.');
+        }
+
+        $routeName = $request->route()->getName();
+
+        // Excluir rutas que no requieren validación de acceso específico
+        if (in_array($routeName, ['dashboard', 'home', 'profile'])) {
+            return $next($request);
+        }
+
+        // Obtener accesos del usuario basados en los roles
+        $userAccesos = $user->accesos();
+
+        // Verificar si el acceso solicitado está entre los accesos permitidos
+        $hasAccess = $userAccesos->contains('url', $routeName);
+
+        if (!$hasAccess) {
             return redirect('/dashboard')->with('error', 'No tienes acceso a esta página.');
         }
 
         return $next($request);
     }
 }
+

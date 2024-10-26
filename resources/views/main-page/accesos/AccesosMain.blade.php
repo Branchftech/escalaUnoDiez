@@ -9,8 +9,6 @@
                     <div class=" h4">
                         <h4>Lista de Accesos</h4>
                     </div>
-                    <livewire:accesos.crear-acceso />
-
                 </div>
 
                 <livewire:accesos.accesos-table/>
@@ -24,7 +22,7 @@
                     <div class=" h4">
                         <h4>Lista de Usuario</h4>
                     </div>
-                    <livewire:usuarios.crear-usuario />
+
 
                 </div>
                 <livewire:usuarios.usuarios-table />

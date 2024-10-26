@@ -54,14 +54,18 @@ class UsuariosTable extends DataTableComponent
             Column::make('ID', 'id')
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),
-            Column::make('Nombre', 'name')
-                ->collapseAlways(),
+
             Column::make('Nombre', 'name')
                 ->sortable()->searchable(),
             Column::make('Email', 'email')
                 ->sortable()->searchable(),
-
-            Column::make('Action')
+            // Nueva columna para mostrar los roles asociados
+            Column::make('Roles')
+            ->label(
+                fn ($row, Column $column) => $row->roles->pluck('nombre')->implode(', ')
+            )
+            ->html(),
+            Column::make('Acciones')
                 ->label(
                     fn ($row, Column $column) => view('livewire.usuarios.actions-table')->with([
                         'model' => json_encode($row),

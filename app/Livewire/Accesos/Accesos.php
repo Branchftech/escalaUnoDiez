@@ -15,11 +15,14 @@ class Accesos extends Component
     {
         // Obtiene los roles del usuario y filtra los accesos según los roles asignados o sin roles
         $userRoles = Auth::user()->roles->pluck('id');
-        $this->accesos = Acceso::whereHas('roles', function ($query) use ($userRoles) {
-                $query->whereIn('roles.id', $userRoles);
+        // Filtra los accesos según los roles del usuario o accesos sin roles asignados
+        $this->accesos = Acceso::where(function ($query) use ($userRoles) {
+            $query->whereHas('roles', function ($roleQuery) use ($userRoles) {
+                $roleQuery->whereIn('roles.id', $userRoles);
             })
-            ->orWhereDoesntHave('roles') // Incluye accesos sin roles asignados
-            ->get();
+            ->orWhereDoesntHave('roles');
+        })
+        ->get();
     }
 
     public function render()

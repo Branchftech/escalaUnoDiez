@@ -54,6 +54,12 @@ class AccesosTable extends DataTableComponent{
         Column::make('Fecha Creación', 'created_at'),
         Column::make('Actualizado por', 'updatedBy.name'),
         Column::make('Fecha Actualización', 'updated_at'),
+         // Nueva columna para mostrar los roles asociados
+         Column::make('Roles')
+         ->label(
+             fn ($row, Column $column) => $row->roles->pluck('nombre')->implode(', ')
+         )
+         ->html(),
         Column::make('Acciones')
             ->label(
                 fn ($row, Column $column) => view('livewire.accesos.actions-table')->with([

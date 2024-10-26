@@ -24,7 +24,7 @@
 
                         <div class="mb-3">
                             <label for="roles" class="form-label">Roles</label>
-                            <select wire:model="rolSeleccionado" class="form-select" id="select2Rol">
+                            <select wire:model="rolSeleccionado" class="form-select" id="select2RolAcceso">
                                 <option value="">Seleccione un rol</option>
                                 @foreach ($roles as $rol)
                                     <option value="{{ $rol->id }}">{{ $rol->nombre }}</option>
@@ -58,9 +58,9 @@
 
 @push('scripts')
     <script type="module">
-        $('#select2Rol').select2();
-        $('#select2Rol').on('change', function(e) {
-            var data = $('#select2Rol').select2("val");
+        $('#select2RolAcceso').select2();
+        $('#select2RolAcceso').on('change', function(e) {
+            var data = $('#select2RolAcceso').select2("val");
             @this.set('rolSeleccionado', data);
         });
     </script>

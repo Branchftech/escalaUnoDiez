@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Auth;
 class EditarUsuario extends ServicesComponent
 {
     public $showModal = false;
-    public $roles;
-    public $rolSeleccionado;
-    public $selectedRoles = [];
+    public $rolesUsuario;
+    public $rolSeleccionadoUsuario;
+    public $selectedRolesUsuario; // No inicializar como array
     public $model;
     public $name;
     public $email;
@@ -25,8 +25,8 @@ class EditarUsuario extends ServicesComponent
         $this->model = $model;
         $this->name = $model->name;
         $this->email = $model->email;
-        $this->roles = Roles::orderBy('nombre', 'asc')->get();
-        $this->selectedRoles = $model->roles; // Cargar los roles actuales del usuario
+        $this->rolesUsuario = Roles::orderBy('nombre', 'asc')->get();
+        $this->selectedRolesUsuario = collect($model->roles); // Colección de roles actuales
     }
 
     public function render()
@@ -51,10 +51,10 @@ class EditarUsuario extends ServicesComponent
             $user = Auth::user();
             $usuario = User::where('id', $this->model->id)->first();
             $usuario->update(['name' => $this->name, 'email' => $this->email]);
-            $usuario->roles()->sync($this->selectedRoles->pluck('id'));
+            $usuario->roles()->sync($this->selectedRolesUsuario->pluck('id'));
 
             $this->showModal = false;
-            $this->reset('name', 'selectedRoles', 'email');
+            $this->reset('name', 'selectedRolesUsuario', 'email');
             $this->dispatch('refreshUsuariosTable')->to(UsuariosTable::class);
             $this->render();
 
@@ -70,25 +70,25 @@ class EditarUsuario extends ServicesComponent
         $this->model = User::findOrFail($model['id']);
         $this->name = $this->model->name;
         $this->email = $this->model->email;
-        $this->roles = Roles::orderBy('nombre', 'asc')->get();
-        $this->selectedRoles = $this->model->roles; // Cargar roles actuales
+        $this->rolesUsuario = Roles::orderBy('nombre', 'asc')->get();
+        $this->selectedRolesUsuario = collect($this->model->roles); // Cargar roles actuales
         $this->showModal = true;
     }
 
-    public function updatedRolSeleccionado($rol)
+    public function updatedRolSeleccionadoUsuario($rolId)
     {
-        $this->validate(['rolSeleccionado' => 'required|exists:roles,id']);
+        $this->validate(['rolSeleccionadoUsuario' => 'required|exists:roles,id']);
 
-        $rol = Roles::find($rol);
-        if ($rol && !$this->selectedRoles->contains('id', $rol->id)) {
-            $this->selectedRoles->push($rol);
+        $rol = Roles::find($rolId);
+        if ($rol && !$this->selectedRolesUsuario->contains('id', $rol->id)) {
+            $this->selectedRolesUsuario->push($rol);
         }
     }
 
-    public function eliminarRol($index)
+    public function eliminarRol($rolId)
     {
-        $this->selectedRoles = $this->selectedRoles->reject(function ($rol) use ($index) {
-            return $rol->id == $index;
+        $this->selectedRolesUsuario = $this->selectedRolesUsuario->reject(function ($rol) use ($rolId) {
+            return $rol->id == $rolId;
         })->values();
     }
 }

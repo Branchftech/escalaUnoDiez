@@ -24,14 +24,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Accesos\AccesosController;
 
 Route::middleware(['auth'])->group(function () {
-
-    Route::get('/accesos', [AccesosController::class, 'getSidebarAccesos'])->name('accesos');
-
-    Route::middleware(['role:Administrador'])->group(function () {
-        Route::get('/crear-acceso', [AccesosController::class, 'index'])->name('crearAcceso');
-        Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios');
-    });
-
     Route::post('/logout', function () {
         Auth::logout();
         Session::flush();
@@ -45,6 +37,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'render'])->name('dashboard');
 
     Route::get('/profile', [UsuarioController::class, 'profile'])->name('profile');
+});
+
+Route::middleware(['auth', 'role'])->group(function () {
+
+    Route::get('/accesos', [AccesosController::class, 'getSidebarAccesos'])->name('accesos');
+
+    Route::get('/crear-acceso', [AccesosController::class, 'index'])->name('crearAcceso');
+    Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios');
 
     Route::get('/formasPago', [FormasPagoController::class, 'index'])->name('formasPago');
 
@@ -74,34 +74,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/destajos', [DestajosController::class, 'index'])->name('destajos');
 
-
-    // Route::get('/generar-pdf', function () {
-    //     // Datos que puedes enviar a la vista (si es necesario)
-    //     $data = [
-    //         'nombre' => 'Mario Resendiz',
-    //         'cantidad' => 5800,
-    //         'obra' => 'Zirahuen',
-    //         'concepto' => 'Plomería',
-    //         'fecha' => '15 Enero 2024'
-    //     ];
-
-    //     // Renderiza la vista y pasa los datos
-    //     $pdf = PDF::loadView('pdf.recibo.recibo', $data);
-
-    //     // Devuelve el PDF en el navegador
-    //     return $pdf->stream('archivo.pdf');
-    // });
-
-    // Route::get('/pdf/recibo/{id}', [EgresosController::class, 'pdfRecibo'])->name('pdf.recibo');
-    // Route::get('/firmar-recibo/{id}', [EgresosController::class, 'mostrarFormularioFirma']);
-    // Route::post('/guardar-firma', [EgresosController::class, 'guardarFirma']);
-
-
     Route::get('/firmar-recibo/{id}', [EgresosController::class, 'mostrarFormularioFirma'])->name('egresos.firmar');
+
     Route::post('/guardar-firma', [EgresosController::class, 'guardarFirma'])->name('egresos.guardarFirma');
+
     Route::post('/generar-reporte', [EgresosController::class, 'generarReporte'])->name('generarReporte');
 
-    // Route::get('/pdf/recibo', [EgresosController::class, 'pdfRecibo'])->name('pdf/recibo');
 });
+
 Route::get('/pdf/recibo/{id}', [EgresosController::class, 'pdfRecibo'])->name('egresos.pdf');
+
 require __DIR__ . '/auth.php';

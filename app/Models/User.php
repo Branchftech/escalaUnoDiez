@@ -83,11 +83,19 @@ class User extends Authenticatable
         return $this->belongsToMany(Roles::class, 'role_user', 'user_id', 'role_id');
     }
 
+
     /**
      * Verifica si el usuario tiene un rol específico.
      */
     public function hasRole($roleName)
     {
         return $this->roles->contains('name', $roleName);
+    }
+
+    public function accesos()
+    {
+        return $this->roles->flatMap(function ($role) {
+            return $role->accesos;
+        })->unique('id');
     }
 }

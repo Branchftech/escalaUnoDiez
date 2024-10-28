@@ -22,6 +22,7 @@ class Accesos extends Component
             })
             ->orWhereDoesntHave('roles');
         })
+        ->orWhere('nombre', 'dashboard') // Permitir siempre el acceso a "dashboard"
         ->get();
     }
 

@@ -22,6 +22,7 @@ class AccesosController extends Controller
             })
             ->orWhereDoesntHave('roles');
         })
+        ->orWhere('nombre', 'dashboard') // Permitir siempre el acceso a "dashboard"
         ->get();
 
         return view('components.app-layout.sidebar', compact('accesos')); // Retorna la vista del sidebar con los accesos

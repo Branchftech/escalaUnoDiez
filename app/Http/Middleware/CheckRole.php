@@ -31,6 +31,14 @@ class CheckRole
         // Obtener accesos del usuario basados en los roles
         $userAccesos = $user->accesos();
 
+        // Verificar si el usuario tiene permiso para las rutas especiales
+        if (
+            ($routeName === 'detalleObra' && $userAccesos->contains('url', 'obras')) ||
+            ($routeName === 'generarReporte' && $userAccesos->contains('url', 'egresos'))
+        ) {
+            return $next($request); // Permitir acceso a rutas relacionadas
+        }
+
         // Verificar si el acceso solicitado está entre los accesos permitidos
         $hasAccess = $userAccesos->contains('url', $routeName);
 
@@ -41,4 +49,3 @@ class CheckRole
         return $next($request);
     }
 }
-

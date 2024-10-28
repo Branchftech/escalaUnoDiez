@@ -10,4 +10,8 @@ class UsuarioController extends Controller
     {
         return view('main-page.auth.ProfileMain');
     }
+    public function index()
+    {
+        return view('main-page.usuarios.UsuariosMain');
+    }
 }

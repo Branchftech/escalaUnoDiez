@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ServiciosTable extends DataTableComponent{
     use LivewireAlert;
@@ -57,5 +58,53 @@ class ServiciosTable extends DataTableComponent{
                     ])
                 )->html(),
         ];
+    }
+    public function bulkActions(): array
+    {
+        return [
+            'export' => 'Exportar',
+        ];
+    }
+
+    public function export()
+    {
+        $servicios = $this->getSelected();
+
+        $this->clearSelected();
+
+        return Excel::download(new class($servicios) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
+            private $servicios;
+
+            public function __construct($servicios)
+            {
+                $this->servicios = Servicio::whereIn('id', $servicios)->get();
+            }
+
+            public function collection()
+            {
+                return $this->servicios->map(function ($servicio) {
+                    return [
+                        'ID' => $servicio->id,
+                        'Nombre' => $servicio->nombre,
+                        'Creado por' => $servicio->createdBy->name ?? 'N/A',
+                        'Fecha Creación' => $servicio->created_at,
+                        'Actualizado por' => $servicio->updatedBy->name ?? 'N/A',
+                        'Fecha Actualización' => $servicio->updated_at,
+                    ];
+                });
+            }
+
+            public function headings(): array
+            {
+                return [
+                    'ID',
+                    'Nombre',
+                    'Creado por',
+                    'Fecha Creación',
+                    'Actualizado por',
+                    'Fecha Actualización',
+                ];
+            }
+        }, 'servicios.xlsx');
     }
 }

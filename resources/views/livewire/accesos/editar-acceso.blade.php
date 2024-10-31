@@ -10,11 +10,11 @@
                             @error('nombre') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="url">URL</label>
                             <x-input type="text" wire:model="url" id="url" class="form-control" />
                             @error('url') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
+                        </div> --}}
 
                         <div class="form-group">
                             <label for="icono">Ícono</label>

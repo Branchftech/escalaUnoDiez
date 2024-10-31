@@ -48,7 +48,10 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="total">Presupuesto</label>
-                        <x-input type="numeric" wire:model="total" class="form-control" />
+                        <div class="input-group">
+                            <span class="input-group-text" style="border-right: none; background-color: transparent;">$</span>
+                            <x-input type="numeric" wire:model="total" class="form-control" style="border-left: none;" />
+                        </div>
                         @error('total') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                 </div>

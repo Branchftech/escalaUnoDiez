@@ -17,7 +17,14 @@ class DetallesObrasTable extends Component
     public function mount($id)
     {
         $this->id = $id;
-        $this->model = Obra::with('detalle')->find($id);
+        $this->model = Obra::with(['detalle' => function ($query) {
+            $query->whereNull('deleted_at');
+        }])->find($id);
+
+        // Si no se encuentra la obra, redirigir a la página de error 404
+        if (!$this->model) {
+            abort(404); // Redirige a la vista de error 404
+        }
 
         if ($this->model->detalle->direccion) {
             $this->calle = $this->model->detalle->direccion->calle ?? null;

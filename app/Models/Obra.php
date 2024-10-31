@@ -104,11 +104,55 @@ class Obra extends Model
 
     static function eliminarObra($id, $userId)
     {
-        $obra = Obra::findOrfail($id);
-        $obra->activo = 0;
-        $obra->deleted_at = now();
-        $obra->deleted_by =  $userId;
-        $obra->save();
+        // $obra = Obra::findOrfail($id);
+        // //$obra->activo = 0;
+        // $obra->deleted_at = now();
+        // $obra->deleted_by =  $userId;
+        // $obra->save();
+        // Encontrar la obra con el ID dado
+        // Encontrar la obra con el ID dado
+        $obra = Obra::find($id);
+
+        if ($obra) {
+            // Actualizar la fecha de eliminación y el usuario en la obra
+            $obra->deleted_at = now();
+            $obra->deleted_by = $userId;
+            $obra->save();
+
+            // Obtener el detalle de la obra asociado y marcarlo como eliminado
+            if ($obra->detalle) {
+                $detalle = $obra->detalle;
+                $detalle->deleted_at = now();
+                $detalle->deleted_by = $userId;
+                $detalle->save();
+
+                // Obtener la dirección asociada al detalle y marcarla como eliminada
+                if ($detalle->direccion) {
+                    $direccion = $detalle->direccion;
+                    $direccion->deleted_at = now();
+                    $direccion->deleted_by = $userId;
+                    $direccion->save();
+                }
+            }
+
+            // Actualizar la fecha de eliminación y el usuario en las bitácoras asociadas
+            foreach ($obra->bitacoras as $bitacora) {
+                $bitacora->deleted_at = now();
+                $bitacora->deleted_by = $userId;
+                $bitacora->save();
+            }
+
+            // Actualizar la fecha de eliminación y el usuario en los documentos asociados
+            foreach ($obra->documentos as $documento) {
+                $documento->deleted_at = now();
+                $documento->deleted_by = $userId;
+                $documento->save();
+            }
+
+            return true; // Indicar que la eliminación fue exitosa
+        }
+
+        return false; // Si no se encuentra la obra
     }
 
     public function getCreatedAtCustomAttribute()

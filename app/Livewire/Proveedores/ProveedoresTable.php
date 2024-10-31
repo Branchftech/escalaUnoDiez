@@ -7,6 +7,7 @@ use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Rappasoft\LaravelLivewireTables\Views\Columns\BooleanColumn;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProveedoresTable extends DataTableComponent{
     use LivewireAlert;
@@ -77,5 +78,56 @@ class ProveedoresTable extends DataTableComponent{
                     ])
                 )->html(),
         ];
+    }
+
+    public function bulkActions(): array
+    {
+        return [
+            'export' => 'Exportar',
+        ];
+    }
+
+    public function export()
+    {
+        $proveedores = $this->getSelected();
+
+        $this->clearSelected();
+
+        return Excel::download(new class($proveedores) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
+            private $proveedores;
+
+            public function __construct($proveedores)
+            {
+                $this->proveedores = Proveedor::whereIn('id', $proveedores)->get();
+            }
+
+            public function collection()
+            {
+                return $this->proveedores->map(function ($proveedor) {
+                    return [
+                        'ID' => $proveedor->id,
+                        'Nombre' => $proveedor->nombre,
+                        'Servicios' => $proveedor->servicios->pluck('nombre')->implode(', '),
+                        'Creado por' => $proveedor->createdBy->name ?? 'N/A',
+                        'Fecha Creación' => $proveedor->created_at,
+                        'Actualizado por' => $proveedor->updatedBy->name ?? 'N/A',
+                        'Fecha Actualización' => $proveedor->updated_at,
+                    ];
+                });
+            }
+
+            public function headings(): array
+            {
+                return [
+                    'ID',
+                    'Nombre',
+                    'Servicios',
+                    'Creado por',
+                    'Fecha Creación',
+                    'Actualizado por',
+                    'Fecha Actualización',
+                ];
+            }
+        }, 'proveedores.xlsx');
     }
 }

@@ -68,7 +68,10 @@ class EgresosTable extends DataTableComponent{
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),
             Column::make('Concepto', 'concepto'),
-            Column::make('Cantidad', 'cantidad'),
+            Column::make('Cantidad', 'cantidad')
+            ->format(function ($value) {
+                return '$' . number_format($value, 2); // Formatea el número con dos decimales
+            }),
             Column::make('Fecha', 'fecha'),
             BooleanColumn::make('Firmado', 'firmado')->deselected(),
             Column::make('Obra', 'obra.detalle.nombreObra')
@@ -128,9 +131,9 @@ class EgresosTable extends DataTableComponent{
                         'Concepto' => $egreso->concepto,
                         'Cantidad' => $egreso->cantidad,
                         'Fecha' => $egreso->fecha,
-                        'Creado por' => $egreso->created_by,
+                        'Creado por' => $egreso->createdBy->name ?? 'N/A',
                         'Fecha Creación' => $egreso->created_at,
-                        'Actualizado por' => $egreso->updated_by,
+                        'Actualizado por' => $egreso->updatedBy->name ?? 'N/A',
                         'Fecha Actualización' => $egreso->updated_at,
                     ];
                 });

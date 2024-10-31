@@ -23,7 +23,14 @@ class EditarDetalleObra extends ServicesComponent
     public function mount($id)
     {
         $this->id = $id;
-        $obra = Obra::find($id);
+        $obra = Obra::with(['detalle' => function ($query) {
+            $query->whereNull('deleted_at');
+        }])->find($id);
+
+        // Si no se encuentra la obra, redirigir a la página de error 404
+        if (! $obra) {
+            abort(404); // Redirige a la vista de error 404
+        }
         $this->model = $obra->detalle;
 
         // Verifica si la dirección existe antes de acceder a sus propiedades

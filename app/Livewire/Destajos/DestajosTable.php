@@ -53,7 +53,10 @@ class DestajosTable extends DataTableComponent
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),
             Column::make('Presupuesto', 'presupuesto')
-                ->sortable()->searchable(),
+                ->sortable()->searchable()
+                ->format(function ($value) {
+                    return '$' . number_format($value, 2); // Formatea el número con dos decimales
+                }),
             Column::make('Obra', 'obra.detalle.nombreObra')
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),
@@ -105,9 +108,9 @@ class DestajosTable extends DataTableComponent
                     return [
                         'ID' => $destajo->id,
                         'Presupuesto' => $destajo->presupuesto,
-                        'Creado por' => $destajo->created_by,
+                        'Creado por' => $destajo->createdBy->name ?? 'N/A',
                         'Fecha Creación' => $destajo->created_at,
-                        'Actualizado por' => $destajo->updated_by,
+                        'Actualizado por' => $destajo->updatedBy->name ?? 'N/A',
                         'Fecha Actualización' => $destajo->updated_at,
                     ];
                 });

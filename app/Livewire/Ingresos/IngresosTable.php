@@ -55,7 +55,10 @@ class IngresosTable extends DataTableComponent
             Column::make('Factura', 'factura')
                 ->sortable()->searchable(),
             Column::make('Cantidad', 'cantidad')
-                ->sortable()->searchable(),
+                ->sortable()->searchable()
+                ->format(function ($value) {
+                    return '$' . number_format($value, 2); // Formatea el número con dos decimales
+                }),
             Column::make('Fecha', 'fecha')
                 ->sortable()->searchable(),
             Column::make('Concepto', 'concepto')
@@ -115,9 +118,9 @@ class IngresosTable extends DataTableComponent
                         'Cantidad' => $ingreso->cantidad,
                         'Fecha' => $ingreso->fecha,
                         'Concepto' => $ingreso->concepto,
-                        'Creado por' => $ingreso->created_by,
+                        'Creado por' => $ingreso->createdBy->name ?? 'N/A',
                         'Fecha Creación' => $ingreso->created_at,
-                        'Actualizado por' => $ingreso->updated_by,
+                        'Actualizado por' => $ingreso->updatedBy->name ?? 'N/A',
                         'Fecha Actualización' => $ingreso->updated_at,
                     ];
                 });

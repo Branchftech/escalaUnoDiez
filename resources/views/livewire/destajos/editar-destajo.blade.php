@@ -6,7 +6,10 @@
                 <div class="gap-3 overflow-y-auto d-flex flex-column" style="max-height: 40vh;">
                     <div class="form-group">
                             <label for="editpresupuesto">Presupuesto</label>
-                            <x-input type="numeric" wire:model="editpresupuesto" class="form-control" />
+                            <div class="input-group">
+                                <span class="input-group-text" style="border-right: none; background-color: transparent;">$</span>
+                                <x-input type="numeric" wire:model="editpresupuesto" class="form-control" style="border-left: none;" />
+                            </div>
                             @error('editpresupuesto') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                     <div class="form-group" wire:ignore>

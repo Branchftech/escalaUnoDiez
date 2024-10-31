@@ -20,7 +20,10 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="costo">Costo</label>
-                        <x-input type="numeric" wire:model="costo" class="form-control" />
+                        <div class="input-group">
+                            <span class="input-group-text" style="border-right: none; background-color: transparent;">$</span>
+                            <x-input type="numeric" wire:model="costo" class="form-control" style="border-left: none;" />
+                        </div>
                         @error('costo') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                 </div>

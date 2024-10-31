@@ -101,9 +101,9 @@ class BitacorasObrasTable extends DataTableComponent{
                         'ID' => $bitacora->id,
                         'Descripción' => $bitacora->descripcion,
                         'ID Obra' => $bitacora->idObra,
-                        'Creado por' => $bitacora->created_by,
+                        'Creado por' => $bitacora->createdBy->name ?? 'N/A',
                         'Fecha Creación' => $bitacora->created_at,
-                        'Actualizado por' => $bitacora->updated_by,
+                        'Actualizado por' => $bitacora->updatedBy->name ?? 'N/A',
                         'Fecha Actualización' => $bitacora->updated_at,
                     ];
                 });

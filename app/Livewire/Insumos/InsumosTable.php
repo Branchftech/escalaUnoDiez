@@ -47,7 +47,10 @@ class InsumosTable extends DataTableComponent{
                 ->setSortingPillDirections('Asc', 'Desc'),
             Column::make('Costo', 'costo')
                 ->sortable()->searchable()
-                ->setSortingPillDirections('Asc', 'Desc'),
+                ->setSortingPillDirections('Asc', 'Desc')
+                ->format(function ($value) {
+                    return '$' . number_format($value, 2); // Formatea el número con dos decimales
+                }),
             Column::make('Cantidad', 'cantidad')
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),
@@ -97,10 +100,7 @@ class InsumosTable extends DataTableComponent{
         $insumos = Insumo::whereIn('id', $selectedIds)->get()->map(function($insumo) {
             return [
                 'ID' => $insumo->id,
-                'Costo' => $insumo->costo,
-                'Cantidad' => $insumo->cantidad,
-                'Fecha' => $insumo->fecha,
-                'Obra' => $insumo->obra->detalle->nombreObra,
+                'Nombre' => $insumo->nombre,
                 'Creado por' => $insumo->createdBy->name ?? 'N/A',
                 'Fecha Creación' => $insumo->created_at->format('Y-m-d H:i:s'),
                 'Actualizado por' => $insumo->updatedBy->name ?? 'N/A',
@@ -126,10 +126,7 @@ class InsumosTable extends DataTableComponent{
             {
                 return [
                     'ID',
-                    'Costo',
-                    'Cantidad',
-                    'Fecha',
-                    'Obra',
+                    'Nombre',
                     'Creado por',
                     'Fecha Creación',
                     'Actualizado por',

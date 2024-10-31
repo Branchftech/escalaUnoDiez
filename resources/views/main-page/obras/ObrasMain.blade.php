@@ -14,4 +14,5 @@
             <livewire:obras.obras-table/>
         </div>
     </div>
+    <livewire:obras.eliminar-obra />
 </x-app-layout>

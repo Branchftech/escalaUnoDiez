@@ -63,6 +63,7 @@ class DetalleObra extends Model
     $id, $nombreObra, $total,$moneda,$fechaInicio, $fechaFin,$dictamenUsoSuelo,
     $estadoObra,
     $calle,$manzana,$lote,$metrosCuadrados, $fraccionamiento,$estado, $pais, $latitud,$longitud,
+    $proveedores = [], $cliente,
     $userId)
     {
         try {
@@ -79,6 +80,14 @@ class DetalleObra extends Model
 
             // Asegúrate de que los cambios en `obra` y `direccion` se guarden
             $detalleObra->obra->idEstadoObra = $estadoObra;
+            $detalleObra->obra->idCliente = $cliente;
+            if (!empty($proveedores)) {
+                $proveedoresCollection = collect($proveedores);
+                $proveedorIds = $proveedoresCollection->pluck('id')->toArray();
+                $detalleObra->obra->proveedores()->sync($proveedorIds);
+            }else{
+                $detalleObra->obra->proveedores()->sync([]);
+            }
             $detalleObra->obra->save();
 
             $detalleObra->direccion->calle = $calle;

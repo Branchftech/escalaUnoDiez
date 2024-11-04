@@ -5,6 +5,8 @@ use App\Livewire\ServicesComponent;
 use App\Models\DetalleObra;
 use App\Models\Pais;
 use App\Models\Estado;
+use App\Models\Proveedor;
+use App\Models\Cliente;
 use App\Models\EstadoObra;
 use App\Models\Obra;
 use App\Livewire\DetallesObras\DetallesObrasTable;
@@ -15,7 +17,10 @@ class EditarDetalleObra extends ServicesComponent
     public $nombreObra, $total,$moneda,$fechaInicio,
     $fechaFin,$calle,$manzana,$lote,$metrosCuadrados,
     $fraccionamiento,$dictamenUsoSuelo, $estados, $paises, $paisSeleccionado, $estadoSeleccionado,
-    $estadosObra, $estadoObraSeleccionado;
+    $estadosObra, $estadoObraSeleccionado,$clienteSeleccionado, $clientes, $proveedores, $licenciaConstruccion, $contrato;
+    #select proveedores
+    public $proveedorSeleccionado = [];
+    public $selectedProveedores = [];
     public $latitud, $longitud;
     public $model, $id;
     protected $listeners = ['refreshDireccion' => 'refreshDireccion'];
@@ -56,10 +61,14 @@ class EditarDetalleObra extends ServicesComponent
         // Cargar los países y estados de obra
         $this->paises = Pais::all();
         $this->estados = Estado::all();
-
+        $this->proveedores = Proveedor::all();
+        $this->clientes = Cliente::all();
         $this->estadosObra = EstadoObra::all();
         $this->estadoObraSeleccionado = $this->model->obra->estado->id ?? null;
-
+        $this->clienteSeleccionado = $this->model->obra->idCliente ?? null;
+        $this->selectedProveedores = Proveedor::whereIn('id', $this->model->obra->proveedores?->pluck('id') ?? [])->get();
+        $this->licenciaConstruccion= $this->model->obra->licenciaConstruccion ?? null;
+        $this->contrato= $this->model->obra->contrato ?? null;
     }
 
     public function render()
@@ -85,6 +94,9 @@ class EditarDetalleObra extends ServicesComponent
             'paisSeleccionado' => 'nullable|exists:paises,id',
             'estadoSeleccionado' => 'nullable|exists:estados,id',
             'estadoObraSeleccionado' => 'nullable|exists:estadoobra,id',
+
+            'clienteSeleccionado' => 'required|min:1|exists:cliente,id',
+            //'selectedProveedores' => 'nullable|array',
         ]);
         try{
             $this->latitud = substr($this->latitud, 0, -1);
@@ -94,6 +106,7 @@ class EditarDetalleObra extends ServicesComponent
             $this->model->id, $this->nombreObra, $this->total,$this->moneda,$this->fechaInicio, $this->fechaFin,$this->dictamenUsoSuelo,
             $this->estadoObraSeleccionado,
             $this->calle,$this->manzana,$this->lote,$this->metrosCuadrados, $this->fraccionamiento,$this->estadoSeleccionado, $this->paisSeleccionado, $this->latitud, $this->longitud,
+            $this->selectedProveedores, $this->clienteSeleccionado,
             $user->id);
             $this->render();
             // Emitir evento para recargar el mapa con las nuevas coordenadas
@@ -129,6 +142,28 @@ class EditarDetalleObra extends ServicesComponent
             $this->paisSeleccionado = null;
         }
         //$this->dispatch( 'recargarMapa', $this->model->id);
+    }
+
+    public function updatedProveedorSeleccionado($proveedorId)
+    {
+        $this->validate([
+            'proveedorSeleccionado' => 'required|exists:proveedores,id',
+        ]);
+
+        $proveedor = Proveedor::find($proveedorId);
+
+        if ($proveedor && !$this->selectedProveedores->contains($proveedor)) {
+            $this->selectedProveedores->push($proveedor);
+        }
+    }
+
+
+
+    public function eliminarProveedor($proveedorId)
+    {
+        $this->selectedProveedores = $this->selectedProveedores->filter(function($proveedor) use ($proveedorId) {
+            return $proveedor->id !== $proveedorId;
+        });
     }
 
 }

@@ -135,6 +135,54 @@
                     </select>
                     @error('estadoSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="contrato">Contrato</label>
+                        <x-input type="text" wire:model="contrato" class="form-control" />
+                        @error('contrato') <span class="text-danger">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="licenciaConstruccion">Licencia Construccion</label>
+                        <x-input type="text" wire:model="licenciaConstruccion" class="form-control" />
+                        @error('licenciaConstruccion') <span class="text-danger">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="clientes">Cliente</label>
+                    <select wire:model="clienteSeleccionado" class="form-control" id="select2EstadosObras">
+                        <option value="" selected hidden>Seleccione el Cliente</option>
+                        @foreach ($clientes as $cliente)
+                            <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
+                        @endforeach
+                    </select>
+                    @error('clienteSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="col-md-3">
+                    <div wire:ignore>
+                        <label for="proveedores">Proveedores</label>
+                        <select wire:model="proveedorSeleccionado" class="form-control" id="select2proveedores" >
+                            <option value="" selected hidden>Seleccione un proveedor</option>
+                            @foreach ($proveedores as $proveedor)
+                                <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option>
+                            @endforeach
+                        </select>
+                        @error('proveedorSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
+                    </div>
+                    <div class="form-group >
+                        <label for="proveedores">Proveedores:</label>
+                        <div class="flex-wrap gap-2 d-flex">
+                            @foreach ($selectedProveedores as $prov)
+                                <span class="badge bg-primary d-inline-flex align-items-center">
+                                    {{ $prov->nombre }}
+                                    <i class="text-white cursor-pointer ms-2 fa-solid fa-xmark" wire:click="eliminarProveedor({{ $prov->id }})"></i>
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
                 <!-- Botones -->
                 <div class="col-md-12">
                     <div class="gap-2 mt-3 d-flex justify-content-center">
@@ -147,5 +195,18 @@
         </div>
     </div>
 </div>
+@push('scripts')
+    <script type="module">
+        $('#select2proveedores').select2({
+            width: '100%',
+            placeholder: "",
+            allowClear: true
+        });
+        $('#select2proveedores').on('change', function(e) {
+            var data = $('#select2proveedores').select2("val");
+            @this.set('proveedorSeleccionado', data);
+        });
+    </script>
+@endpush
 
 

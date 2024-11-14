@@ -96,7 +96,7 @@ class Destajo extends Model
     // Relación con el modelo Obra
     public function obra()
     {
-        return $this->belongsTo(Obra::class, 'idObra');
+        return $this->belongsTo(Obra::class, 'idObra')->with('detalle');
     }
 
     // Relación con el modelo proveedor

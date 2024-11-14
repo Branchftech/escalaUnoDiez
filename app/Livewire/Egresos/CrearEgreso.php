@@ -42,63 +42,49 @@ class CrearEgreso extends ServicesComponent
     public $servicios;
     public $serviciosSeleccionados = [];
 
-    #selects para el reporte
-    public $obrasReporte;
-    public $obraReporteSeleccionado;
-
-    public $proveedoresReporte;
-    public $proveedorReporteSeleccionado;
-
-    public $serviciosReporte;
-    public $serviciosReporteSeleccionados = [];
-
-    public $destajosReporte;
-    public $destajoReporteSeleccionado;
-
     protected $listeners = ['refreshCrearEgreso' => '$refresh'];
 
     public function mount()
     {
         $this->obras = Obra::all();
-        $this->obrasReporte = $this->obras;
 
-        $this->destajos = Destajo::all();
-        $this->destajosReporte = $this->destajos;
+        $this->destajos = Destajo::whereHas('obra', function ($query) {
+            $query->whereNull('deleted_at');
+        })->with('obra')->get();
+
 
         $this->proveedores = Proveedor::all();
-        $this->proveedoresReporte = $this->proveedores;
 
         $this->formasPago = FormaPago::all();
 
         $this->bancos = Banco::all();
 
         $this->servicios = Servicio::orderBy('nombre', 'asc')->get();
-        $this->serviciosReporte = Servicio::orderBy('nombre', 'asc')->get();
     }
 
     public function render()
     {
         $this->obras = Obra::all();
-        $this->obrasReporte = $this->obras;
 
-        $this->destajos = Destajo::all();
-        $this->destajosReporte = $this->destajos;
+        $this->destajos = Destajo::whereHas('obra', function ($query) {
+            $query->whereNull('deleted_at');
+        })->with('obra')->get();
+
 
         $this->proveedores = Proveedor::all();
-        $this->proveedoresReporte = $this->proveedores;
 
         $this->formasPago = FormaPago::all();
 
         $this->bancos = Banco::all();
 
         $this->servicios = Servicio::orderBy('nombre', 'asc')->get();
-        $this->serviciosReporte = Servicio::orderBy('nombre', 'asc')->get();
 
         return view('livewire.egresos.crear-egreso');
     }
 
     public function crearEgreso()
     {
+
         $this->validate([
             'cantidad' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
             'concepto' => 'required|string|max:255',
@@ -112,7 +98,9 @@ class CrearEgreso extends ServicesComponent
         ]);
 
         try {
-            if($this->destajoSelected){
+            $puedeCrearEgreso = true; // Bandera para determinar si se puede crear el egreso
+
+            if ($this->destajoSelected) {
                 // Obtén el destajo asociado
                 $destajo = Destajo::findOrFail($this->destajoSelected);
                 // Suma de todos los egresos asociados a este destajo
@@ -120,9 +108,11 @@ class CrearEgreso extends ServicesComponent
                 // Validar si la cantidad del nuevo egreso más la suma de los egresos existentes no supera el presupuesto
                 if (($sumaEgresos + $this->cantidad) > $destajo->presupuesto) {
                     $this->alertService->error($this, 'La cantidad total de egresos supera el presupuesto del destajo.');
-                    //throw new \Exception('La cantidad total de egresos supera el presupuesto del destajo.');
+                    $puedeCrearEgreso = false; // No se puede crear el egreso porque excede el presupuesto
                 }
-            }else{
+            }
+
+            if ($puedeCrearEgreso) {
                 $user = Auth::user();
                 Egreso::crearEgreso(
                     $this->cantidad,
@@ -136,12 +126,12 @@ class CrearEgreso extends ServicesComponent
                     $this->fecha,
                     $user->id
                 );
-                //Enviar evento para refrescar la tabla
+                // Enviar evento para refrescar la tabla
                 $this->dispatch('refreshEgresosTable')->to(EgresosTable::class);
-                //Limpiar los campos
+                // Limpiar los campos
                 $this->limpiar();
 
-                //Mostrar mensaje de éxito
+                // Mostrar mensaje de éxito
                 $this->alertService->success($this, 'Egreso creado con éxito');
             }
         } catch (\Exception $th) {

@@ -15,6 +15,7 @@ use App\Http\Controllers\DocumentosObras\DocumentosObrasController;
 use App\Http\Controllers\Egresos\EgresosController;
 use App\Http\Controllers\Ingresos\IngresosController;
 use App\Http\Controllers\Destajos\DestajosController;
+use App\Http\Controllers\Reportes\ReportesController;
 use App\Http\Controllers\Obras\ObrasController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
@@ -69,6 +70,8 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::get('/documentosObras', [DocumentosObrasController::class, 'index'])->name('documentosObras');
 
     Route::get('/egresos', [EgresosController::class, 'index'])->name('egresos');
+
+    Route::get('/reportes', [ReportesController::class, 'index'])->name('reportes');
 
     Route::get('/ingresos', [IngresosController::class, 'index'])->name('ingresos');
 

@@ -58,7 +58,9 @@ class EditarEgreso extends ServicesComponent
         $this->destajoSeleccionado = $model->idDestajo;
 
         $this->obras = Obra::with('detalle')->get();
-        $this->destajos = Destajo::all();
+        $this->destajos = Destajo::whereHas('obra', function ($query) {
+            $query->whereNull('deleted_at');
+        })->with('obra')->get();
         $this->proveedores = Proveedor::all();
         $this->formasPago = FormaPago::all();
         $this->bancos = Banco::all();
@@ -70,7 +72,9 @@ class EditarEgreso extends ServicesComponent
     public function render()
     {
         $this->obras = Obra::with('detalle')->get();
-        $this->destajos = Destajo::all();
+        $this->destajos = Destajo::whereHas('obra', function ($query) {
+            $query->whereNull('deleted_at');
+        })->with('obra')->get();
         $this->proveedores = Proveedor::all();
         $this->formasPago = FormaPago::all();
         $this->bancos = Banco::all();

@@ -28,13 +28,17 @@ class CheckRole
             return $next($request);
         }
 
+        // Validar acceso para roles específicos en la ruta 'generarReporte'
+        if ($routeName === 'generarReporte' && $user->hasAnyRole(['Administrador', 'Analista'])) {
+            return $next($request); // Permitir acceso si tiene los roles necesarios
+        }
+
         // Obtener accesos del usuario basados en los roles
         $userAccesos = $user->accesos();
 
         // Verificar si el usuario tiene permiso para las rutas especiales
         if (
-            ($routeName === 'detalleObra' && $userAccesos->contains('url', 'obras')) ||
-            ($routeName === 'generarReporte' && $userAccesos->contains('url', 'egresos'))
+            ($routeName === 'detalleObra' && $userAccesos->contains('url', 'obras'))
         ) {
             return $next($request); // Permitir acceso a rutas relacionadas
         }

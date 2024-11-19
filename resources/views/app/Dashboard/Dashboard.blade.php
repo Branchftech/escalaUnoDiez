@@ -62,14 +62,13 @@
                     @livewire('graficos.graficos')
                 </div>
                 <div class="recentOrders">
-                    <div class="card" style="background: white; border:none; align-items: center;">
-                        <div class="flex-row" style="text-align: center;">
-                            <div>
-                                <div class="cardName" style="color: black; font-size: 30px">Total Nuevos Contratos Anual</h2></div>
-                                <div class="numbers" style="color: green; font-size: 70px; padding-top:10px">3</div>
-                            </div>
+                    <div class="card" style="background: white; border: none; height: auto; width: auto; display: flex; justify-content: center; align-items: center;">
+                        <div style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+                            <div class="cardName" style="color: black; font-size: 30px;">Total Nuevos Contratos Anual</div>
+                            <div class="numbers" style="color: green; font-size: 70px; padding-top: 10px;">{{$cantContratosNuevos}}</div>
                         </div>
                     </div>
+                </div>
                     <!-- <table>
                         <thead>
                             <tr>
@@ -138,7 +137,7 @@
                             </tr>
                         </tbody>
                     </table> -->
-                </div>
+
                 <!-- ================= New Customers ================ -->
                 <!-- <div class="recentCustomers">
                     <div class="cardHeader">

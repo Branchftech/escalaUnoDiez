@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class Obra extends Model
 {
@@ -170,6 +171,16 @@ class Obra extends Model
     public static function countObrasConEstado3()
     {
         return Obra::where('idEstadoObra', 3)->count();
+    }
+
+    // Función para contar las obras del año
+    public static function countObrasDelAnioActual()
+    {
+        $anioActual = Carbon::now()->year;
+
+        return self::join('detalleobra', 'obra.idDetalleObra', '=', 'detalleobra.id')
+            ->whereYear('detalleobra.fechaInicio', $anioActual)
+            ->count();
     }
 
     // Relación que indica qué usuario creó una entrada específica

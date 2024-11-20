@@ -9,7 +9,7 @@ class CreateIngresosTable extends Migration
     {
         Schema::create('ingresos', function (Blueprint $table) {
             $table->id();
-            $table->string('factura');
+            $table->string('factura')->nullable()->default(null);
             $table->decimal('cantidad', 10, 2);
             $table->unsignedBigInteger('idCliente');
             $table->foreign('idCliente')->references('id')->on('cliente');
@@ -24,8 +24,8 @@ class CreateIngresosTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unsignedBigInteger('created_by')->nullable(); 
-            $table->unsignedBigInteger('updated_by')->nullable(); 
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->unsignedBigInteger('deleted_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');

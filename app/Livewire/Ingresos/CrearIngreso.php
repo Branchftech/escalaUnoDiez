@@ -54,7 +54,7 @@ class CrearIngreso extends ServicesComponent
     public function crearIngreso()
     {
         $this->validate([
-            'factura' => 'required|string|max:255',
+            'factura' => 'nullable|string|max:255',
             'cantidad' => ['required', 'numeric', 'regex:/^\d{1,8}(\.\d{1,2})?$/'],
             'concepto' => 'required|string|max:100',
             'fecha' => 'required|date',

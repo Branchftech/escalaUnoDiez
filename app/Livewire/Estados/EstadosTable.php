@@ -48,6 +48,9 @@ class EstadosTable extends DataTableComponent{
             Column::make('Nombre', 'nombre')
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),
+            Column::make('Pais', 'pais.nombre')
+                ->sortable()->searchable()
+                ->setSortingPillDirections('Asc', 'Desc'),
             Column::make('Acciones')
                 ->label(
                     fn ($row, Column $column) => view('livewire.estados.actions-table')->with([

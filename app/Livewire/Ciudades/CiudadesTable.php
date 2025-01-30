@@ -52,6 +52,9 @@ class CiudadesTable extends DataTableComponent{
             Column::make('Nombre', 'nombre')
                 ->sortable()->searchable()
                 ->setSortingPillDirections('Asc', 'Desc'),
+            Column::make('Estado', 'estado.nombre')
+                ->sortable()->searchable()
+                ->setSortingPillDirections('Asc', 'Desc'),
             Column::make('Acciones')
                 ->label(
                     fn ($row, Column $column) => view('livewire.ciudades.actions-table')->with([

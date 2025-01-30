@@ -135,6 +135,17 @@
                     </select>
                     @error('estadoSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
+                 <!-- Campo Ciudades -->
+                 <div class="col-md-3">
+                    <label for="ciudades">Ciudades</label>
+                    <select wire:model="ciudadSeleccionado" class="form-control">
+                        <option value="" selected hidden >Seleccione una Ciudad</option>
+                        @foreach ($ciudades as $ciudad)
+                            <option value="{{ $ciudad->id }}">{{ $ciudad->nombre }}</option>
+                        @endforeach
+                    </select>
+                    @error('ciudadSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
+                </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="contrato">Contrato</label>

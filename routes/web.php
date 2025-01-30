@@ -17,6 +17,7 @@ use App\Http\Controllers\Ingresos\IngresosController;
 use App\Http\Controllers\Destajos\DestajosController;
 use App\Http\Controllers\Reportes\ReportesController;
 use App\Http\Controllers\Obras\ObrasController;
+use App\Http\Controllers\Regiones\RegionesController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -76,6 +77,9 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::get('/ingresos', [IngresosController::class, 'index'])->name('ingresos');
 
     Route::get('/destajos', [DestajosController::class, 'index'])->name('destajos');
+
+    Route::get('/regiones', [RegionesController::class, 'index'])->name('regiones');
+
 
     Route::get('/firmar-recibo/{id}', [EgresosController::class, 'mostrarFormularioFirma'])->name('egresos.firmar');
 

@@ -5,6 +5,7 @@ use App\Livewire\ServicesComponent;
 use App\Models\DetalleObra;
 use App\Models\Pais;
 use App\Models\Estado;
+use App\Models\Ciudad;
 use App\Models\Proveedor;
 use App\Models\Cliente;
 use App\Models\EstadoObra;
@@ -16,7 +17,7 @@ class EditarDetalleObra extends ServicesComponent
 {
     public $nombreObra, $total,$moneda,$fechaInicio,
     $fechaFin,$calle,$manzana,$lote,$metrosCuadrados,
-    $fraccionamiento,$dictamenUsoSuelo, $estados, $paises, $paisSeleccionado, $estadoSeleccionado,
+    $fraccionamiento,$dictamenUsoSuelo, $estados, $paises,$ciudades, $paisSeleccionado, $estadoSeleccionado,$ciudadSeleccionado,
     $estadosObra, $estadoObraSeleccionado,$clienteSeleccionado, $clientes, $proveedores, $licenciaConstruccion, $contrato;
     #select proveedores
     public $proveedorSeleccionado = [];
@@ -45,6 +46,7 @@ class EditarDetalleObra extends ServicesComponent
             $this->lote = $this->model->direccion->lote ?? null;
             $this->paisSeleccionado = $this->model->direccion->pais->id ?? null;
             $this->estadoSeleccionado = $this->model->direccion->estado->id ?? null;
+            $this->ciudadSeleccionado = $this->model->direccion->ciudad->id ?? null;
             $this->metrosCuadrados = $this->model->direccion->metrosCuadrados ?? null;
             $this->fraccionamiento = $this->model->direccion->fraccionamiento ?? null;
             $this->latitud = $this->model->direccion->latitud ?? null;
@@ -61,6 +63,7 @@ class EditarDetalleObra extends ServicesComponent
         // Cargar los países y estados de obra
         $this->paises = Pais::all();
         $this->estados = Estado::all();
+        $this->ciudades = Ciudad::all();
         $this->proveedores = Proveedor::all();
         $this->clientes = Cliente::all();
         $this->estadosObra = EstadoObra::all();
@@ -93,6 +96,7 @@ class EditarDetalleObra extends ServicesComponent
             //'dictamenUsoSuelo'=> 'nullable|string',
             'paisSeleccionado' => 'nullable|exists:paises,id',
             'estadoSeleccionado' => 'nullable|exists:estados,id',
+            'ciudadSeleccionado' => 'nullable|exists:ciudades,id',
             'estadoObraSeleccionado' => 'nullable|exists:estadoobra,id',
 
             'clienteSeleccionado' => 'required|min:1|exists:cliente,id',
@@ -105,7 +109,7 @@ class EditarDetalleObra extends ServicesComponent
             DetalleObra::editarDetalleObra(
             $this->model->id, $this->nombreObra, $this->total,$this->moneda,$this->fechaInicio, $this->fechaFin,$this->dictamenUsoSuelo,
             $this->estadoObraSeleccionado,
-            $this->calle,$this->manzana,$this->lote,$this->metrosCuadrados, $this->fraccionamiento,$this->estadoSeleccionado, $this->paisSeleccionado, $this->latitud, $this->longitud,
+            $this->calle,$this->manzana,$this->lote,$this->metrosCuadrados, $this->fraccionamiento,$this->estadoSeleccionado, $this->paisSeleccionado, $this->ciudadSeleccionado,$this->latitud, $this->longitud,
             $this->selectedProveedores, $this->clienteSeleccionado,
             $user->id);
             $this->render();

@@ -40,7 +40,7 @@ class Estado extends Model
     }
 
 
-    static function editarEstado($id, $nombre, $idPais, $userId)
+    static function editarEstado($id, $nombre,  $userId, $idPais)
     {
         $estado = Estado::findOrfail($id);
         $estado->nombre = $nombre;
@@ -53,9 +53,17 @@ class Estado extends Model
 
     static function eliminarEstado($id, $userId)
     {
-        $estado = Estado::findOrfail($id);
+        $estado = Estado::findOrFail($id);
+
+        // Eliminar en cascada todas las ciudades relacionadas con este estado
+        Ciudad::where('idEstado', $id)->update([
+            'deleted_at' => now(),
+            'deleted_by' => $userId
+        ]);
+
+        // Marcar el estado como eliminado
         $estado->deleted_at = now();
-        $estado->deleted_by =  $userId;
+        $estado->deleted_by = $userId;
         $estado->save();
     }
 

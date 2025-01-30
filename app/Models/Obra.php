@@ -35,7 +35,7 @@ class Obra extends Model
 
     static function crearObra( $nombreObra, $total,$moneda,$fechaInicio, $fechaFin,$dictamenUsoSuelo,
     $estadoObra, $contrato, $licenciaConstruccion,
-    $calle,$manzana,$lote,$metrosCuadrados, $fraccionamiento,$estado, $pais,$proveedores = [], $cliente,
+    $calle,$manzana,$lote,$metrosCuadrados, $fraccionamiento,$estado, $pais,$ciudad, $proveedores = [], $cliente,
     $userId)
     {
 
@@ -61,6 +61,7 @@ class Obra extends Model
                 'fraccionamiento' => $fraccionamiento,
                 'idPais' => $pais,
                 'idEstado' => $estado,
+                'idCiudad' => $ciudad,
                 'created_at' => now(),
                 'created_by' => $userId,
             ]);

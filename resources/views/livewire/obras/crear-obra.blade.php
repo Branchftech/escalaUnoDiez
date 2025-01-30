@@ -161,7 +161,9 @@
 
                     <!-- Cuarta fila -->
                     <div class="col-md-3">
-                        <label for="paises">País</label>
+                        <div class="d-flex align-items-center">
+                            <label for="paises" class="me-2">País</label>
+                        </div>
                         <select wire:model="paisSeleccionado" wire:change="cambiar" class="form-control" id="select2Paises">
                             <option value="" selected hidden>Seleccione un país</option>
                             @foreach ($paises as $pais)
@@ -170,16 +172,34 @@
                         </select>
                         @error('paisSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
-                    <!-- Campo Estado -->
+
+                    <!-- Estado -->
                     <div class="col-md-3">
-                        <label for="estados">Estado</label>
-                        <select wire:model="estadoSeleccionado" class="form-control" id="select2Estados">
+                        <div class="d-flex align-items-center">
+                            <label for="estados" class="me-2">Estado</label>
+
+                        </div>
+                        <select wire:model="estadoSeleccionado" wire:change="cambiarCiudad" class="form-control" id="select2Estados">
                             <option value="" selected hidden>Seleccione un estado</option>
                             @foreach ($estados as $estado)
                                 <option value="{{ $estado->id }}">{{ $estado->nombre }}</option>
                             @endforeach
                         </select>
                         @error('estadoSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
+                    </div>
+                     <!-- ciudad -->
+                     <div class="col-md-3">
+                        <div class="d-flex align-items-center">
+                            <label for="ciudades" class="me-2">Ciudad</label>
+
+                        </div>
+                        <select wire:model="ciudadSeleccionado"  class="form-control" id="select2Ciudades">
+                            <option value="" selected hidden>Seleccione una ciudad</option>
+                            @foreach ($ciudades as $ciudad)
+                                <option value="{{ $ciudad->id }}">{{ $ciudad->nombre }}</option>
+                            @endforeach
+                        </select>
+                        @error('ciudadSeleccionado') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
                     <!-- Botones -->
                     <div class="col-md-12">
@@ -209,5 +229,7 @@
                 var data = $('#select2proveedores').select2("val");
                 @this.set('proveedoresSeleccionados', data);
             });
+
+
     </script>
 @endpush

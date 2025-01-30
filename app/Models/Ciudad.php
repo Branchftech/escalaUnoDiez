@@ -6,19 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Pais extends Model
+class Ciudad extends Model
 {
     use HasFactory;
+
     use SoftDeletes;
 
     protected $connection = 'mysql';
-    public $table = 'paises';
+    public $table = 'ciudades';
     public $incrementing = true;
     public $timestamps = true;
     protected $primaryKey = 'id';
 
     protected $fillable = [
         'nombre',
+        'idEstado',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -27,41 +29,37 @@ class Pais extends Model
         'deleted_by',
     ];
 
-    static function crearPais($nombre, $userId)
+    static function crearCiudad($nombre, $userId, $idEstado)
     {
-        $pais = new Pais();
-        $pais->nombre = $nombre;
-        $pais->created_at = now();
-        $pais->created_by =  $userId;
-        $pais->save();
-        return $pais;
+        $ciudad = new Ciudad();
+        $ciudad->nombre = $nombre;
+        $ciudad->idEstado =  $idEstado;
+        $ciudad->created_at = now();
+        $ciudad->created_by =  $userId;
+        $ciudad->save();
+        return $ciudad;
     }
 
 
-    static function editarPais($id, $nombre, $userId)
+    static function editarCiudad($id, $nombre, $userId, $idEstado)
     {
-        $pais = Pais::findOrfail($id);
-        $pais->nombre = $nombre;
-        $pais->updated_at = now();
-        $pais->updated_by =  $userId;
-        $pais->save();
-        return $pais;
+        $ciudad = Ciudad::findOrfail($id);
+        $ciudad->nombre = $nombre;
+        $ciudad->idEstado =  $idEstado;
+        $ciudad->updated_at = now();
+        $ciudad->updated_by = $userId;
+        $ciudad->save();
+
+
+        return $ciudad;
     }
 
-    static function eliminarPais($id, $userId)
+    static function eliminarCiudad($id, $userId)
     {
-        $pais = Pais::findOrFail($id);
-
-        // Eliminar en cascada todos los estados relacionados con este país
-        Estado::where('idPais', $id)->update([
-            'deleted_at' => now(),
-            'deleted_by' => $userId
-        ]);
-
-        // Marcar el país como eliminado
-        $pais->deleted_at = now();
-        $pais->deleted_by = $userId;
-        $pais->save();
+        $ciudad = Ciudad::findOrfail($id);
+        $ciudad->deleted_at = now();
+        $ciudad->deleted_by =  $userId;
+        $ciudad->save();
     }
 
     public function getCreatedAtCustomAttribute()
@@ -86,10 +84,9 @@ class Pais extends Model
     {
         return $this->belongsTo(User::class, 'deleted_by');
     }
-    // Relaciones
 
-    public function estados()
+    public function estado()
     {
-        return $this->hasMany(Estado::class, 'idPais');
+        return $this->belongsTo(Estado::class, 'idEstado');
     }
 }

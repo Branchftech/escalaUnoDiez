@@ -27,12 +27,13 @@ class DireccionObra extends Model
         'fraccionamiento',
         'idPais',
         'idEstado',
+        'idCiudad',
         'created_by',
         'updated_by',
         'deleted_by',
     ];
 
-    static function crearDireccionObra($calle, $manzana,$lote, $metrosCuadrados,$fraccionamiento, $idPais,$idEstado, $latitud,$longitud, $userId)
+    static function crearDireccionObra($calle, $manzana,$lote, $metrosCuadrados,$fraccionamiento, $idPais, $idEstado, $idCiudad,$latitud,$longitud, $userId)
     {
         $estado = new DireccionObra();
         $estado->calle = $calle;
@@ -44,6 +45,7 @@ class DireccionObra extends Model
         $estado->fraccionamiento = $fraccionamiento;
         $estado->idPais =$idPais;
         $estado->idEstado =$idEstado;
+        $estado->idCiudad =$idCiudad;
         $estado->created_at = now();
         $estado->created_by =  $userId;
         $estado->save();
@@ -51,7 +53,7 @@ class DireccionObra extends Model
     }
 
 
-    static function editarDireccionObra($id, $calle, $manzana,$lote, $metrosCuadrados,$fraccionamiento, $idPais,$idEstado,$latitud,$longitud, $userId)
+    static function editarDireccionObra($id, $calle, $manzana,$lote, $metrosCuadrados,$fraccionamiento, $idPais,$idEstado,$idCiudad,$latitud,$longitud, $userId)
     {
         $estado = DireccionObra::findOrfail($id);
         $estado->calle = $calle;
@@ -63,6 +65,7 @@ class DireccionObra extends Model
         $estado->fraccionamiento = $fraccionamiento;
         $estado->idPais =$idPais;
         $estado->idEstado =$idEstado;
+        $estado->idCiudad =$idCiudad;
         $estado->updated_at = now();
         $estado->updated_by =  $userId;
         $estado->save();
@@ -108,6 +111,11 @@ class DireccionObra extends Model
     public function estado()
     {
         return $this->belongsTo(Estado::class, 'idEstado');
+    }
+    // Definir la relación con el modelo ciudad (si existe)
+    public function ciudad()
+    {
+        return $this->belongsTo(Ciudad::class, 'idCiudad');
     }
 
 }

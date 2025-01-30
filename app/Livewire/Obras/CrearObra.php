@@ -5,6 +5,7 @@ use App\Livewire\ServicesComponent;
 use App\Models\Obra;
 use App\Models\Pais;
 use App\Models\Estado;
+use App\Models\Ciudad;
 use App\Models\Proveedor;
 use App\Models\Cliente;
 use App\Models\EstadoObra;
@@ -15,7 +16,7 @@ class CrearObra extends ServicesComponent
 {
     public $nombreObra, $total,$moneda,$fechaInicio,
     $fechaFin,$calle,$manzana,$lote,$metrosCuadrados,
-    $fraccionamiento,$dictamenUsoSuelo, $estados, $paises, $proveedores, $clientes, $paisSeleccionado, $estadoSeleccionado,$clienteSeleccionado,
+    $fraccionamiento,$dictamenUsoSuelo, $estados, $paises,$ciudades, $proveedores, $clientes, $paisSeleccionado, $estadoSeleccionado,$ciudadSeleccionado, $clienteSeleccionado,
     $estadosObra, $estadoObraSeleccionado, $licenciaConstruccion, $contrato;
     #select proveedores
     public $proveedoresSeleccionados = [];
@@ -42,6 +43,7 @@ class CrearObra extends ServicesComponent
         // $this->dictamenUsoSuelo = $this->model->detalle->dictamenUsoSuelo;
         $this->paises = Pais::all();
         $this->estados = [];
+        $this->ciudades = [];
         $this->estadosObra = EstadoObra::all();
         //obra
         $this->proveedores = Proveedor::all();
@@ -65,6 +67,17 @@ class CrearObra extends ServicesComponent
         $this->estadoSeleccionado = null;
     }
 
+    public function cambiarCiudad()
+    {
+        if ($this->estadoSeleccionado) {
+            $this->ciudades = Ciudad::where('idEstado', $this->estadoSeleccionado)->get();
+        } else {
+            $this->ciudades = [];
+        }
+
+        $this->ciudadSeleccionado = null;
+    }
+
     public function crearObra()
     {
 
@@ -84,6 +97,7 @@ class CrearObra extends ServicesComponent
             'licenciaConstruccion'=> 'nullable|string',
             'paisSeleccionado' => 'nullable|min:1|exists:paises,id',
             'estadoSeleccionado' => 'nullable|min:1|exists:estados,id',
+            'ciudadSeleccionado' => 'nullable|min:1|exists:ciudades,id',
             'estadoObraSeleccionado' => 'nullable|min:1|exists:estadoobra,id',
             'clienteSeleccionado' => 'required|min:1|exists:cliente,id',
             'proveedoresSeleccionados.*' => 'nullable|min:1|exists:proveedores,id',
@@ -93,7 +107,7 @@ class CrearObra extends ServicesComponent
             $user = Auth::user();
             Obra::crearObra( $this->nombreObra, $this->total,$this->moneda,$this->fechaInicio, $this->fechaFin,$this->dictamenUsoSuelo,
             $this->estadoObraSeleccionado ?? 9,$this->contrato, $this->licenciaConstruccion,
-            $this->calle,$this->manzana,$this->lote,$this->metrosCuadrados, $this->fraccionamiento,$this->estadoSeleccionado, $this->paisSeleccionado,$this->proveedoresSeleccionados, $this->clienteSeleccionado,
+            $this->calle,$this->manzana,$this->lote,$this->metrosCuadrados, $this->fraccionamiento,$this->estadoSeleccionado, $this->paisSeleccionado, $this->ciudadSeleccionado, $this->proveedoresSeleccionados, $this->clienteSeleccionado,
             $user->id);
 
             $this->dispatch('refreshObrasTable')->to(ObrasTable::class);
@@ -129,7 +143,7 @@ class CrearObra extends ServicesComponent
     {
         $this->reset('nombreObra','total','moneda','fechaInicio',
             'fechaFin','calle','manzana','lote','metrosCuadrados',
-            'fraccionamiento','dictamenUsoSuelo','paisSeleccionado', 'estadoSeleccionado','clienteSeleccionado',
+            'fraccionamiento','dictamenUsoSuelo','paisSeleccionado', 'estadoSeleccionado','ciudadSeleccionado','clienteSeleccionado',
             'estadoObraSeleccionado', 'licenciaConstruccion', 'contrato');
 
     }
